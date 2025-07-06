@@ -162,29 +162,11 @@ function init() {
     // Set up event listeners
     setupEventListeners();
     
-    // Load saved settings
-    loadSettings();
-    
     // Initialize theme
     initializeTheme();
     
-    // Initialize UI
-    populateCategoryList();
-    populateTagsPanel();
-    
-    if (scriptsFolderPath) {
-        folderPathDisplay.textContent = scriptsFolderPath;
-        populateScriptList();
-        // Apply layout state after populating script list
-        setTimeout(function() {
-            if (isGridLayout) {
-                scriptList.classList.add('grid-layout');
-            } else {
-                scriptList.classList.remove('grid-layout');
-            }
-            applyScaleToScriptItems();
-        }, 0);
-    }
+    // Load saved settings (异步操作，在回调中处理UI初始化)
+    loadSettings();
     
     // Initialize clipboard import settings
     loadClipboardImportSettings({});
@@ -773,6 +755,16 @@ function saveSettings() {
         theme: currentTheme
     };
     
+    // Add background settings from localStorage
+    try {
+        var backgroundData = localStorage.getItem('backgroundSettings');
+        if (backgroundData) {
+            settings.backgroundSettings = JSON.parse(backgroundData);
+        }
+    } catch (e) {
+        console.warn('无法加载背景设置:', e);
+    }
+    
     // Add clipboard import settings
     settings = saveClipboardImportSettings(settings);
     
@@ -819,6 +811,12 @@ function loadSettings() {
                 categories = settings.categories || ['全部'];
                 allTags = settings.allTags || [];
                 
+                console.log('DataManager加载的设置:', {
+                    scriptsFolderPath: scriptsFolderPath,
+                    categoriesCount: categories.length,
+                    tagsCount: allTags.length
+                });
+                
                 // Load layout settings
                 if (settings.layoutSettings) {
                     isGridLayout = settings.layoutSettings.isGridLayout || false;
@@ -849,18 +847,43 @@ function loadSettings() {
                 // Load clipboard import settings
                 loadClipboardImportSettings(settings);
                 
+                // Load background settings to localStorage
+                if (settings.backgroundSettings) {
+                    try {
+                        localStorage.setItem('backgroundSettings', JSON.stringify(settings.backgroundSettings));
+                        // Apply background settings
+                        setTimeout(function() {
+                            loadBackgroundSettings();
+                        }, 100);
+                    } catch (e) {
+                        console.warn('无法恢复背景设置:', e);
+                    }
+                }
+                
                 // Ensure "全部" category always exists
                 if (categories.indexOf('全部') === -1) {
                     categories.unshift('全部');
                 }
                 
+                // Initialize UI after loading settings
+                populateCategoryList();
+                populateTagsPanel();
+                
                 // Update UI after loading
                 if (scriptsFolderPath) {
                     folderPathDisplay.textContent = scriptsFolderPath;
-                    populateScriptList();
+                    // 延迟执行以确保DOM完全加载
+                    setTimeout(function() {
+                        populateScriptList();
+                    }, 100);
+                } else {
+                    // 确保显示默认消息
+                    setTimeout(function() {
+                        if (!scriptsFolderPath) {
+                            scriptList.innerHTML = '<div class="script-item"><div class="script-info"><div class="script-name">请先选择脚本文件夹</div></div></div>';
+                        }
+                    }, 100);
                 }
-                populateCategoryList();
-                populateTagsPanel();
                 
                 // Apply layout state after loading with delay to ensure DOM is ready
                 setTimeout(function() {
@@ -880,6 +903,35 @@ function loadSettings() {
     }
 }
 
+// Initialize basic UI when no settings are available
+function initializeBasicUI() {
+    // 确保基本分类存在
+    if (categories.indexOf('全部') === -1) {
+        categories.unshift('全部');
+    }
+    
+    // 初始化UI组件
+    populateCategoryList();
+    populateTagsPanel();
+    
+    // 显示默认消息
+    if (!scriptsFolderPath) {
+        scriptList.innerHTML = '<div class="script-item"><div class="script-info"><div class="script-name">请先选择脚本文件夹</div></div></div>';
+    }
+    
+    // 应用默认布局状态
+    setTimeout(function() {
+        if (isGridLayout) {
+            scriptList.classList.add('grid-layout');
+        } else {
+            scriptList.classList.remove('grid-layout');
+        }
+        applyScaleToScriptItems();
+    }, 0);
+    
+    console.log('基本UI初始化完成');
+}
+
 // Legacy settings loading function
 function loadSettingsLegacy() {
     csInterface.evalScript('loadSettings()', function(result) {
@@ -891,6 +943,12 @@ function loadSettingsLegacy() {
                 categories = settings.categories || ['全部'];
                 allTags = settings.allTags || [];
                 
+                console.log('Legacy方式加载的设置:', {
+                    scriptsFolderPath: scriptsFolderPath,
+                    categoriesCount: categories.length,
+                    tagsCount: allTags.length
+                });
+                
                 // Load theme settings
                 if (settings.theme) {
                     currentTheme = settings.theme;
@@ -900,15 +958,33 @@ function loadSettingsLegacy() {
                     categories.unshift('全部');
                 }
                 
+                // Initialize UI after loading settings
+                populateCategoryList();
+                populateTagsPanel();
+                
                 if (scriptsFolderPath) {
                     folderPathDisplay.textContent = scriptsFolderPath;
                     populateScriptList();
                 }
-                populateCategoryList();
-                populateTagsPanel();
+                
+                // Apply layout state after loading with delay to ensure DOM is ready
+                setTimeout(function() {
+                    if (isGridLayout) {
+                        scriptList.classList.add('grid-layout');
+                    } else {
+                        scriptList.classList.remove('grid-layout');
+                    }
+                    applyScaleToScriptItems();
+                }, 0);
             } catch (e) {
                 console.error('Error loading settings:', e);
+                // 即使加载失败也要初始化基本UI
+                initializeBasicUI();
             }
+        } else {
+            // 没有找到设置文件时也要初始化基本UI
+            console.log('未找到设置文件，使用默认设置');
+            initializeBasicUI();
         }
     });
 }
@@ -1999,11 +2075,11 @@ function updatePreviewEffects() {
 
 function applyBackgroundSettings() {
     if (currentBackgroundFile) {
-        // Save background file and settings
-        var reader = new FileReader();
-        reader.onload = function(e) {
+        // Check if this is a virtual file object from storage
+        if (currentBackgroundFile._isFromStorage) {
+            // Use saved data directly
             var backgroundData = {
-                fileData: e.target.result,
+                fileData: currentBackgroundFile._savedData,
                 fileName: currentBackgroundFile.name,
                 fileType: currentBackgroundFile.type,
                 blur: backgroundSettings.blur,
@@ -2016,13 +2092,71 @@ function applyBackgroundSettings() {
             // Apply to body
             applyBackgroundToBody(backgroundData);
             
+            // Save all settings to include background settings
+            saveSettings();
+            
             hideBackgroundModal();
-        };
-        reader.readAsDataURL(currentBackgroundFile);
+        } else {
+            // Check file size first (approximate 5MB limit for localStorage)
+            var fileSizeInMB = currentBackgroundFile.size / (1024 * 1024);
+            if (fileSizeInMB > 4) {
+                showCustomAlert('背景文件过大（' + fileSizeInMB.toFixed(1) + 'MB），localStorage限制为约5MB。请选择较小的文件或压缩后再试。', true);
+                return;
+            }
+            
+            // Save background file and settings for new file
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var fileData = e.target.result;
+                
+                // Check if the base64 data size exceeds localStorage limit
+                var dataSize = fileData.length;
+                var dataSizeInMB = dataSize / (1024 * 1024);
+                
+                if (dataSizeInMB > 4.5) {
+                    showCustomAlert('背景文件编码后过大（' + dataSizeInMB.toFixed(1) + 'MB），超出localStorage限制。请选择更小的文件。', true);
+                    return;
+                }
+                
+                var backgroundData = {
+                    fileData: fileData,
+                    fileName: currentBackgroundFile.name,
+                    fileType: currentBackgroundFile.type,
+                    blur: backgroundSettings.blur,
+                    brightness: backgroundSettings.brightness
+                };
+                
+                try {
+                    // Test if we can save to localStorage
+                    var testData = JSON.stringify(backgroundData);
+                    localStorage.setItem('backgroundSettings', testData);
+                    
+                    // Apply to body
+                    applyBackgroundToBody(backgroundData);
+                    
+                    // Save all settings to include background settings
+                    saveSettings();
+                    
+                    hideBackgroundModal();
+                } catch (e) {
+                    // Handle localStorage quota exceeded error
+                    if (e.name === 'QuotaExceededError' || e.code === 22) {
+                        showCustomAlert('存储空间不足，无法保存背景设置。请清理浏览器缓存或选择更小的文件。', true);
+                    } else {
+                        showCustomAlert('保存背景设置失败：' + e.message, true);
+                    }
+                }
+            };
+            reader.readAsDataURL(currentBackgroundFile);
+        }
     } else {
         // Clear background
         localStorage.removeItem('backgroundSettings');
         clearBodyBackground();
+        
+        // Save all settings to update background settings removal
+        saveSettings();
+        
         hideBackgroundModal();
     }
 }
@@ -2045,6 +2179,16 @@ function loadBackgroundSettings() {
             if (backgroundData.fileData) {
                 var fileType = backgroundData.fileType || '';
                 var fileName = backgroundData.fileName || '';
+                
+                // Create a virtual file object from saved data to enable apply functionality
+                // This allows users to re-apply existing background settings
+                currentBackgroundFile = {
+                    name: backgroundData.fileName,
+                    type: backgroundData.fileType,
+                    // Add a flag to indicate this is loaded from storage
+                    _isFromStorage: true,
+                    _savedData: backgroundData.fileData
+                };
                 
                 previewImage.style.display = 'none';
                 previewVideo.style.display = 'none';
@@ -2122,8 +2266,19 @@ function applyBackgroundToBody(backgroundData) {
             filter: ${blurFilter};
         `;
         bgContainer.appendChild(video);
+    } else if (fileType === 'image/gif' || fileName.toLowerCase().endsWith('.gif')) {
+        // GIF background - use img element to preserve animation
+        var img = document.createElement('img');
+        img.src = backgroundData.fileData;
+        img.style.cssText = `
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: ${blurFilter};
+        `;
+        bgContainer.appendChild(img);
     } else {
-        // Image background
+        // Static image background
         var img = document.createElement('div');
         img.style.cssText = `
             width: 100%;

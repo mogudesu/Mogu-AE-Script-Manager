@@ -19,6 +19,7 @@ var DataManager = {
             currentScale: 1,
             sidebarWidth: 100
         },
+        backgroundSettings: null,
         lastSaved: null
     },
     
