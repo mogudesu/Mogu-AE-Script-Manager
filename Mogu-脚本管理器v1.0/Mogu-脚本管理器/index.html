@@ -48,13 +48,13 @@
                     <div class="setting-item">
                         <label>
                             <input type="checkbox" id="clipboardImportEnabled" checked>
-                            启用剪贴板图片导入 (Ctrl+V)
+                            启用图片/视频导入功能
                         </label>
-                        <div class="setting-description">在脚本窗口内任何位置按Ctrl+V可导入剪贴板图片</div>
+                        <div class="setting-description">支持剪贴板粘贴 (Ctrl+V) 和文件拖拽导入<br>支持格式: GIF, JPG, PNG, WebP, BMP, TIFF, MP4</div>
                     </div>
                     
                     <div class="setting-item" id="imageSaveLocationSetting">
-                        <label>图片保存位置:</label>
+                        <label>文件保存位置:</label>
                         <div class="radio-group">
                             <label class="radio-option">
                                 <input type="radio" name="imageSaveLocation" value="desktop">
@@ -125,6 +125,7 @@
     <!-- 右键菜单 -->
     <div id="contextMenu" class="context-menu" style="display: none;">
         <div class="menu-item" id="settingsMenuItem">脚本设置</div>
+        <div class="menu-item" id="feedbackMenuItem">反馈/建议</div>
     </div>
 
     <!-- 背景设置窗口 -->
@@ -146,6 +147,25 @@
                             <div class="preview-container">
                                 <img id="previewImage" style="display: none;">
                                 <video id="previewVideo" style="display: none;" muted loop></video>
+                                <!-- 可视化编辑器 -->
+                                <div id="imageEditor" class="image-editor" style="display: none;">
+                                    <div id="imageCanvas" class="image-canvas">
+                                        <div id="cropBox" class="crop-box">
+                                            <!-- 拖拽手柄 -->
+                                            <div class="resize-handle top-left" data-direction="nw"></div>
+                                            <div class="resize-handle top-right" data-direction="ne"></div>
+                                            <div class="resize-handle bottom-left" data-direction="sw"></div>
+                                            <div class="resize-handle bottom-right" data-direction="se"></div>
+                                            <!-- 边框拖拽 -->
+                                            <div class="edge-handle top" data-direction="n"></div>
+                                            <div class="edge-handle bottom" data-direction="s"></div>
+                                            <div class="edge-handle left" data-direction="w"></div>
+                                            <div class="edge-handle right" data-direction="e"></div>
+                                            <!-- 中心拖拽区域 -->
+                                            <div class="move-handle"></div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -156,6 +176,52 @@
                     <div class="setting-item">
                         <label>明暗值: <span id="brightnessValue">正常</span></label>
                         <input type="range" id="brightnessSlider" min="-100" max="100" step="10" value="0" class="setting-slider">
+                    </div>
+                    <div class="setting-item">
+                        <label>界面透明度: <span id="opacityValue">50%</span></label>
+                        <input type="range" id="opacitySlider" min="10" max="90" step="5" value="50" class="setting-slider">
+                        <div class="setting-description">调整界面元素的透明度，数值越低界面越透明，背景图片越清晰</div>
+                    </div>
+                    <div class="setting-item">
+                        <label>脚本卡片透明度: <span id="cardOpacityValue">80%</span></label>
+                        <input type="range" id="cardOpacitySlider" min="10" max="100" step="5" value="80" class="setting-slider">
+                        <div class="setting-description">调整脚本卡片的透明度，数值越低卡片越透明，背景图片越清晰</div>
+                    </div>
+                    <div class="setting-item">
+                        <label>背景填充方式:</label>
+                        <div class="background-fit-options">
+                            <label class="radio-option">
+                                <input type="radio" name="backgroundFit" value="cover" checked>
+                                覆盖 (Cover) - 保持比例填满容器
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="backgroundFit" value="contain">
+                                包含 (Contain) - 保持比例完整显示
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="backgroundFit" value="fill">
+                                拉伸 (Fill) - 拉伸填满容器
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="backgroundFit" value="custom">
+                                自定义 (Custom) - 手动调整显示区域
+                            </label>
+                        </div>
+                        <div class="setting-description">选择背景图片的显示方式，自定义模式可通过拖拽调整显示区域</div>
+                    </div>
+                    <div class="setting-item">
+                        <label>脚本卡片显示选项:</label>
+                        <div class="display-options">
+                            <label class="checkbox-option">
+                                <input type="checkbox" id="showCategoryCheckbox" checked>
+                                显示分类标签
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" id="showTagsCheckbox" checked>
+                                显示标签
+                            </label>
+                        </div>
+                        <div class="setting-description">控制脚本卡片上分类和标签的显示，不影响筛选功能</div>
                     </div>
                     <div class="setting-item">
                         <button id="applyBackgroundBtn" class="btn-primary">应用设置</button>
