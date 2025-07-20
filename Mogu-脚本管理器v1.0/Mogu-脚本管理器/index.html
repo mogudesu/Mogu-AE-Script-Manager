@@ -6,12 +6,19 @@
     <link rel="stylesheet" type="text/css" href="css/styles.css">
 </head>
 <body>
+    <!-- 背景容器 -->
+    <div class="background-container">
+        <img id="backgroundImage" class="background-media" style="display: none;">
+        <video id="backgroundVideo" class="background-media" style="display: none;" muted loop autoplay></video>
+        <div class="background-overlay"></div>
+    </div>
+    
     <div id="app">
         <!-- 顶部控制区域 -->
         <div class="top-controls">
             <!-- 左上角设置按钮 -->
             <div class="settings-area">
-                <button id="settingsBtn" class="btn btn-settings">⚙️</button>
+                <button id="settingsBtn" class="btn btn-settings" draggable="false">⚙️</button>
             </div>
             
             <!-- 搜索和标签区域 -->
@@ -50,7 +57,7 @@
                             <input type="checkbox" id="clipboardImportEnabled" checked>
                             启用图片/视频导入功能
                         </label>
-                        <div class="setting-description">支持剪贴板粘贴 (Ctrl+V) 和文件拖拽导入<br>支持格式: GIF, JPG, PNG, WebP, BMP, TIFF, MP4</div>
+                        <div class="setting-description">支持剪贴板粘贴 (Ctrl+V) 和文件拖拽导入<br>支持格式: GIF, JPG, PNG, WebP, AVIF, BMP, TIFF, MP4</div>
                     </div>
                     
                     <div class="setting-item" id="imageSaveLocationSetting">
@@ -132,7 +139,7 @@
         <div id="backgroundModal" class="settings-modal" style="display: none;">
             <div class="settings-content">
                 <div class="settings-header">
-                    <h3>背景设置</h3>
+                    <h3>背景/卡片设置</h3>
                     <button id="closeBtnBackground" class="btn-close">×</button>
                 </div>
                 <div class="settings-body">

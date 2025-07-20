@@ -127,6 +127,17 @@ body {
     transition: all 0.3s ease;
     backdrop-filter: blur(15px);
     box-shadow: 0 4px 20px rgba(138, 43, 226, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    /* 禁用拖拽相关属性 */
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    pointer-events: auto;
 }
 
 .btn-settings:hover {
@@ -350,56 +361,110 @@ body {
 }
 
 .tag-button {
-    background: linear-gradient(135deg, rgba(60, 60, 65, 0.9) 0%, rgba(45, 45, 50, 0.9) 100%);
-    color: #e0e0e0;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    /* 未激活状态：描边样式，中间根据主题显示黑白色 */
+    background: var(--tag-inactive-bg, rgba(40, 40, 45, 0.3));
+    color: var(--tag-inactive-color, #e0e0e0);
+    border: 2px solid rgba(255, 255, 255, 0.3);
     padding: 4px 8px;
     border-radius: 6px;
     font-size: 10px;
     cursor: pointer;
     position: relative;
-    transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    transition: all 0.3s ease;
     will-change: transform;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: none;
+    backdrop-filter: blur(5px);
 }
 
-/* 标签自动颜色分配 */
+/* 根据主题调整未激活标签的背景色 */
+.theme-light .tag-button {
+    --tag-inactive-bg: rgba(255, 255, 255, 0.3);
+    --tag-inactive-color: #333;
+    border-color: rgba(0, 0, 0, 0.3);
+}
+
+.theme-dark .tag-button {
+    --tag-inactive-bg: rgba(40, 40, 45, 0.3);
+    --tag-inactive-color: #e0e0e0;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* 标签自动颜色分配 - 仅用于描边 */
 .tag-button:nth-child(4n+1) {
-    background: linear-gradient(135deg, #e74c3c, #c0392b);
-    color: white;
-    border-color: rgba(231, 76, 60, 0.5);
+    border-color: rgba(231, 76, 60, 0.8);
 }
 
 .tag-button:nth-child(4n+2) {
-    background: linear-gradient(135deg, #3498db, #2980b9);
-    color: white;
-    border-color: rgba(52, 152, 219, 0.5);
+    border-color: rgba(52, 152, 219, 0.8);
 }
 
 .tag-button:nth-child(4n+3) {
-    background: linear-gradient(135deg, #2ecc71, #27ae60);
-    color: white;
-    border-color: rgba(46, 204, 113, 0.5);
+    border-color: rgba(46, 204, 113, 0.8);
 }
 
 .tag-button:nth-child(4n+4) {
-    background: linear-gradient(135deg, #f39c12, #e67e22);
-    color: white;
-    border-color: rgba(243, 156, 18, 0.5);
+    border-color: rgba(243, 156, 18, 0.8);
 }
 
 .tag-button:hover {
-    background: linear-gradient(135deg, rgba(70, 70, 75, 0.9) 0%, rgba(55, 55, 60, 0.9) 100%);
     transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    border-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.6);
+    background: var(--tag-inactive-bg, rgba(60, 60, 65, 0.5));
 }
 
-/* 轻拟物主题的搜索标签按钮 */
+/* 激活状态：发光纯色效果 */
+.tag-button.active {
+    transform: translateY(-2px);
+    filter: brightness(1.2) saturate(1.3);
+    border: none;
+    box-shadow: 
+        0 0 15px rgba(255, 255, 255, 0.3),
+        0 4px 12px rgba(0, 0, 0, 0.3),
+        0 0 25px currentColor;
+}
+
+/* 不同颜色标签的active状态 - 发光纯色 */
+.tag-button:nth-child(4n+1).active {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+    box-shadow: 
+        0 0 15px rgba(231, 76, 60, 0.6),
+        0 4px 12px rgba(231, 76, 60, 0.3),
+        0 0 25px rgba(231, 76, 60, 0.4);
+}
+
+.tag-button:nth-child(4n+2).active {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+    box-shadow: 
+        0 0 15px rgba(52, 152, 219, 0.6),
+        0 4px 12px rgba(52, 152, 219, 0.3),
+        0 0 25px rgba(52, 152, 219, 0.4);
+}
+
+.tag-button:nth-child(4n+3).active {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    color: white;
+    box-shadow: 
+        0 0 15px rgba(46, 204, 113, 0.6),
+        0 4px 12px rgba(46, 204, 113, 0.3),
+        0 0 25px rgba(46, 204, 113, 0.4);
+}
+
+.tag-button:nth-child(4n+4).active {
+    background: linear-gradient(135deg, #f39c12, #e67e22);
+    color: white;
+    box-shadow: 
+        0 0 15px rgba(243, 156, 18, 0.6),
+        0 4px 12px rgba(243, 156, 18, 0.3),
+        0 0 25px rgba(243, 156, 18, 0.4);
+}
+
+/* 轻拟物主题的标签按钮 */
 .theme-neumorphism .tag-button {
-    background: linear-gradient(145deg, #e3f2fd, #bbdefb);
-    color: #0d47a1;
-    border: 1px solid rgba(13, 71, 161, 0.3);
+    background: linear-gradient(145deg, #f0f0f0, #e0e0e0);
+    color: #333;
+    border: 2px solid rgba(0, 0, 0, 0.2);
     box-shadow: 
         2px 2px 4px rgba(0, 0, 0, 0.1),
         -2px -2px 4px rgba(255, 255, 255, 0.8);
@@ -408,61 +473,73 @@ body {
 }
 
 .theme-neumorphism .tag-button:hover {
-    background: linear-gradient(145deg, #bbdefb, #90caf9);
-    color: #0a3d91;
+    background: linear-gradient(145deg, #e8e8e8, #d8d8d8);
+    border-color: rgba(0, 0, 0, 0.3);
     box-shadow: 
         1px 1px 2px rgba(0, 0, 0, 0.15),
-        -1px -1px 2px rgba(255, 255, 255, 0.9),
-        inset 1px 1px 2px rgba(255, 255, 255, 0.8),
-        inset -1px -1px 2px rgba(0, 0, 0, 0.05);
-    transform: translateY(-1px);
+        -1px -1px 2px rgba(255, 255, 255, 0.9);
 }
 
-.theme-neumorphism .tag-button:nth-child(2n) {
-    background: linear-gradient(145deg, #e8f5e8, #c8e6c9);
-    color: #1b5e20;
-    border: 1px solid rgba(27, 94, 32, 0.3);
+/* 轻拟物主题的不同颜色描边 */
+.theme-neumorphism .tag-button:nth-child(4n+1) {
+    border-color: rgba(231, 76, 60, 0.6);
 }
 
-.theme-neumorphism .tag-button:nth-child(3n) {
-    background: linear-gradient(145deg, #fff3e0, #ffe0b2);
-    color: #e65100;
-    border: 1px solid rgba(230, 81, 0, 0.3);
+.theme-neumorphism .tag-button:nth-child(4n+2) {
+    border-color: rgba(52, 152, 219, 0.6);
 }
 
-.theme-neumorphism .tag-button:nth-child(4n) {
-    background: linear-gradient(145deg, #fce4ec, #f8bbd9);
-    color: #880e4f;
-    border: 1px solid rgba(136, 14, 79, 0.3);
+.theme-neumorphism .tag-button:nth-child(4n+3) {
+    border-color: rgba(46, 204, 113, 0.6);
 }
 
-.theme-neumorphism .tag-button:nth-child(5n) {
-    background: linear-gradient(145deg, #f3e5f5, #e1bee7);
-    color: #4a148c;
-    border: 1px solid rgba(74, 20, 140, 0.3);
+.theme-neumorphism .tag-button:nth-child(4n+4) {
+    border-color: rgba(243, 156, 18, 0.6);
 }
 
-.tag-button.active {
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.4), 0 4px 12px rgba(0, 0, 0, 0.3);
-    transform: translateY(-2px);
-    filter: brightness(1.2) saturate(1.3);
+/* 轻拟物主题的激活状态 */
+.theme-neumorphism .tag-button.active {
+    box-shadow: 
+        inset 2px 2px 4px rgba(0, 0, 0, 0.2),
+        inset -2px -2px 4px rgba(255, 255, 255, 0.8),
+        0 0 15px currentColor;
+    border: none;
 }
 
-/* 不同颜色标签的active状态 */
-.tag-button:nth-child(4n+1).active {
-    box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.4), 0 4px 12px rgba(231, 76, 60, 0.3);
+.theme-neumorphism .tag-button:nth-child(4n+1).active {
+    background: linear-gradient(145deg, #e74c3c, #c0392b);
+    color: white;
+    box-shadow: 
+        inset 2px 2px 4px rgba(0, 0, 0, 0.3),
+        inset -2px -2px 4px rgba(255, 255, 255, 0.1),
+        0 0 15px rgba(231, 76, 60, 0.6);
 }
 
-.tag-button:nth-child(4n+2).active {
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.4), 0 4px 12px rgba(52, 152, 219, 0.3);
+.theme-neumorphism .tag-button:nth-child(4n+2).active {
+    background: linear-gradient(145deg, #3498db, #2980b9);
+    color: white;
+    box-shadow: 
+        inset 2px 2px 4px rgba(0, 0, 0, 0.3),
+        inset -2px -2px 4px rgba(255, 255, 255, 0.1),
+        0 0 15px rgba(52, 152, 219, 0.6);
 }
 
-.tag-button:nth-child(4n+3).active {
-    box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.4), 0 4px 12px rgba(46, 204, 113, 0.3);
+.theme-neumorphism .tag-button:nth-child(4n+3).active {
+    background: linear-gradient(145deg, #2ecc71, #27ae60);
+    color: white;
+    box-shadow: 
+        inset 2px 2px 4px rgba(0, 0, 0, 0.3),
+        inset -2px -2px 4px rgba(255, 255, 255, 0.1),
+        0 0 15px rgba(46, 204, 113, 0.6);
 }
 
-.tag-button:nth-child(4n+4).active {
-    box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.4), 0 4px 12px rgba(243, 156, 18, 0.3);
+.theme-neumorphism .tag-button:nth-child(4n+4).active {
+    background: linear-gradient(145deg, #f39c12, #e67e22);
+    color: white;
+    box-shadow: 
+        inset 2px 2px 4px rgba(0, 0, 0, 0.3),
+        inset -2px -2px 4px rgba(255, 255, 255, 0.1),
+        0 0 15px rgba(243, 156, 18, 0.6);
 }
 
 .tag-button .delete-tag {
@@ -477,6 +554,20 @@ body {
     flex: 1;
     gap: 12px;
     min-height: 0;
+}
+
+/* 网格模式下的脚本列表容器 - 防止间距拉伸 */
+.script-list {
+    /* 确保网格容器有正确的约束 */
+    align-content: start !important;
+    justify-content: start !important;
+}
+
+/* 网格过渡动画 */
+.script-list.grid-transitioning {
+    /* 在网格切换时保持稳定的布局 */
+    align-content: start !important;
+    justify-content: start !important;
 }
 
 /* 侧栏 */
@@ -694,7 +785,16 @@ body {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
-.script-item:hover {
+/* 列表模式下的悬停效果 - 防止闪烁 */
+.script-item:not(.grid-mode):hover {
+    background: linear-gradient(145deg, rgba(35, 35, 35, 0.95), rgba(45, 45, 45, 0.9));
+    border-color: rgba(138, 43, 226, 0.6);
+    /* 移除transform和复杂的box-shadow以防止闪烁 */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* 网格模式下的悬停效果 - 保持原有效果 */
+.script-item.grid-mode:hover {
     background: linear-gradient(145deg, rgba(35, 35, 35, 0.95), rgba(45, 45, 45, 0.9));
     transform: translateY(-2px);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5), 0 0 20px rgba(138, 43, 226, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -884,7 +984,7 @@ body {
     box-sizing: border-box;
 }
 
-/* 网格模式下紧凑布局 */
+/* 网格模式下紧凑布局 - 修复间距问题 */
 .script-item.grid-mode {
     display: flex;
     flex-direction: column;
@@ -897,6 +997,11 @@ body {
     box-sizing: border-box;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     will-change: transform;
+    /* 确保网格项目保持固定尺寸，防止间距拉伸 */
+    flex-shrink: 0;
+    flex-grow: 0;
+    align-self: start;
+    justify-self: start;
 }
 
 .script-item.grid-mode .script-info {
@@ -2838,17 +2943,17 @@ body {
 
 /* 可爱风搜索标签按钮 */
 .theme-cute .tag-button {
-    background: linear-gradient(145deg, #fce7f3, #fbcfe8);
+    /* 未激活状态：描边样式 */
+    background: rgba(255, 255, 255, 0.8);
     color: #9d174d !important;
-    border: 2px solid rgba(236, 72, 153, 0.4);
+    border: 2px solid rgba(236, 72, 153, 0.6);
     border-radius: 15px;
     font-family: 'Microsoft YaHei UI', 'PingFang SC', sans-serif;
     font-weight: 700;
-    box-shadow: 
-        3px 3px 6px rgba(236, 72, 153, 0.2),
-        -3px -3px 6px rgba(255, 255, 255, 0.9);
+    box-shadow: none;
     transition: all 0.3s ease;
     position: relative;
+    backdrop-filter: blur(5px);
 }
 
 .theme-cute .tag-button::after {
@@ -2861,21 +2966,16 @@ body {
 }
 
 .theme-cute .tag-button:hover {
-    background: linear-gradient(145deg, #fbcfe8, #f9a8d4);
+    background: rgba(255, 255, 255, 0.9);
     color: #831843 !important;
-    transform: translateY(-2px) scale(1.05);
-    box-shadow: 
-        4px 4px 8px rgba(236, 72, 153, 0.3),
-        -4px -4px 8px rgba(255, 255, 255, 0.95),
-        inset 1px 1px 2px rgba(255, 255, 255, 0.9),
-        inset -1px -1px 2px rgba(236, 72, 153, 0.1);
+    transform: translateY(-1px);
+    border-color: rgba(236, 72, 153, 0.8);
 }
 
-/* 多彩搜索标签 */
+/* 多彩搜索标签 - 未激活状态的不同描边颜色 */
 .theme-cute .tag-button:nth-child(2n) {
-    background: linear-gradient(145deg, #fef3c7, #fde68a);
+    border-color: rgba(251, 191, 36, 0.6);
     color: #92400e !important;
-    border: 2px solid rgba(251, 191, 36, 0.4);
 }
 
 .theme-cute .tag-button:nth-child(2n)::after {
@@ -2883,9 +2983,8 @@ body {
 }
 
 .theme-cute .tag-button:nth-child(3n) {
-    background: linear-gradient(145deg, #ecfdf5, #d1fae5);
+    border-color: rgba(52, 211, 153, 0.6);
     color: #065f46 !important;
-    border: 2px solid rgba(52, 211, 153, 0.4);
 }
 
 .theme-cute .tag-button:nth-child(3n)::after {
@@ -2893,9 +2992,8 @@ body {
 }
 
 .theme-cute .tag-button:nth-child(4n) {
-    background: linear-gradient(145deg, #eff6ff, #dbeafe);
+    border-color: rgba(59, 130, 246, 0.6);
     color: #1e40af !important;
-    border: 2px solid rgba(59, 130, 246, 0.4);
 }
 
 .theme-cute .tag-button:nth-child(4n)::after {
@@ -2903,13 +3001,55 @@ body {
 }
 
 .theme-cute .tag-button:nth-child(5n) {
-    background: linear-gradient(145deg, #f5f3ff, #ede9fe);
+    border-color: rgba(147, 51, 234, 0.6);
     color: #6b21a8 !important;
-    border: 2px solid rgba(147, 51, 234, 0.4);
 }
 
 .theme-cute .tag-button:nth-child(5n)::after {
     content: '🦄';
+}
+
+/* 可爱风激活状态 - 发光纯色效果 */
+.theme-cute .tag-button.active {
+    background: linear-gradient(145deg, #fce7f3, #fbcfe8);
+    border: none;
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 
+        0 0 15px rgba(236, 72, 153, 0.6),
+        4px 4px 8px rgba(236, 72, 153, 0.3),
+        -4px -4px 8px rgba(255, 255, 255, 0.95);
+}
+
+.theme-cute .tag-button:nth-child(2n).active {
+    background: linear-gradient(145deg, #fef3c7, #fde68a);
+    box-shadow: 
+        0 0 15px rgba(251, 191, 36, 0.6),
+        4px 4px 8px rgba(251, 191, 36, 0.3),
+        -4px -4px 8px rgba(255, 255, 255, 0.95);
+}
+
+.theme-cute .tag-button:nth-child(3n).active {
+    background: linear-gradient(145deg, #ecfdf5, #d1fae5);
+    box-shadow: 
+        0 0 15px rgba(52, 211, 153, 0.6),
+        4px 4px 8px rgba(52, 211, 153, 0.3),
+        -4px -4px 8px rgba(255, 255, 255, 0.95);
+}
+
+.theme-cute .tag-button:nth-child(4n).active {
+    background: linear-gradient(145deg, #eff6ff, #dbeafe);
+    box-shadow: 
+        0 0 15px rgba(59, 130, 246, 0.6),
+        4px 4px 8px rgba(59, 130, 246, 0.3),
+        -4px -4px 8px rgba(255, 255, 255, 0.95);
+}
+
+.theme-cute .tag-button:nth-child(5n).active {
+    background: linear-gradient(145deg, #f5f3ff, #ede9fe);
+    box-shadow: 
+        0 0 15px rgba(147, 51, 234, 0.6),
+        4px 4px 8px rgba(147, 51, 234, 0.3),
+        -4px -4px 8px rgba(255, 255, 255, 0.95);
 }
 
 /* 对话框样式 */
@@ -3629,20 +3769,19 @@ body {
 
 /* 手绘风搜索标签按钮 */
 .theme-handdrawn .tag-button {
-    background: 
-        linear-gradient(145deg, rgba(95, 122, 60, 0.8), rgba(95, 122, 60, 0.6));
-    color: #F8F4EC !important;
+    /* 未激活状态：描边样式 */
+    background: rgba(248, 244, 236, 0.8);
+    color: #5F7A3C !important;
     border: 2px solid #5F7A3C;
     border-radius: 10px;
     font-family: '站酷手书体', 'Microsoft YaHei UI', sans-serif;
     font-weight: 700;
-    box-shadow: 
-        2px 2px 0px rgba(95, 122, 60, 0.4),
-        4px 4px 8px rgba(0, 0, 0, 0.1);
-    transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+    box-shadow: none;
+    transition: all 0.3s ease;
     position: relative;
-    text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.3);
+    text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.8);
     transform: rotate(-0.5deg);
+    backdrop-filter: blur(5px);
 }
 
 .theme-handdrawn .tag-button::after {
@@ -3655,22 +3794,15 @@ body {
 }
 
 .theme-handdrawn .tag-button:hover {
-    background: 
-        linear-gradient(145deg, rgba(95, 122, 60, 1), rgba(95, 122, 60, 0.8));
-    color: #F8F4EC !important;
-    transform: translateY(-2px) scale(1.05) rotate(0deg);
-    box-shadow: 
-        3px 3px 0px rgba(95, 122, 60, 0.6),
-        5px 5px 10px rgba(0, 0, 0, 0.2);
+    background: rgba(248, 244, 236, 0.9);
+    border-color: rgba(95, 122, 60, 0.8);
+    transform: translateY(-1px) rotate(0deg);
 }
 
-/* 多彩搜索标签 */
+/* 多彩搜索标签 - 未激活状态的不同描边颜色 */
 .theme-handdrawn .tag-button:nth-child(2n) {
-    background: 
-        linear-gradient(145deg, rgba(255, 140, 66, 0.8), rgba(255, 140, 66, 0.6));
-    color: #4E3B31 !important;
-    border: 2px solid #FF8C42;
-    text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.8);
+    border-color: #FF8C42;
+    color: #FF8C42 !important;
     transform: rotate(0.3deg);
 }
 
@@ -3679,10 +3811,8 @@ body {
 }
 
 .theme-handdrawn .tag-button:nth-child(3n) {
-    background: 
-        linear-gradient(145deg, rgba(166, 61, 64, 0.8), rgba(166, 61, 64, 0.6));
-    color: #F8F4EC !important;
-    border: 2px solid #A63D40;
+    border-color: #A63D40;
+    color: #A63D40 !important;
     transform: rotate(-0.7deg);
 }
 
@@ -3691,15 +3821,54 @@ body {
 }
 
 .theme-handdrawn .tag-button:nth-child(4n) {
-    background: 
-        linear-gradient(145deg, rgba(42, 58, 104, 0.8), rgba(42, 58, 104, 0.6));
-    color: #F8F4EC !important;
-    border: 2px solid #2A3A68;
+    border-color: #2A3A68;
+    color: #2A3A68 !important;
     transform: rotate(0.6deg);
 }
 
 .theme-handdrawn .tag-button:nth-child(4n)::after {
     content: '⭐';
+}
+
+/* 手绘风激活状态 - 发光纯色效果 */
+.theme-handdrawn .tag-button.active {
+    background: linear-gradient(145deg, rgba(95, 122, 60, 0.8), rgba(95, 122, 60, 0.6));
+    color: #F8F4EC !important;
+    border: none;
+    transform: translateY(-2px) scale(1.05) rotate(0deg);
+    box-shadow: 
+        0 0 15px rgba(95, 122, 60, 0.6),
+        2px 2px 0px rgba(95, 122, 60, 0.4),
+        4px 4px 8px rgba(0, 0, 0, 0.1);
+    text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.3);
+}
+
+.theme-handdrawn .tag-button:nth-child(2n).active {
+    background: linear-gradient(145deg, rgba(255, 140, 66, 0.8), rgba(255, 140, 66, 0.6));
+    color: #4E3B31 !important;
+    text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.8);
+    box-shadow: 
+        0 0 15px rgba(255, 140, 66, 0.6),
+        2px 2px 0px rgba(255, 140, 66, 0.4),
+        4px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.theme-handdrawn .tag-button:nth-child(3n).active {
+    background: linear-gradient(145deg, rgba(166, 61, 64, 0.8), rgba(166, 61, 64, 0.6));
+    color: #F8F4EC !important;
+    box-shadow: 
+        0 0 15px rgba(166, 61, 64, 0.6),
+        2px 2px 0px rgba(166, 61, 64, 0.4),
+        4px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.theme-handdrawn .tag-button:nth-child(4n).active {
+    background: linear-gradient(145deg, rgba(42, 58, 104, 0.8), rgba(42, 58, 104, 0.6));
+    color: #F8F4EC !important;
+    box-shadow: 
+        0 0 15px rgba(42, 58, 104, 0.6),
+        2px 2px 0px rgba(42, 58, 104, 0.4),
+        4px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* 对话框样式 */
@@ -4092,19 +4261,83 @@ body {
 
 /* 标签按钮 */
 .theme-glassmorphism-dark .tag-button {
-    background: rgba(20, 20, 30, 0.4);
+    /* 未激活状态：描边样式 */
+    background: rgba(20, 20, 30, 0.3);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
     color: #e2e8f0;
-    transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .theme-glassmorphism-dark .tag-button:hover {
-    background: rgba(59, 130, 246, 0.3);
-    border-color: rgba(59, 130, 246, 0.5);
-    color: #ffffff;
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+    background: rgba(20, 20, 30, 0.4);
+    border-color: rgba(255, 255, 255, 0.3);
     transform: translateY(-1px);
+}
+
+/* 不同颜色的描边 */
+.theme-glassmorphism-dark .tag-button:nth-child(4n+1) {
+    border-color: rgba(231, 76, 60, 0.6);
+    color: rgba(231, 76, 60, 0.9);
+}
+
+.theme-glassmorphism-dark .tag-button:nth-child(4n+2) {
+    border-color: rgba(52, 152, 219, 0.6);
+    color: rgba(52, 152, 219, 0.9);
+}
+
+.theme-glassmorphism-dark .tag-button:nth-child(4n+3) {
+    border-color: rgba(46, 204, 113, 0.6);
+    color: rgba(46, 204, 113, 0.9);
+}
+
+.theme-glassmorphism-dark .tag-button:nth-child(4n+4) {
+    border-color: rgba(243, 156, 18, 0.6);
+    color: rgba(243, 156, 18, 0.9);
+}
+
+/* 激活状态 - 发光纯色效果 */
+.theme-glassmorphism-dark .tag-button.active {
+    background: rgba(59, 130, 246, 0.4);
+    backdrop-filter: blur(15px);
+    border: none;
+    color: #ffffff;
+    box-shadow: 
+        0 0 20px rgba(59, 130, 246, 0.4),
+        0 4px 15px rgba(59, 130, 246, 0.2);
+    transform: translateY(-2px);
+}
+
+.theme-glassmorphism-dark .tag-button:nth-child(4n+1).active {
+    background: rgba(231, 76, 60, 0.4);
+    color: #ffffff;
+    box-shadow: 
+        0 0 20px rgba(231, 76, 60, 0.4),
+        0 4px 15px rgba(231, 76, 60, 0.2);
+}
+
+.theme-glassmorphism-dark .tag-button:nth-child(4n+2).active {
+    background: rgba(52, 152, 219, 0.4);
+    color: #ffffff;
+    box-shadow: 
+        0 0 20px rgba(52, 152, 219, 0.4),
+        0 4px 15px rgba(52, 152, 219, 0.2);
+}
+
+.theme-glassmorphism-dark .tag-button:nth-child(4n+3).active {
+    background: rgba(46, 204, 113, 0.4);
+    color: #ffffff;
+    box-shadow: 
+        0 0 20px rgba(46, 204, 113, 0.4),
+        0 4px 15px rgba(46, 204, 113, 0.2);
+}
+
+.theme-glassmorphism-dark .tag-button:nth-child(4n+4).active {
+    background: rgba(243, 156, 18, 0.4);
+    color: #ffffff;
+    box-shadow: 
+        0 0 20px rgba(243, 156, 18, 0.4),
+        0 4px 15px rgba(243, 156, 18, 0.2);
 }
 
 /* 对话框 */
