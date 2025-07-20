@@ -1,6 +1,7 @@
 # AI 制作的 AE CEP 脚本
 它的主要功能是提供一个可视化的界面来管理和运行After Effects脚本，让用户能够更方便地组织、搜索和执行各种AE脚本。
 可以在此直接下载也可以去这个网址下载：https://nocode.host/aj9p9x
+AI工具：Claude 4，豆包，Gemini，Deepseek
 ## 核心功能
 1. 脚本管理
 文件夹选择：用户可以选择包含AE脚本（.jsx, .jsxbin文件）的文件夹
