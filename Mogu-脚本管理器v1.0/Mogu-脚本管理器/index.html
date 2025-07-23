@@ -61,6 +61,14 @@
                     </div>
                     
                     <div class="setting-item">
+                        <label>功能检测:</label>
+                        <div class="diagnostic-setting">
+                            <button id="runDiagnosticsBtn" class="btn-primary">运行功能检测</button>
+                            <div class="setting-description">检测脚本所有功能是否正常，特别针对AE 2025/24.5版本兼容性</div>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-item">
                         <label>
                             <input type="checkbox" id="clipboardImportEnabled" checked>
                             启用图片/视频导入功能
@@ -245,13 +253,38 @@
             </div>
         </div>
 
+        <!-- 功能检测结果弹窗 -->
+        <div id="diagnosticsModal" class="settings-modal" style="display: none;">
+            <div class="settings-content">
+                <div class="settings-header">
+                    <h3>功能检测结果</h3>
+                    <button id="closeDiagnosticsBtn" class="btn-close">×</button>
+                </div>
+                <div class="settings-body">
+                    <div id="diagnosticsProgress" class="diagnostics-progress" style="display: none;">
+                        <div class="progress-bar">
+                            <div id="progressFill" class="progress-fill"></div>
+                        </div>
+                        <div id="progressText" class="progress-text">正在检测...</div>
+                    </div>
+                    <div id="diagnosticsResults" class="diagnostics-results">
+                        <!-- 检测结果将在这里动态生成 -->
+                    </div>
+                    <div class="diagnostics-actions">
+                        <button id="retryDiagnosticsBtn" class="btn-secondary" style="display: none;">重新检测</button>
+                        <button id="exportDiagnosticsBtn" class="btn-secondary" style="display: none;">导出报告</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- 对话框容器 -->
         <div id="dialogOverlay" class="dialog-overlay" style="display: none;">
             <div id="dialogContent" class="dialog-content"></div>
         </div>
 
     <script src="js/CSInterface.js"></script>
-    <script src="js/dataManager.js"></script>
+    <script src="js/localDataManager.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>
