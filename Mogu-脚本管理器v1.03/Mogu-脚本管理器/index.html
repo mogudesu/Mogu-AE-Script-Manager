@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Mogu Script Launcher</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+</head>
+<body>
+    <!-- 背景容器 -->
+    <div class="background-container">
+        <img id="backgroundImage" class="background-media" style="display: none;">
+        <video id="backgroundVideo" class="background-media" style="display: none;" muted loop autoplay></video>
+        <div class="background-overlay"></div>
+    </div>
+    
+    <div id="app">
+        <!-- 顶部控制区域 -->
+        <div class="top-controls">
+            <!-- 左上角设置按钮 -->
+            <div class="settings-area">
+                <button id="settingsBtn" class="btn btn-settings" draggable="false">⚙️</button>
+            </div>
+            
+            <!-- 搜索和标签区域 -->
+            <div class="search-tags-group-compact">
+                <!-- 搜索行 -->
+                <div class="search-row">
+                    <input type="text" id="searchInput" placeholder="搜索脚本...">
+                    <button id="clearSearchBtn" class="btn btn-small">×</button>
+                </div>
+                <!-- 标签行 -->
+                <div class="tags-row">
+                    <div id="tagsPanel" class="tags-panel-compact"></div>
+                    <button id="addTagBtn" class="btn btn-small">+</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 设置窗口 -->
+        <div id="settingsModal" class="settings-modal" style="display: none;">
+            <div class="settings-content">
+                <div class="settings-header">
+                    <h3>设置</h3>
+                    <button id="closeBtnSettings" class="btn-close">×</button>
+                </div>
+                <div class="settings-body">
+                    <div class="setting-item">
+                        <label>脚本文件夹路径:</label>
+                        <div class="path-setting">
+                            <div id="folderPathDisplay" class="folder-path-display">未选择文件夹</div>
+                            <button id="selectFolderPathBtn" class="btn-primary">选择文件夹</button>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label>
+                            <input type="checkbox" id="autoReadSubfolders" checked>
+                            自动读取脚本路径子文件夹
+                        </label>
+                        <div class="setting-description">启用后会自动读取脚本文件夹下的所有子文件夹中的脚本文件<br>取消勾选后只读取设置路径下的脚本文件，不包含子文件夹</div>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label>功能检测:</label>
+                        <div class="diagnostic-setting">
+                            <button id="runDiagnosticsBtn" class="btn-primary">运行功能检测</button>
+                            <div class="setting-description">检测脚本所有功能是否正常，特别针对AE 2025/24.5版本兼容性</div>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label>
+                            <input type="checkbox" id="clipboardImportEnabled" checked>
+                            启用图片/视频导入功能
+                        </label>
+                        <div class="setting-description">支持剪贴板粘贴 (Ctrl+V) 和文件拖拽导入<br>支持格式: GIF, JPG, PNG, WebP, AVIF, BMP, TIFF, MP4</div>
+                    </div>
+                    
+                    <div class="setting-item" id="imageSaveLocationSetting">
+                        <label>文件保存位置:</label>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="imageSaveLocation" value="desktop">
+                                桌面 (Desktop)
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="imageSaveLocation" value="documents" checked>
+                                文档文件夹 (Documents)
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="imageSaveLocation" value="projectFile">
+                                项目文件同目录
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="imageSaveLocation" value="custom">
+                                自定义位置
+                            </label>
+                        </div>
+                        <div id="customLocationContainer" class="custom-location-container" style="display: none;">
+                            <input type="text" id="customLocationPath" placeholder="输入自定义路径" class="custom-path-input">
+                            <button id="selectCustomLocationBtn" class="btn-secondary">选择文件夹</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 主内容区域 -->
+        <div class="main-content">
+            <!-- 分类侧栏 -->
+            <div class="sidebar" id="sidebar">
+                <div class="sidebar-header">分类</div>
+                <div id="categoryList" class="category-list"></div>
+                <button id="addCategoryBtn" class="btn btn-small">+</button>
+                <div class="sidebar-resizer" id="sidebarResizer"></div>
+            </div>
+
+            <!-- 脚本列表 -->
+            <div class="script-area">
+                <div class="script-header">
+                    <span>点击运行脚本，右键设置:</span>
+                    <button id="layoutToggleBtn" class="btn btn-small">网格</button>
+                </div>
+                <div id="scriptList" class="script-list"></div>
+            </div>
+        </div>
+        
+        <!-- 底部控制区域 -->
+        <div class="bottom-controls-compact">
+            <div class="bottom-left">
+                <button id="exportBtn" class="btn btn-mini">导出</button>
+                <button id="importBtn" class="btn btn-mini">导入</button>
+            </div>
+            <div class="bottom-center">
+                <div class="theme-switcher-new">
+                    <button id="prevThemeBtn" class="theme-nav-btn" title="上一个主题">‹</button>
+                    <div id="currentThemeDisplay" class="current-theme" title="当前主题：暗色主题">🌙</div>
+                    <button id="nextThemeBtn" class="theme-nav-btn" title="下一个主题">›</button>
+                </div>
+            </div>
+            <div class="bottom-right">
+                <span class="size-label">大小</span>
+                <input type="range" id="sizeSlider" min="0.5" max="2" step="0.1" value="1" class="size-slider-compact">
+            </div>
+        </div>
+    </div>
+
+    <!-- 右键菜单 -->
+    <div id="contextMenu" class="context-menu" style="display: none;">
+        <div class="menu-item" id="settingsMenuItem">脚本设置</div>
+        <div class="menu-item" id="feedbackMenuItem">反馈/建议</div>
+    </div>
+
+    <!-- 背景设置窗口 -->
+        <div id="backgroundModal" class="settings-modal" style="display: none;">
+            <div class="settings-content">
+                <div class="settings-header">
+                    <h3>背景/卡片设置</h3>
+                    <button id="closeBtnBackground" class="btn-close">×</button>
+                </div>
+                <div class="settings-body">
+                    <div class="setting-item">
+                        <label>背景图片:</label>
+                        <div class="background-setting">
+                            <input type="file" id="backgroundFileInput" accept=".jpg,.jpeg,.png,.gif,.mp4" style="display: none;">
+                            <button id="selectBackgroundBtn" class="btn-primary">选择背景</button>
+                            <button id="clearBackgroundBtn" class="btn-secondary">清除背景</button>
+                        </div>
+                        <div id="backgroundPreview" class="background-preview" style="display: none;">
+                            <div class="preview-container">
+                                <img id="previewImage" style="display: none;">
+                                <video id="previewVideo" style="display: none;" muted loop></video>
+                                <!-- 可视化编辑器 -->
+                                <div id="imageEditor" class="image-editor" style="display: none;">
+                                    <div id="imageCanvas" class="image-canvas">
+                                        <div id="cropBox" class="crop-box">
+                                            <!-- 拖拽手柄 -->
+                                            <div class="resize-handle top-left" data-direction="nw"></div>
+                                            <div class="resize-handle top-right" data-direction="ne"></div>
+                                            <div class="resize-handle bottom-left" data-direction="sw"></div>
+                                            <div class="resize-handle bottom-right" data-direction="se"></div>
+                                            <!-- 边框拖拽 -->
+                                            <div class="edge-handle top" data-direction="n"></div>
+                                            <div class="edge-handle bottom" data-direction="s"></div>
+                                            <div class="edge-handle left" data-direction="w"></div>
+                                            <div class="edge-handle right" data-direction="e"></div>
+                                            <!-- 中心拖拽区域 -->
+                                            <div class="move-handle"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <label>模糊值: <span id="blurValue">0</span>px</label>
+                        <input type="range" id="blurSlider" min="0" max="20" step="1" value="0" class="setting-slider">
+                    </div>
+                    <div class="setting-item">
+                        <label>明暗值: <span id="brightnessValue">正常</span></label>
+                        <input type="range" id="brightnessSlider" min="-100" max="100" step="10" value="0" class="setting-slider">
+                    </div>
+                    <div class="setting-item">
+                        <label>界面透明度: <span id="opacityValue">50%</span></label>
+                        <input type="range" id="opacitySlider" min="10" max="90" step="5" value="50" class="setting-slider">
+                        <div class="setting-description">调整界面元素的透明度，数值越低界面越透明，背景图片越清晰</div>
+                    </div>
+                    <div class="setting-item">
+                        <label>脚本卡片透明度: <span id="cardOpacityValue">80%</span></label>
+                        <input type="range" id="cardOpacitySlider" min="10" max="100" step="5" value="80" class="setting-slider">
+                        <div class="setting-description">调整脚本卡片的透明度，数值越低卡片越透明，背景图片越清晰</div>
+                    </div>
+                    <div class="setting-item">
+                        <label>背景填充方式:</label>
+                        <div class="background-fit-options">
+                            <label class="radio-option">
+                                <input type="radio" name="backgroundFit" value="cover" checked>
+                                覆盖 (Cover) - 保持比例填满容器
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="backgroundFit" value="contain">
+                                包含 (Contain) - 保持比例完整显示
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="backgroundFit" value="fill">
+                                拉伸 (Fill) - 拉伸填满容器
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="backgroundFit" value="custom">
+                                自定义 (Custom) - 手动调整显示区域
+                            </label>
+                        </div>
+                        <div class="setting-description">选择背景图片的显示方式，自定义模式可通过拖拽调整显示区域</div>
+                    </div>
+                    <div class="setting-item">
+                        <label>脚本卡片显示选项:</label>
+                        <div class="display-options">
+                            <label class="checkbox-option">
+                                <input type="checkbox" id="showCategoryCheckbox" checked>
+                                显示分类标签
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" id="showTagsCheckbox" checked>
+                                显示标签
+                            </label>
+                        </div>
+                        <div class="setting-description">控制脚本卡片上分类和标签的显示，不影响筛选功能</div>
+                    </div>
+                    <div class="setting-item">
+                        <button id="applyBackgroundBtn" class="btn-primary">应用设置</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 功能检测结果弹窗 -->
+        <div id="diagnosticsModal" class="settings-modal" style="display: none;">
+            <div class="settings-content">
+                <div class="settings-header">
+                    <h3>功能检测结果</h3>
+                    <button id="closeDiagnosticsBtn" class="btn-close">×</button>
+                </div>
+                <div class="settings-body">
+                    <div id="diagnosticsProgress" class="diagnostics-progress" style="display: none;">
+                        <div class="progress-bar">
+                            <div id="progressFill" class="progress-fill"></div>
+                        </div>
+                        <div id="progressText" class="progress-text">正在检测...</div>
+                    </div>
+                    <div id="diagnosticsResults" class="diagnostics-results">
+                        <!-- 检测结果将在这里动态生成 -->
+                    </div>
+                    <div class="diagnostics-actions">
+                        <button id="retryDiagnosticsBtn" class="btn-secondary" style="display: none;">重新检测</button>
+                        <button id="exportDiagnosticsBtn" class="btn-secondary" style="display: none;">导出报告</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 对话框容器 -->
+        <div id="dialogOverlay" class="dialog-overlay" style="display: none;">
+            <div id="dialogContent" class="dialog-content"></div>
+        </div>
+
+    <script src="js/CSInterface.js"></script>
+    <script src="js/dataManager.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
