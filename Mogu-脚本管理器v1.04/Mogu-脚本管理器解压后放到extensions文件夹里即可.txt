@@ -1,1 +1,0 @@
-Mogu-脚本管理器解压后放到extensions文件夹里即可
