@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Mogu Script Launcher</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <link rel="stylesheet" type="text/css" href="css/preset-styles.css">
+    <link rel="stylesheet" type="text/css" href="css/preset-preview-window.css">
+    <link rel="stylesheet" type="text/css" href="css/preset-preview-override.css">
+    <style>
+      /* 仅针对右下角脚本/预设切换按钮的文本布局优化 */
+      #presetToggleBtn {
+        padding-right: 18px; /* 为右侧圆形开关留白；可按实际图标直径微调为 32px/36px */
+        white-space: nowrap; /* 防止换行造成与开关重叠 */
+      }
+      #presetToggleBtn .toggle-text {
+        display: inline-block;
+        transform: translateX(-38px); /* 轻微左移文本；可在 -6px ~ -12px 之间微调 */
+      }
+    </style>
+</head>
+<body>
+    <!-- 背景容器 -->
+    <div class="background-container">
+        <img id="backgroundImage" class="background-media" style="display: none;">
+        <video id="backgroundVideo" class="background-media" style="display: none;" muted loop autoplay></video>
+        <div class="background-overlay"></div>
+    </div>
+    
+    <div id="app">
+        <!-- 顶部控制区域 -->
+        <div class="top-controls">
+            <!-- 左上角设置按钮 -->
+            <div class="settings-area">
+                <button id="settingsBtn" class="btn btn-settings" draggable="false">⚙️</button>
+            </div>
+            
+            <!-- 搜索和标签区域 -->
+            <div class="search-tags-group-compact">
+                <!-- 搜索行 -->
+                <div class="search-row">
+                    <input type="text" id="searchInput" placeholder="搜索脚本...">
+                    <button id="clearSearchBtn" class="btn btn-small">×</button>
+                </div>
+                <!-- 标签行 -->
+                <div class="tags-row">
+                    <div id="tagsPanel" class="tags-panel-compact"></div>
+                    <button id="addTagBtn" class="btn btn-small">+</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 设置窗口 -->
+        <div id="settingsModal" class="settings-modal" style="display: none;">
+            <div class="settings-content">
+                <div class="settings-header">
+                    <h3>设置</h3>
+                    <button id="closeBtnSettings" class="btn-close">×</button>
+                </div>
+                <div class="settings-body">
+                    <div class="setting-item">
+                        <label>脚本文件夹路径:</label>
+                        <div class="path-setting">
+                            <input type="text" id="folderPathInput" class="folder-path-display" placeholder="输入或粘贴脚本文件夹路径">
+                            <button id="selectFolderPathBtn" class="btn-primary">选择文件夹</button>
+                            <button id="confirmFolderPathBtn" class="btn-secondary">确定</button>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <label>预设文件夹路径:</label>
+                        <div class="path-setting">
+                            <input type="text" id="presetFolderPathInput" class="folder-path-display" placeholder="输入或粘贴预设文件夹路径，例如 D:\ae\Adobe After Effects 2023\Support Files\Presets">
+                            <button id="selectPresetFolderPathBtn" class="btn-primary">选择文件夹</button>
+                            <button id="confirmPresetFolderPathBtn" class="btn-secondary">确定</button>
+                        </div>
+                        <div class="setting-description">当自动定位失败时，请手动指定预设根目录。将递归读取该目录及所有子文件夹中的 .ffx 文件。</div>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label>
+                            <input type="checkbox" id="autoReadSubfolders">
+                            自动读取脚本路径子文件夹
+                        </label>
+                        <div class="setting-description">启用后会自动读取脚本文件夹下的所有子文件夹中的脚本文件<br>取消勾选后只读取设置路径下的脚本文件，不包含子文件夹</div>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label>功能检测:</label>
+                        <div class="diagnostic-setting">
+                            <button id="runDiagnosticsBtn" class="btn-primary">运行功能检测</button>
+                            <div class="setting-description">检测脚本所有功能是否正常，特别针对AE 2025/24.5版本兼容性</div>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label>
+                            <input type="checkbox" id="clipboardImportEnabled" checked>
+                            启用图片/视频导入功能
+                        </label>
+                        <div class="setting-description">支持剪贴板粘贴 (Ctrl+V) 和文件拖拽导入<br>支持格式: GIF, JPG, PNG, WebP, AVIF, BMP, TIFF, MP4</div>
+                    </div>
+                    
+                    <div class="setting-item" id="imageSaveLocationSetting">
+                        <label>文件保存位置:</label>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="imageSaveLocation" value="desktop">
+                                桌面 (Desktop)
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="imageSaveLocation" value="documents" checked>
+                                文档文件夹 (Documents)
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="imageSaveLocation" value="projectFile">
+                                项目文件同目录
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="imageSaveLocation" value="custom">
+                                自定义位置
+                            </label>
+                        </div>
+                        <div id="customLocationContainer" class="custom-location-container" style="display: none;">
+                            <input type="text" id="customLocationPath" placeholder="输入自定义路径" class="custom-path-input">
+                            <button id="selectCustomLocationBtn" class="btn-secondary">选择文件夹</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 主内容区域 -->
+        <div class="main-content">
+            <!-- 分类侧栏 -->
+            <div class="sidebar" id="sidebar">
+                <div class="sidebar-header">分类</div>
+                <div id="categoryList" class="category-list"></div>
+                <button id="addCategoryBtn" class="btn btn-small">+</button>
+                <div class="sidebar-resizer" id="sidebarResizer"></div>
+            </div>
+
+            <!-- 脚本列表 -->
+            <div class="script-area">
+                <div class="script-header">
+                    <span>点击运行脚本，右键设置:</span>
+                    <button id="layoutToggleBtn" class="btn btn-small">网格</button>
+                </div>
+                <div id="scriptList" class="script-list"></div>
+            </div>
+        <div id="presetPanel" class="preset-layout"></div>
+        </div>
+        
+        <!-- 底部控制区域 -->
+        <div class="bottom-controls-compact">
+            <div class="bottom-left">
+                <button id="presetToggleBtn" class="btn btn-mini btn-toggle" title="切换到预设视图">
+                    <span class="toggle-text">预设</span>
+                </button>
+                <button id="exportBtn" class="btn btn-mini">导出</button>
+                <button id="importBtn" class="btn btn-mini">导入</button>
+            </div>
+            <div class="bottom-center">
+                <div class="theme-switcher-new">
+                    <button id="prevThemeBtn" class="theme-nav-btn" title="上一个主题">‹</button>
+                    <div id="currentThemeDisplay" class="current-theme" title="当前主题：暗色主题">🌙</div>
+                    <button id="nextThemeBtn" class="theme-nav-btn" title="下一个主题">›</button>
+                </div>
+            </div>
+            <div class="bottom-right">
+                <span class="size-label">大小</span>
+                <input type="range" id="sizeSlider" min="0.5" max="2" step="0.1" value="1" class="size-slider-compact">
+            </div>
+        </div>
+    </div>
+
+    <!-- 右键菜单 -->
+    <div id="contextMenu" class="context-menu" style="display: none;">
+        <div class="menu-item" id="settingsMenuItem">脚本设置</div>
+        <div class="menu-item" id="feedbackMenuItem">反馈/建议</div>
+    </div>
+
+    <!-- 背景设置窗口 -->
+        <div id="backgroundModal" class="settings-modal" style="display: none;">
+            <div class="settings-content">
+                <div class="settings-header">
+                    <h3>背景/卡片设置</h3>
+                    <button id="closeBtnBackground" class="btn-close">×</button>
+                </div>
+                <div class="settings-body">
+                    <div class="setting-item">
+                        <label>背景图片:</label>
+                        <div class="background-setting">
+                            <input type="file" id="backgroundFileInput" accept=".jpg,.jpeg,.png,.gif,.mp4" style="display: none;">
+                            <button id="selectBackgroundBtn" class="btn-primary">选择背景</button>
+                            <button id="clearBackgroundBtn" class="btn-secondary">清除背景</button>
+                        </div>
+                        <div id="backgroundPreview" class="background-preview" style="display: none;">
+                            <div class="preview-container">
+                                <img id="previewImage" style="display: none;">
+                                <video id="previewVideo" style="display: none;" muted loop></video>
+                                <!-- 可视化编辑器 -->
+                                <div id="imageEditor" class="image-editor" style="display: none;">
+                                    <div id="imageCanvas" class="image-canvas">
+                                        <div id="cropBox" class="crop-box">
+                                            <!-- 拖拽手柄 -->
+                                            <div class="resize-handle top-left" data-direction="nw"></div>
+                                            <div class="resize-handle top-right" data-direction="ne"></div>
+                                            <div class="resize-handle bottom-left" data-direction="sw"></div>
+                                            <div class="resize-handle bottom-right" data-direction="se"></div>
+                                            <!-- 边框拖拽 -->
+                                            <div class="edge-handle top" data-direction="n"></div>
+                                            <div class="edge-handle bottom" data-direction="s"></div>
+                                            <div class="edge-handle left" data-direction="w"></div>
+                                            <div class="edge-handle right" data-direction="e"></div>
+                                            <!-- 中心拖拽区域 -->
+                                            <div class="move-handle"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <label>模糊值: <span id="blurValue">0</span>px</label>
+                        <input type="range" id="blurSlider" min="0" max="20" step="1" value="0" class="setting-slider">
+                    </div>
+                    <div class="setting-item">
+                        <label>明暗值: <span id="brightnessValue">正常</span></label>
+                        <input type="range" id="brightnessSlider" min="-100" max="100" step="10" value="0" class="setting-slider">
+                    </div>
+                    <div class="setting-item">
+                        <label>界面透明度: <span id="opacityValue">50%</span></label>
+                        <input type="range" id="opacitySlider" min="10" max="90" step="5" value="50" class="setting-slider">
+                        <div class="setting-description">调整界面元素的透明度，数值越低界面越透明，背景图片越清晰</div>
+                    </div>
+                    <div class="setting-item">
+                        <label>脚本卡片透明度: <span id="cardOpacityValue">80%</span></label>
+                        <input type="range" id="cardOpacitySlider" min="10" max="100" step="5" value="80" class="setting-slider">
+                        <div class="setting-description">调整脚本卡片的透明度，数值越低卡片越透明，背景图片越清晰</div>
+                    </div>
+                    <div class="setting-item">
+                        <label>背景填充方式:</label>
+                        <div class="background-fit-options">
+                            <label class="radio-option">
+                                <input type="radio" name="backgroundFit" value="cover" checked>
+                                覆盖 (Cover) - 保持比例填满容器
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="backgroundFit" value="contain">
+                                包含 (Contain) - 保持比例完整显示
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="backgroundFit" value="fill">
+                                拉伸 (Fill) - 拉伸填满容器
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="backgroundFit" value="custom">
+                                自定义 (Custom) - 手动调整显示区域
+                            </label>
+                        </div>
+                        <div class="setting-description">选择背景图片的显示方式，自定义模式可通过拖拽调整显示区域</div>
+                    </div>
+                    <div class="setting-item">
+                        <label>脚本卡片显示选项:</label>
+                        <div class="display-options">
+                            <label class="checkbox-option">
+                                <input type="checkbox" id="showCategoryCheckbox" checked>
+                                显示分类标签
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" id="showTagsCheckbox" checked>
+                                显示标签
+                            </label>
+                        </div>
+                        <div class="setting-description">控制脚本卡片上分类和标签的显示，不影响筛选功能</div>
+                    </div>
+                    <div class="setting-item">
+                        <button id="applyBackgroundBtn" class="btn-primary">应用设置</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 功能检测结果弹窗 -->
+        <div id="diagnosticsModal" class="settings-modal" style="display: none;">
+            <div class="settings-content">
+                <div class="settings-header">
+                    <h3>功能检测结果</h3>
+                    <button id="closeDiagnosticsBtn" class="btn-close">×</button>
+                </div>
+                <div class="settings-body">
+                    <div id="diagnosticsProgress" class="diagnostics-progress" style="display: none;">
+                        <div class="progress-bar">
+                            <div id="progressFill" class="progress-fill"></div>
+                        </div>
+                        <div id="progressText" class="progress-text">正在检测...</div>
+                    </div>
+                    <div id="diagnosticsResults" class="diagnostics-results">
+                        <!-- 检测结果将在这里动态生成 -->
+                    </div>
+                    <div class="diagnostics-actions">
+                        <button id="retryDiagnosticsBtn" class="btn-secondary" style="display: none;">重新检测</button>
+                        <button id="exportDiagnosticsBtn" class="btn-secondary" style="display: none;">导出报告</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 对话框容器 -->
+        <div id="dialogOverlay" class="dialog-overlay" style="display: none;">
+            <div id="dialogContent" class="dialog-content"></div>
+        </div>
+
+    <script src="js/CSInterface.js"></script>
+    <script src="js/dataManager.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/dragDropFix.js"></script>
+    <script src="js/dragSort.js"></script>
+    <script src="js/presetManager.js"></script>
+    <script src="js/presetUI.js"></script>
+    <script>
+    /**
+     * 全局补丁：脚本设置对话框显示名安全解码与保存规范化
+     * 目的：
+     * 1) 解决脚本显示名在对话框中出现 %20、%E4%BD%A0 等URI编码导致的乱码问题
+     * 2) 在保存时对显示名进行一次规范化（若为URI编码则解码后再写回原保存逻辑）
+     * 说明：
+     * - 以非侵入方式对现有全局函数进行包裹，不改变原有逻辑与行为；
+     * - 所有日志均为控制台输出（不弹窗），并采用“功能名-步骤-序号”格式便于排查；
+     * - 若目标函数暂未可用，将进行短暂轮询以等待其加载。
+     */
+    (function () {
+      'use strict';
+    
+      /**
+       * 安全解码工具：尝试对可能的URI编码字符串进行解码
+       * @param {string} value 待解码的原始字符串
+       * @returns {string} 解码后的字符串；若解码失败或非字符串则返回原值
+       */
+      function safeDecodeValue(value) {
+        try {
+          if (typeof value !== 'string') return value;
+          const text = value.trim();
+          if (!text) return text;
+    
+          // 如果包含标准的 %XX 形式，优先尝试 decodeURIComponent
+          if (/%[0-9A-Fa-f]{2}/.test(text)) {
+            try { return decodeURIComponent(text); } catch (e) { /* 忽略并继续 */ }
+          }
+          // 次选路径：应对部分历史环境的 UTF-8 双重编码情况
+          try { return decodeURIComponent(escape(text)); } catch (e2) { /* 忽略并返回原值 */ }
+          return text;
+        } catch (err) {
+          console.error('[脚本设置-补丁] safeDecodeValue 异常:', err);
+          return value;
+        }
+      }
+    
+      /**
+       * 读取并规范化指定输入框的数值
+       * @param {string} elementId 输入框的 DOM id
+       * @returns {HTMLInputElement|null} 成功返回元素本身，失败返回 null
+       */
+      function normalizeInputValueById(elementId) {
+        try {
+          var el = document.getElementById(elementId);
+          if (!el) return null;
+          var decoded = safeDecodeValue(el.value);
+          if (decoded !== el.value) {
+            el.value = decoded;
+          }
+          return el;
+        } catch (err) {
+          console.error('[脚本设置-补丁] normalizeInputValueById 异常:', err);
+          return null;
+        }
+      }
+    
+      /**
+       * 安装补丁：包裹全局的 showScriptSettingsDialog 与 saveScriptSettings
+       * 若函数尚未定义，会在短时间内轮询等待。
+       */
+      function installPatches() {
+        try {
+          var g = window || globalThis;
+          if (!g) return;
+          if (typeof g.showScriptSettingsDialog !== 'function' || typeof g.saveScriptSettings !== 'function') {
+            // 尚不可用，等待轮询
+            return;
+          }
+    
+          if (g.__scriptSettingsPatched__) {
+            // 避免重复安装
+            return;
+          }
+    
+          var _origShow = g.showScriptSettingsDialog;
+          var _origSave = g.saveScriptSettings;
+    
+          /**
+           * 包裹：显示设置对话框
+           * @param {Object} script 脚本对象（透传给原实现）
+           * @returns {*} 原实现的返回值
+           */
+          g.showScriptSettingsDialog = function patchedShowScriptSettingsDialog(script) {
+            try {
+              console.log('[脚本设置-初始化-1] 打开设置弹窗');
+              var ret = _origShow.call(this, script);
+              // 等待对话框渲染后再规范化输入框初值
+              setTimeout(function () {
+                try {
+                  console.log('[脚本设置-初始化-2] 规范化显示名初值');
+                  normalizeInputValueById('scriptDisplayName');
+                } catch (e) {
+                  console.error('[脚本设置-初始化-异常] 规范化失败:', e);
+                }
+              }, 0);
+              return ret;
+            } catch (err) {
+              console.error('[脚本设置-初始化-异常] 执行失败:', err);
+              // 失败时仍尝试原实现，避免功能中断
+              try { return _origShow.call(this, script); } catch (e2) { return undefined; }
+            }
+          };
+    
+          /**
+           * 包裹：保存脚本设置
+           * @param {string} scriptPath 脚本路径（透传）
+           * @param {string} scriptName 脚本名称（透传）
+           * @returns {*} 原实现返回值
+           */
+          g.saveScriptSettings = function patchedSaveScriptSettings(scriptPath, scriptName) {
+            try {
+              console.log('[脚本设置-保存-1] 保存前规范化显示名');
+              normalizeInputValueById('scriptDisplayName');
+            } catch (err) {
+              console.error('[脚本设置-保存-异常] 规范化失败:', err);
+            }
+            try {
+              return _origSave.call(this, scriptPath, scriptName);
+            } catch (e2) {
+              console.error('[脚本设置-保存-异常] 原保存逻辑失败:', e2);
+              return undefined;
+            }
+          };
+    
+          // 打补丁标记
+          g.__scriptSettingsPatched__ = true;
+          console.log('[脚本设置-补丁] 已挂载');
+        } catch (err) {
+          console.error('[脚本设置-补丁] 安装失败:', err);
+        }
+      }
+    
+      // DOM 就绪后尝试安装一次
+      if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        installPatches();
+      } else {
+        document.addEventListener('DOMContentLoaded', installPatches);
+      }
+    
+      // 轮询等待主脚本函数可用（最多约3秒）
+      var retries = 10;
+      var timer = setInterval(function () {
+        if (typeof window.showScriptSettingsDialog === 'function' && typeof window.saveScriptSettings === 'function') {
+          clearInterval(timer);
+          installPatches();
+        } else if (--retries <= 0) {
+          clearInterval(timer);
+          console.warn('[脚本设置-补丁] 超时未找到目标函数，已停止等待');
+        }
+      }, 300);
+    })();
+    </script>
+</body>
+</html>

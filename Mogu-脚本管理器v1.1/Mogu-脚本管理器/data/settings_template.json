@@ -1,0 +1,29 @@
+{
+  "version": "2.0",
+  "scriptsFolderPath": "C:\\Users\\YourUsername\\Documents\\Scripts",
+  "autoReadSubfolders": false,
+  "lastSaved": null,
+  "dataStorageVersion": "local_v1",
+  "scriptSettings": {},
+  "categories": ["全部"],
+  "allTags": [],
+  "backgroundSettings": {
+    "currentBackground": null,
+    "backgroundSettings": null
+  },
+  "layoutSettings": {
+    "isGridLayout": false,
+    "currentScale": 1,
+    "sidebarWidth": 100,
+    "scriptOrder": []
+  },
+  "clipboardImport": {
+    "enabled": true,
+    "saveLocation": "documents",
+    "customPath": ""
+  },
+  "displayControl": {
+    "showCategory": true,
+    "showTags": true
+  }
+}
