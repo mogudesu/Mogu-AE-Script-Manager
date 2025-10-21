@@ -1,0 +1,1979 @@
+/* 
+全局概述：
+- 为"脚本视图/预设视图"提供动画与基础样式
+- 确保在 AE CEP 面板嵌入式环境中的可读性与紧凑布局
+- 预设列表采用与脚本列表相同的样式风格和布局切换功能
+- 不改变既有结构，采用附加容器和类名控制显示与动画
+*/
+
+/* 底部切换按钮（拨动样式-紧凑） - 增强开关动画效果 */
+.btn-toggle {
+  position: relative;
+  padding: 4px 14px 4px 28px;
+  border-radius: 16px;
+  background: linear-gradient(145deg, #2a2a2a, #1c1c1c);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: #e6e6e6;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+  overflow: hidden;
+}
+
+/* 开关圆点 - 默认状态（左侧） */
+.btn-toggle::before {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  background: radial-gradient(circle at 30% 30%, #9d4edd 0%, #6a00f4 60%, #4700b3 100%);
+  box-shadow: 0 0 8px rgba(109, 40, 217, 0.6);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 2;
+}
+
+/* 激活状态 - 圆点移动到右侧并变色 */
+.btn-toggle.active::before {
+  left: calc(100% - 20px);
+  background: radial-gradient(circle at 30% 30%, #00d4aa 0%, #00b894 60%, #00a085 100%);
+  box-shadow: 0 0 12px rgba(0, 212, 170, 0.8);
+  transform: translateY(-50%) scale(1.1);
+}
+
+/* 激活状态 - 按钮背景变色，文字左移避免被圆点遮挡 */
+.btn-toggle.active {
+  background: linear-gradient(145deg, #1a4a3a, #0f2f1f);
+  border-color: rgba(0, 212, 170, 0.3);
+  color: #00d4aa;
+  padding-left: 20px; /* 文字左移，给圆点让出空间 */
+}
+
+/* 背景轨道效果 */
+.btn-toggle::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 50%;
+  width: calc(100% - 8px);
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateY(-50%);
+  transition: all 0.3s ease;
+  z-index: 1;
+}
+
+.btn-toggle.active::after {
+  background: rgba(0, 212, 170, 0.15);
+}
+.btn-toggle:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0,0,0,.25);
+  border-color: rgba(255,255,255,0.12);
+}
+.btn-toggle:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* 预设视图容器（动态注入） */
+#presetPanel {
+  position: relative;
+  display: none; /* 初始隐藏，切换到预设视图时显示 */
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 4px;
+  overflow: hidden;
+}
+
+.preset-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+}
+
+/* [预设界面-工具栏样式]+[功能名称]+[详细描述] 预设工具栏，包含模式选择和操作按钮 */
+.preset-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  padding: 8px 8px;
+  background: rgba(25, 25, 30, 0.95);
+  border-radius: 8px;
+  border: 1px solid rgba(100, 100, 255, 0.15);
+  backdrop-filter: blur(5px);
+  position: relative; /* 防止背景在按钮切换时消失 */
+  z-index: 5;         /* 提升层级，避免被列表等覆盖 */
+  isolation: isolate; /* 创建独立的绘制上下文，修复 CEF 背景闪断 */
+  will-change: opacity, transform; /* 优化切换性能，防止闪烁 */
+  /* 顶栏在窄宽度下保持单行并裁剪溢出 */
+  flex-wrap: nowrap;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+.preset-modes {
+  display: flex;
+  /* 保持单行，随宽度渐进缩放间距 */
+  flex-wrap: nowrap;
+  gap: clamp(4px, 0.8vw, 8px);
+  /* 允许在 Flex 布局中充分收缩以避免增高 */
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+/* [预设界面-模式按钮]+[功能名称]+[详细描述] 方框按钮样式，不同模式不同颜色 */
+.preset-mode-btn {
+  /* 随容器宽度渐进缩小，达到阈值后不再缩放 */
+  padding: clamp(4px, 0.6vw, 6px) clamp(8px, 1.2vw, 12px);
+  font-size: clamp(10px, 1.1vw, 12px);
+  color: #ccc;
+  background: rgba(40, 40, 45, 0.8);
+  border: 1px solid rgba(100, 100, 100, 0.3);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none;
+  font-weight: 500;
+  /* 允许在窄宽度下略微减小按钮最小宽度 */
+  min-width: clamp(40px, 7vw, 50px);
+  text-align: center;
+  white-space: nowrap; /* 防止文字自身换行 */
+}
+
+.preset-mode-btn:hover {
+  color: #fff;
+  background: rgba(50, 50, 55, 0.9);
+  border-color: rgba(150, 150, 150, 0.5);
+  transform: translateY(-1px);
+}
+
+/* 基础模式 - 蓝色高亮 */
+.preset-mode-btn[data-mode="base"].active {
+  color: #fff;
+  background: linear-gradient(145deg, #4a90e2, #357abd);
+  border-color: #4a90e2;
+  box-shadow: 0 2px 8px rgba(74, 144, 226, 0.4);
+}
+
+.preset-mode-btn[data-mode="base"].active:hover {
+  background: linear-gradient(145deg, #5ba0f2, #4a90e2);
+  box-shadow: 0 3px 12px rgba(74, 144, 226, 0.6);
+}
+
+/* 偏移模式 - 橙色高亮 */
+.preset-mode-btn[data-mode="offset"].active {
+  color: #fff;
+  background: linear-gradient(145deg, #ff8c42, #e67e22);
+  border-color: #ff8c42;
+  box-shadow: 0 2px 8px rgba(255, 140, 66, 0.4);
+}
+
+.preset-mode-btn[data-mode="offset"].active:hover {
+  background: linear-gradient(145deg, #ff9d5c, #ff8c42);
+  box-shadow: 0 3px 12px rgba(255, 140, 66, 0.6);
+}
+
+/* 最后帧模式 - 绿色高亮 */
+.preset-mode-btn[data-mode="last"].active {
+  color: #fff;
+  background: linear-gradient(145deg, #27ae60, #229954);
+  border-color: #27ae60;
+  box-shadow: 0 2px 8px rgba(39, 174, 96, 0.4);
+}
+
+.preset-mode-btn[data-mode="last"].active:hover {
+  background: linear-gradient(145deg, #2ecc71, #27ae60);
+  box-shadow: 0 3px 12px rgba(39, 174, 96, 0.6);
+}
+
+/* 激活状态的按钮点击效果 */
+.preset-mode-btn.active:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.preset-actions-group {
+  display: flex;
+  /* 保持单行，并在窄宽度下减小间距 */
+  flex-wrap: nowrap;
+  gap: clamp(4px, 0.8vw, 8px);
+  flex: 0 0 auto;
+}
+
+/* [预设界面-列表容器]+[功能名称]+[详细描述] 预设列表容器，继承脚本列表的样式风格 */
+.preset-list {
+  flex: 1;
+  min-height: 0;          /* 关键：允许子容器正确计算高度并滚动 */
+  max-height: 100%;       /* 确保不超出父容器 */
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth; /* 平滑滚动 */
+  background: rgba(30, 30, 35, 0.9);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 12px;
+  box-sizing: border-box;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(100, 100, 255, 0.2);
+}
+
+/* [预设界面-网格布局]+[功能名称]+[详细描述] 网格布局容器样式 */
+.preset-list.grid-layout {
+  /* Grid properties will be set dynamically by JavaScript */
+  transition: grid-template-columns 0.16s ease-out, 
+              grid-template-rows 0.16s ease-out;
+  padding: 3px;
+  display: grid;
+  grid-auto-flow: dense; /* 紧密填充，靠左上排列，避免空洞 */
+  align-content: start !important;
+  justify-content: start !important;
+  overflow-y: auto;             /* 允许网格模式滚动 */
+  overscroll-behavior: contain; /* 避免滚动穿透 */
+}
+
+/* [预设界面-布局冻结]+[功能名称]+[详细描述] 切换/渲染期间禁用过渡，避免短暂错位 */
+.preset-list.layout-freeze,
+.preset-list.layout-freeze *,
+body.show-preset .preset-list.layout-freeze,
+body:not(.show-preset) .preset-list.layout-freeze {
+  transition: none !important;
+  animation: none !important;
+}
+
+.preset-list.layout-freeze .preset-item,
+.preset-list.layout-freeze .preset-preview-window {
+  transition: none !important;
+}
+
+/* [预设界面-拖动缩放优化V5]+[功能名称]+[详细描述] 拖动缩放期间超流畅过渡动画 */
+.preset-list.scaling-active {
+  /* 使用更短的过渡时间和更流畅的缓动函数，实现丝滑的实时缩放 */
+  transition: grid-template-columns 0.05s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              grid-auto-rows 0.05s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: grid-template-columns, grid-auto-rows !important;
+  /* 启用硬件加速，提升动画性能 */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.preset-list.scaling-active * {
+  /* 禁用子元素的复杂动画，但保持基础变换 */
+  animation: none !important;
+  transform-style: flat !important;
+  backface-visibility: visible !important;
+}
+
+/* [预设界面-过渡动画]+[功能名称]+[详细描述] 网格布局过渡动画状态 */
+.preset-list.grid-transitioning {
+  pointer-events: none; /* 动画期间禁用交互 */
+}
+
+.preset-list.grid-transitioning .preset-item {
+  transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+/* [预设界面-窗口调整]+[功能名称]+[详细描述] 窗口大小变化时的动画状态 */
+.preset-list.grid-resizing {
+  transition: grid-template-columns 0.12s ease-out,
+              grid-template-rows 0.12s ease-out;
+}
+
+.preset-list.grid-resizing .preset-item {
+  transition: all 0.24s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform, grid-column, grid-row;
+}
+
+/* [预设界面-网格项目]+[功能名称]+[详细描述] 网格布局下的预设项目样式 */
+.preset-list.grid-layout .preset-item {
+  flex-direction: column;
+  text-align: center;
+  min-width: var(--grid-item-width, 72px); /* 降低网格卡片默认宽度 */
+  max-width: var(--grid-item-width, 72px);
+  min-height: var(--grid-item-height, 96px);
+  max-height: var(--grid-item-height, 96px);
+  height: var(--grid-item-height, 96px);
+  box-sizing: border-box;
+  transition: transform 0.24s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.18s ease,
+              box-shadow 0.18s ease;
+  overflow: hidden;
+}
+
+.preset-list.grid-layout .preset-icon {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.preset-list.grid-layout .preset-info {
+  width: 100%;
+}
+
+/* [预设界面-网格文本收敛]+[步骤]+[1] 预设模式-网格-名称两行收敛 */
+body.show-preset .preset-list.grid-layout .preset-name {
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: normal !important;
+  text-align: center !important;
+}
+
+/* [预设界面-网格文本收敛]+[步骤]+[2] 预设模式-网格-标签单行溢出隐藏 */
+body.show-preset .preset-list.grid-layout .preset-tags {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  align-self: center !important;
+}
+.preset-list.grid-layout .preset-description {
+  text-align: center;
+  white-space: normal;
+  word-wrap: break-word;
+  line-height: 1.2;
+}
+
+.preset-list.grid-layout .preset-tags {
+  justify-content: center;
+  margin-top: 4px;
+  position: relative;
+  z-index: 1;
+}
+
+/* [预设界面-预设项目]+[功能名称]+[详细描述] 预设项目基础样式，继承脚本项目样式 */
+.preset-item {
+  display: flex;
+  align-items: center;
+  gap: calc(8px * var(--preset-spacing-scale, 1));           /* 由变量控制内部间距，避免小尺寸拥挤 */
+  padding: calc(8px * var(--preset-spacing-scale, 1));        /* 由变量控制内边距，避免小尺寸被挤压 */
+  margin-bottom: 4px; /* 外部卡片间距固定，不受滑块缩放影响 */
+  background: linear-gradient(145deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.8));
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  transform-origin: top left;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: visible;
+  border: 1px solid rgba(138, 43, 226, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* [预设界面-列表模式缩放]+[功能名称]+[详细描述] 列表模式使用CSS变量控制缩放 */
+.preset-list:not(.grid-layout) {
+  --preset-scale: 1;
+  --preset-font-scale: 1; /* 新增：字体缩放系数，跟随 JS 设置 */
+  --preset-spacing-scale: 1; /* 新增：间距缩放系数，跟随 JS 设置 */
+}
+
+.preset-list:not(.grid-layout) .preset-item {
+  /* 不缩放整个卡片，保持宽度100%，只调整高度和内部元素 */
+  width: 100% !important;
+  max-width: 100% !important;
+  height: calc(60px * var(--preset-scale, 1)); /* 只缩放高度 */
+  margin-bottom: 4px; /* 固定间距，始终紧密联系 */
+  transform: none; /* 移除整体缩放 */
+  overflow: hidden; /* 防止内部元素在大缩放时视觉溢出 */
+}
+
+/* 只缩放列表模式下的内部元素 */
+.preset-list:not(.grid-layout) .preset-item .preset-icon {
+  transform: scale(var(--preset-scale, 1));
+  transform-origin: center;
+}
+
+.preset-list:not(.grid-layout) .preset-item .preset-preview {
+  transform: scale(var(--preset-scale, 1));
+  transform-origin: center;
+}
+
+.preset-list:not(.grid-layout) .preset-item .preset-info {
+  /* 取消视觉缩放，保持布局尺寸和 padding-right 恒定生效 */
+  transform: none;
+  transform-origin: left center;
+  /* 动态右侧预览留白：由 JS 设置 --preview-width */
+  padding-right: var(--preview-width, 72px) !important;
+  box-sizing: border-box;
+}
+
+/* [预设界面-预览图片缩放]+[功能名称]+[详细描述] 确保预览图片在缩放时保持边距 */
+.preset-list:not(.grid-layout) .preset-item .preset-preview-image {
+  /* 图片本身不需要额外缩放，跟随容器缩放即可 */
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.preset-list:not(.grid-layout) .preset-item .preset-preview-placeholder {
+  /* 占位符也跟随容器缩放 */
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* [预设界面-悬停效果]+[功能名称]+[详细描述] 列表模式下的悬停效果 - 防止闪烁 */
+.preset-item:not(.grid-mode):hover {
+  background: linear-gradient(145deg, rgba(35, 35, 35, 0.95), rgba(45, 45, 45, 0.9));
+  border-color: rgba(138, 43, 226, 0.6);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* [预设界面-悬停效果]+[功能名称]+[详细描述] 网格模式下的悬停效果 - 保持原有效果 */
+.preset-item.grid-mode:hover {
+  background: linear-gradient(145deg, rgba(35, 35, 35, 0.95), rgba(45, 45, 45, 0.9));
+  transform: translateY(-2px);
+  border-color: rgba(138, 43, 226, 0.6);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* [预设界面-图标样式]+[功能名称]+[详细描述] 预设图标样式 */
+.preset-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  background: linear-gradient(145deg, rgba(138, 43, 226, 0.2), rgba(75, 0, 130, 0.3));
+  border: 1px solid rgba(138, 43, 226, 0.4);
+}
+
+/* [预设界面-预览图片样式]+[功能名称]+[详细描述] 预设预览图片样式，支持缩放响应 */
+.preset-preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+  transition: transform 0.3s ease;
+}
+
+/* [预设界面-预览占位符]+[功能名称]+[详细描述] 预设预览占位符样式 */
+.preset-preview-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: rgba(138, 43, 226, 0.8);
+  background: linear-gradient(145deg, rgba(138, 43, 226, 0.1), rgba(75, 0, 130, 0.2));
+  border-radius: 4px;
+}
+
+/* [预设界面-预览容器]+[功能名称]+[详细描述] 预设预览容器样式，确保图片正确显示 */
+.preset-preview {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 6px;
+  background: linear-gradient(145deg, rgba(138, 43, 226, 0.2), rgba(75, 0, 130, 0.3));
+  border: 1px solid rgba(138, 43, 226, 0.4);
+  overflow: hidden;
+}
+
+/* [预设界面-信息区域]+[功能名称]+[详细描述] 预设信息区域样式 */
+.preset-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* [预设界面-名称样式]+[功能名称]+[详细描述] 预设名称样式 */
+.preset-name {
+  font-weight: 500;
+  color: #e0e0e0;
+  font-size: calc(13px * var(--preset-font-scale, 1)); /* 按比例缩放名称字号 */
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* [预设界面-描述样式]+[功能名称]+[详细描述] 预设描述样式 */
+.preset-description {
+  font-size: calc(11px * var(--preset-font-scale, 1)); /* 按比例缩放描述字号 */
+  color: #999;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* [预设界面-路径样式]+[功能名称]+[详细描述] 预设路径样式 */
+.preset-path {
+  font-size: calc(10px * var(--preset-font-scale, 1)); /* 按比例缩放路径字号 */
+  color: #666;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* [预设界面-标签样式]+[功能名称]+[详细描述] 预设标签容器和标签样式 */
+.preset-tags {
+  display: flex;
+  gap: calc(4px * var(--preset-spacing-scale, 1)); /* 标签间距随尺寸缩放 */
+  flex-wrap: wrap;
+  margin-top: calc(2px * var(--preset-spacing-scale, 1));
+}
+
+.preset-tag {
+  font-size: calc(8px * var(--preset-font-scale, 1)); /* 标签字号缩放 */
+  padding: calc(1px * var(--preset-spacing-scale, 1)) calc(4px * var(--preset-spacing-scale, 1)); /* 标签内边距缩放 */
+  background: var(--tag-bg, rgba(138, 43, 226, 0.6)); /* 支持标签自定义背景色 */
+  color: var(--tag-text, #fff);                      /* 支持标签自定义文字色 */
+  border: 1px solid var(--tag-border, rgba(138, 43, 226, 0.75)); /* 支持标签自定义边框色 */
+  border-radius: 3px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: calc(0.5px * var(--preset-font-scale, 1));
+  line-height: 1.2; /* 稳定行高，减少裁剪概率 */
+  max-width: 100%;
+  white-space: nowrap; /* 单行展示，避免换行导致高度不匹配 */
+  overflow: hidden;
+  text-overflow: ellipsis; /* 超长标签显示省略号，避免溢出 */
+}
+
+/* 列表模式下标签微调以防裁剪 */
+.preset-item:not(.grid-mode) .preset-tag {
+  font-size: calc(7px * var(--preset-font-scale, 1)); /* 列表模式标签字号可缩放 */
+}
+
+/* 网格模式下标签微调以防裁剪 */
+.preset-item.grid-mode .preset-tag {
+  font-size: calc(clamp(5px, 0.8vw, 7px) * var(--preset-font-scale, 1)); /* 网格模式标签字号可缩放 */
+}
+
+/* [预设界面-列表模式]+[功能名称]+[详细描述] 列表模式下的图标样式 */
+.preset-item:not(.grid-mode) .preset-icon {
+  width: 64px;
+  height: 42px;
+  font-size: 18px;
+}
+
+/* [预设界面-列表模式预览]+[功能名称]+[详细描述] 列表模式下的预览容器和图片 */
+.preset-item:not(.grid-mode) .preset-preview {
+  width: 64px;
+  height: 42px;
+}
+
+.preset-item:not(.grid-mode) .preset-preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.preset-item:not(.grid-mode) .preset-preview-placeholder {
+  font-size: 20px;
+}
+
+/* [预设界面-列表模式]+[功能名称]+[详细描述] 列表模式下的信息区域 */
+.preset-item:not(.grid-mode) .preset-info {
+  order: 1;
+  flex: 1;
+}
+
+/* [预设界面-列表模式]+[功能名称]+[详细描述] 列表模式下的预设名称 */
+.preset-item:not(.grid-mode) .preset-name {
+  font-size: calc(clamp(10px, 2vw, 14px) * var(--preset-font-scale, 1)); /* 列表模式名称字号可缩放 */
+  color: #e0e0e0;
+}
+
+/* [预设界面-列表模式]+[功能名称]+[详细描述] 列表模式下隐藏描述 */
+.preset-item:not(.grid-mode) .preset-description {
+  display: none;
+}
+
+/* [预设界面-列表模式]+[功能名称]+[详细描述] 列表模式下的标签 */
+.preset-item:not(.grid-mode) .preset-tags {
+  margin-top: auto;
+  justify-content: flex-start;
+  gap: calc(4px * var(--preset-spacing-scale, 1));           /* 标签行间距随尺寸缩放 */
+}
+
+.preset-item:not(.grid-mode) .preset-tag {
+  font-size: calc(7px * var(--preset-font-scale, 1)); /* 列表模式标签字号可缩放 */
+  /* 已移除硬编码背景色，使用 CSS 变量 --tag-bg 实现个性化着色 */
+}
+
+/* [预设界面-网格模式]+[功能名称]+[详细描述] 网格模式下的预设名称 - 严格两行限制 */
+.preset-item.grid-mode .preset-name {
+  font-size: calc(clamp(7px, 1vw, 9px) * var(--preset-font-scale, 1)); /* 网格模式名称随尺寸缩放 */
+  line-height: 1.3;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+  height: 26px;
+  max-height: 30px;
+  margin: 0 0 0px 0;
+  padding: 0 3px;
+  flex-shrink: 0;
+  word-break: break-word;
+  box-sizing: border-box;
+}
+
+/* [预设界面-网格模式]+[功能名称]+[详细描述] 网格模式下紧凑布局 - 统一与脚本模式样式 */
+.preset-item.grid-mode {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 4px;
+  text-align: center;
+  overflow: hidden;
+  min-height: var(--grid-item-height, 96px);
+  height: var(--grid-item-height, 96px);
+  max-height: var(--grid-item-height, 96px);
+  box-sizing: border-box;
+}
+
+.preset-item.grid-mode .preset-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 2px;
+}
+
+.preset-item.grid-mode .preset-icon {
+  margin-bottom: 4px;
+  width: 48px;
+  height: 48px;
+  font-size: 24px;
+}
+
+/* [预设界面-网格模式预览]+[功能名称]+[详细描述] 网格模式下的预览容器和图片 */
+.preset-item.grid-mode .preset-preview {
+  margin-bottom: 4px;
+  width: 48px;
+  height: 48px;
+}
+
+.preset-item.grid-mode .preset-preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.preset-item.grid-mode .preset-preview-placeholder {
+  font-size: calc(24px * var(--preset-font-scale, 1));
+}
+
+.preset-item.grid-mode .preset-tags {
+  display: flex;
+  justify-content: center;
+  margin-top: 4px;
+  white-space: nowrap;        /* 标签始终单行显示 */
+  overflow: hidden;           /* 超出隐藏 */
+  text-overflow: ellipsis;    /* 省略号收尾 */
+}
+
+.preset-item.grid-mode .preset-tag {
+  font-size: calc(clamp(5px, 0.8vw, 7px) * var(--preset-font-scale, 1)); /* 网格模式标签字号可缩放 */
+  /* 已移除硬编码背景色，使用 CSS 变量 --tag-bg 实现个性化着色 */
+}
+
+.preset-item.grid-mode .preset-description {
+  display: none; /* 隐藏描述以节省空间 */
+}
+
+.preset-item.grid-mode .preset-path {
+  display: none; /* 列表模式下隐藏路径，避免“路径、名称、标签”错误排序 */
+}
+
+/* [预设界面-空状态]+[功能名称]+[详细描述] 空状态样式 */
+.preset-empty {
+  text-align: center;
+  color: #888;
+  padding: 40px 20px;
+  font-style: italic;
+  font-size: 14px;
+  background: rgba(40, 40, 45, 0.5);
+  border-radius: 8px;
+  border: 2px dashed rgba(100, 100, 255, 0.2);
+}
+
+/* [预设界面-帮助文本]+[功能名称]+[详细描述] 预设帮助文本样式 */
+.preset-help {
+  font-size: 11px;
+  color: #888;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: rgba(20, 20, 25, 0.8);
+  border-radius: 6px;
+  border-left: 3px solid rgba(138, 43, 226, 0.6);
+  line-height: 1.4;
+}
+
+/* [预设界面-列表布局]+[功能名称]+[详细描述] 非网格布局下的样式 */
+.preset-list:not(.grid-layout) {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.preset-list:not(.grid-layout) .preset-item {
+  text-align: left; /* 强制左对齐，避免受网格模式居中样式的继承影响 */
+  align-items: flex-start; /* 信息区与标签靠左 */
+}
+.preset-list:not(.grid-layout) .preset-name,
+.preset-list:not(.grid-layout) .preset-tags,
+.preset-list:not(.grid-layout) .preset-description {
+  text-align: left !important;
+}
+.preset-list:not(.grid-layout) .preset-tags {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  align-self: flex-start !important; /* 列表模式：标签靠左 */
+}
+.preset-list:not(.grid-layout) .preset-description {
+  text-align: center;
+  white-space: normal;
+  word-wrap: break-word;
+  line-height: 1.2;
+}
+
+.preset-list:not(.grid-layout) .preset-tags {
+  justify-content: flex-start; /* 列表模式：标签行左对齐 */
+  margin-top: 4px;
+  position: relative;
+  z-index: 1;
+}
+
+/* [预设界面-预设项目]+[功能名称]+[详细描述] 预设项目基础样式，继承脚本项目样式 */
+.preset-item {
+  display: flex;
+  align-items: center;
+  gap: calc(8px * var(--preset-spacing-scale, 1));           /* 由变量控制内部间距，避免小尺寸拥挤 */
+  padding: calc(8px * var(--preset-spacing-scale, 1));        /* 由变量控制内边距，避免小尺寸被挤压 */
+  margin-bottom: 4px; /* 外部卡片间距固定，不受滑块缩放影响 */
+  background: linear-gradient(145deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.8));
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  transform-origin: top left;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: visible;
+  border: 1px solid rgba(138, 43, 226, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* [预设界面-列表模式缩放]+[功能名称]+[详细描述] 列表模式使用CSS变量控制缩放 */
+.preset-list:not(.grid-layout) {
+  --preset-scale: 1;
+  --preset-font-scale: 1; /* 新增：字体缩放系数，跟随 JS 设置 */
+  --preset-spacing-scale: 1; /* 新增：间距缩放系数，跟随 JS 设置 */
+}
+
+.preset-list:not(.grid-layout) .preset-item {
+  /* 不缩放整个卡片，保持宽度100%，只调整高度和内部元素 */
+  width: 100% !important;
+  max-width: 100% !important;
+  height: calc(60px * var(--preset-scale, 1)); /* 只缩放高度 */
+  margin-bottom: 4px; /* 固定间距，始终紧密联系 */
+  transform: none; /* 移除整体缩放 */
+  overflow: hidden; /* 防止内部元素在大缩放时视觉溢出 */
+}
+
+/* 只缩放列表模式下的内部元素 */
+.preset-list:not(.grid-layout) .preset-item .preset-icon {
+  transform: scale(var(--preset-scale, 1));
+  transform-origin: center;
+}
+
+.preset-list:not(.grid-layout) .preset-item .preset-preview {
+  transform: scale(var(--preset-scale, 1));
+  transform-origin: center;
+}
+
+.preset-list:not(.grid-layout) .preset-item .preset-info {
+  /* 取消视觉缩放，保持布局尺寸和 padding-right 恒定生效 */
+  transform: none;
+  transform-origin: left center;
+  /* 动态右侧预览留白：由 JS 设置 --preview-width */
+  padding-right: var(--preview-width, 72px) !important;
+  box-sizing: border-box;
+}
+
+/* [预设界面-预览图片缩放]+[功能名称]+[详细描述] 确保预览图片在缩放时保持边距 */
+.preset-list:not(.grid-layout) .preset-item .preset-preview-image {
+  /* 图片本身不需要额外缩放，跟随容器缩放即可 */
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.preset-list:not(.grid-layout) .preset-item .preset-preview-placeholder {
+  /* 占位符也跟随容器缩放 */
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* [预设界面-悬停效果]+[功能名称]+[详细描述] 列表模式下的悬停效果 - 防止闪烁 */
+.preset-item:not(.grid-mode):hover {
+  background: linear-gradient(145deg, rgba(35, 35, 35, 0.95), rgba(45, 45, 45, 0.9));
+  border-color: rgba(138, 43, 226, 0.6);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* [预设界面-悬停效果]+[功能名称]+[详细描述] 网格模式下的悬停效果 - 保持原有效果 */
+.preset-item.grid-mode:hover {
+  background: linear-gradient(145deg, rgba(35, 35, 35, 0.95), rgba(45, 45, 45, 0.9));
+  transform: translateY(-2px);
+  border-color: rgba(138, 43, 226, 0.6);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* [预设界面-图标样式]+[功能名称]+[详细描述] 预设图标样式 */
+.preset-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  background: linear-gradient(145deg, rgba(138, 43, 226, 0.2), rgba(75, 0, 130, 0.3));
+  border: 1px solid rgba(138, 43, 226, 0.4);
+}
+
+/* [预设界面-预览图片样式]+[功能名称]+[详细描述] 预设预览图片样式，支持缩放响应 */
+.preset-preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+  transition: transform 0.3s ease;
+}
+
+/* [预设界面-预览占位符]+[功能名称]+[详细描述] 预设预览占位符样式 */
+.preset-preview-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: rgba(138, 43, 226, 0.8);
+  background: linear-gradient(145deg, rgba(138, 43, 226, 0.1), rgba(75, 0, 130, 0.2));
+  border-radius: 4px;
+}
+
+/* [预设界面-预览容器]+[功能名称]+[详细描述] 预设预览容器样式，确保图片正确显示 */
+.preset-preview {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 6px;
+  background: linear-gradient(145deg, rgba(138, 43, 226, 0.2), rgba(75, 0, 130, 0.3));
+  border: 1px solid rgba(138, 43, 226, 0.4);
+  overflow: hidden;
+}
+
+/* [预设界面-信息区域]+[功能名称]+[详细描述] 预设信息区域样式 */
+.preset-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* [预设界面-名称样式]+[功能名称]+[详细描述] 预设名称样式 */
+.preset-name {
+  font-weight: 500;
+  color: #e0e0e0;
+  font-size: calc(13px * var(--preset-font-scale, 1)); /* 按比例缩放名称字号 */
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* [预设界面-描述样式]+[功能名称]+[详细描述] 预设描述样式 */
+.preset-description {
+  font-size: calc(11px * var(--preset-font-scale, 1)); /* 按比例缩放描述字号 */
+  color: #999;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* [预设界面-路径样式]+[功能名称]+[详细描述] 预设路径样式 */
+.preset-path {
+  font-size: calc(10px * var(--preset-font-scale, 1)); /* 按比例缩放路径字号 */
+  color: #666;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* [预设界面-标签样式]+[功能名称]+[详细描述] 预设标签容器和标签样式 */
+.preset-tags {
+  display: flex;
+  gap: calc(4px * var(--preset-spacing-scale, 1)); /* 标签间距随尺寸缩放 */
+  flex-wrap: wrap;
+  margin-top: calc(2px * var(--preset-spacing-scale, 1));
+}
+
+.preset-tag {
+  font-size: calc(8px * var(--preset-font-scale, 1)); /* 标签字号缩放 */
+  padding: calc(1px * var(--preset-spacing-scale, 1)) calc(4px * var(--preset-spacing-scale, 1)); /* 标签内边距缩放 */
+  background: var(--tag-bg, rgba(138, 43, 226, 0.6)); /* 支持标签自定义背景色 */
+  color: var(--tag-text, #fff);                      /* 支持标签自定义文字色 */
+  border: 1px solid var(--tag-border, rgba(138, 43, 226, 0.75)); /* 支持标签自定义边框色 */
+  border-radius: 3px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: calc(0.5px * var(--preset-font-scale, 1));
+  line-height: 1.2; /* 稳定行高，减少裁剪概率 */
+  max-width: 100%;
+  white-space: nowrap; /* 单行展示，避免换行导致高度不匹配 */
+  overflow: hidden;
+  text-overflow: ellipsis; /* 超长标签显示省略号，避免溢出 */
+}
+
+/* 列表模式下标签微调以防裁剪 */
+.preset-item:not(.grid-mode) .preset-tag {
+  font-size: calc(7px * var(--preset-font-scale, 1)); /* 列表模式标签字号可缩放 */
+}
+
+/* 网格模式下标签微调以防裁剪 */
+.preset-item.grid-mode .preset-tag {
+  font-size: calc(clamp(5px, 0.8vw, 7px) * var(--preset-font-scale, 1)); /* 网格模式标签字号可缩放 */
+}
+
+/* [预设界面-列表模式]+[功能名称]+[详细描述] 列表模式下的图标样式 */
+.preset-item:not(.grid-mode) .preset-icon {
+  width: 64px;
+  height: 42px;
+  font-size: 18px;
+}
+
+/* [预设界面-列表模式预览]+[功能名称]+[详细描述] 列表模式下的预览容器和图片 */
+.preset-item:not(.grid-mode) .preset-preview {
+  width: 64px;
+  height: 42px;
+}
+
+.preset-item:not(.grid-mode) .preset-preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.preset-item:not(.grid-mode) .preset-preview-placeholder {
+  font-size: 20px;
+}
+
+/* [预设界面-列表模式]+[功能名称]+[详细描述] 列表模式下的信息区域 */
+.preset-item:not(.grid-mode) .preset-info {
+  order: 1;
+  flex: 1;
+}
+
+/* [预设界面-列表模式]+[功能名称]+[详细描述] 列表模式下的预设名称 */
+.preset-item:not(.grid-mode) .preset-name {
+  font-size: calc(clamp(10px, 2vw, 14px) * var(--preset-font-scale, 1)); /* 列表模式名称字号可缩放 */
+  color: #e0e0e0;
+}
+
+/* [预设界面-列表模式]+[功能名称]+[详细描述] 列表模式下隐藏描述 */
+.preset-item:not(.grid-mode) .preset-description {
+  display: none;
+}
+
+/* [预设界面-列表模式]+[功能名称]+[详细描述] 列表模式下的标签 */
+.preset-item:not(.grid-mode) .preset-tags {
+  margin-top: auto;
+  justify-content: flex-start;
+  gap: calc(4px * var(--preset-spacing-scale, 1));           /* 标签行间距随尺寸缩放 */
+}
+
+.preset-item:not(.grid-mode) .preset-tag {
+  font-size: calc(7px * var(--preset-font-scale, 1)); /* 列表模式标签字号可缩放 */
+  /* 已移除硬编码背景色，使用 CSS 变量 --tag-bg 实现个性化着色 */
+}
+
+/* [预设界面-网格模式]+[功能名称]+[详细描述] 网格模式下的预设名称 - 严格两行限制 */
+.preset-item.grid-mode .preset-name {
+  font-size: calc(clamp(7px, 1vw, 9px) * var(--preset-font-scale, 1)); /* 网格模式名称随尺寸缩放 */
+  line-height: 1.3;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+  height: 26px;
+  max-height: 30px;
+  margin: 0 0 0px 0;
+  padding: 0 3px;
+  flex-shrink: 0;
+  word-break: break-word;
+  box-sizing: border-box;
+}
+
+/* [预设界面-网格模式]+[功能名称]+[详细描述] 网格模式下紧凑布局 - 统一与脚本模式样式 */
+.preset-item.grid-mode {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 4px;
+  text-align: center;
+  overflow: hidden;
+  min-height: var(--grid-item-height, 110px);
+  height: var(--grid-item-height, 110px);
+  box-sizing: border-box;
+}
+
+.preset-item.grid-mode .preset-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 2px;
+}
+
+.preset-item.grid-mode .preset-icon {
+  margin-bottom: 4px;
+  width: 48px;
+  height: 48px;
+  font-size: 24px;
+}
+
+/* [预设界面-网格模式预览]+[功能名称]+[详细描述] 网格模式下的预览容器和图片 */
+.preset-item.grid-mode .preset-preview {
+  margin-bottom: 4px;
+  width: 48px;
+  height: 48px;
+}
+
+.preset-item.grid-mode .preset-preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.preset-item.grid-mode .preset-preview-placeholder {
+  font-size: calc(24px * var(--preset-font-scale, 1));
+}
+
+.preset-item.grid-mode .preset-tags {
+  display: flex;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.preset-item.grid-mode .preset-tag {
+  font-size: calc(clamp(5px, 0.8vw, 7px) * var(--preset-font-scale, 1)); /* 网格模式标签字号可缩放 */
+  /* 已移除硬编码背景色，使用 CSS 变量 --tag-bg 实现个性化着色 */
+}
+
+.preset-item.grid-mode .preset-description {
+  display: none; /* 隐藏描述以节省空间 */
+}
+
+.preset-item.grid-mode .preset-path {
+  display: none; /* 列表模式下隐藏路径，避免“路径、名称、标签”错误排序 */
+}
+
+/* [预设界面-空状态]+[功能名称]+[详细描述] 空状态样式 */
+.preset-empty {
+  text-align: center;
+  color: #888;
+  padding: 40px 20px;
+  font-style: italic;
+  font-size: 14px;
+  background: rgba(40, 40, 45, 0.5);
+  border-radius: 8px;
+  border: 2px dashed rgba(100, 100, 255, 0.2);
+}
+
+/* [预设界面-帮助文本]+[功能名称]+[详细描述] 预设帮助文本样式 */
+.preset-help {
+  font-size: 11px;
+  color: #888;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: rgba(20, 20, 25, 0.8);
+  border-radius: 6px;
+  border-left: 3px solid rgba(138, 43, 226, 0.6);
+  line-height: 1.4;
+}
+
+/* [预设界面-列表布局]+[功能名称]+[详细描述] 非网格布局下的样式 */
+.preset-list:not(.grid-layout) {
+  display: flex;
+  flex-direction: column;
+}
+
+.preset-list:not(.grid-layout) .preset-item {
+  width: 100%;
+  margin-bottom: 3px;
+  text-align: left; /* 强制左对齐，避免受网格模式居中样式的继承影响 */
+}
+
+/* [预设切换动效优化]+[功能名称]+[详细描述] 视图切换动效，支持平滑的移动淡出过渡 */
+
+/* [预设切换动效优化]+[步骤]+[1] 切换状态控制 - 防止滚动条闪烁和优化动画性能 */
+body.preset-switching {
+  overflow: hidden; /* 防止切换过程中出现滚动条 */
+}
+
+/* [预设切换动效优化]+[步骤]+[2] 为需要动画的元素启用硬件加速 */
+body.preset-switching .sidebar,
+body.preset-switching #presetPanel,
+body.preset-switching .script-area,
+body.preset-switching .preset-list,
+body.preset-switching .preset-item {
+  will-change: transform, opacity;
+}
+
+/* 预设面板切换动效 - 从右侧滑入 */
+body:not(.show-preset) #presetPanel {
+  display: none;
+  opacity: 0;
+  transform: translateX(100%);
+  transition: none; /* 隐藏时不需要动画 */
+}
+
+body.show-preset #presetPanel {
+  display: block;
+  opacity: 1;
+  transform: translateX(0);
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+              opacity 0.3s ease-out 0.1s; /* 透明度稍微延迟，营造层次感 */
+}
+
+/* 脚本区域切换动效 - 向左滑出并淡出 */
+body:not(.show-preset) .script-area {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+              opacity 0.3s ease-out;
+}
+
+body.show-preset .script-area {
+  opacity: 0;
+  transform: translateX(-100%);
+  pointer-events: none;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+              opacity 0.3s ease-out;
+}
+
+/* [侧边栏-动画效果]+[步骤]+[1] 侧边栏在预设模式下的平滑过渡效果 */
+.sidebar {
+  transform: translateX(0) scale(1);
+  opacity: 1;
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+              opacity 0.25s ease-out,
+              background-color 0.2s ease;
+}
+
+body.show-preset .sidebar {
+  transform: translateX(0px) scale(0.98);
+  opacity: 0.95;
+  background-color: rgba(45, 45, 45, 0.95);
+  overflow: hidden; /* 预设模式下裁剪内部溢出，避免分类框越界 */
+  margin-left: 6px; /* 轻微右移，避免超出半透明背景容器边界 */
+}
+
+/* [分类切换动效优化]+[步骤]+[1] 分类列表的淡出动画 */
+#categoryList {
+  transition: opacity 0.2s ease-out, 
+              transform 0.15s ease-out;
+  opacity: 1;
+  transform: translateY(0);
+  will-change: opacity, transform; /* 预备动画属性，减少初次切换时的闪烁 */
+}
+
+/* [闪烁修复]+[步骤]+[4] 优化动画状态类的优先级和冲突处理 */
+#categoryList.category-fadeout {
+  opacity: 0 !important;
+  transform: translateY(-5px) !important;
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+}
+
+/* [闪烁修复]+[步骤]+[5] 优化加载状态样式，防止与其他状态冲突 */
+#categoryList.category-loading {
+  opacity: 0.6 !important;
+  pointer-events: none;
+  transition: opacity 0.2s ease-out;
+}
+
+#categoryList .loading-indicator {
+  padding: 15px;
+  text-align: center;
+  color: #999;
+  font-size: 12px;
+  font-style: italic;
+}
+
+/* [闪烁修复]+[步骤]+[6] 优化淡入准备状态，确保与其他状态不冲突 */
+#categoryList.category-fadein-prepare {
+  opacity: 0 !important;
+  transform: translateY(5px) !important;
+  transition: none !important;
+}
+
+/* [闪烁修复]+[步骤]+[7] 优化淡入动画，确保优先级和平滑过渡 */
+#categoryList.category-fadein {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  transition: opacity 0.3s ease-out, 
+              transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* [分类切换动效优化]+[步骤]+[5] 分类项目的渐进式出现 */
+#categoryList.category-fadein .category-item {
+  animation: categoryItemSlideIn 0.2s ease-out forwards;
+  opacity: 0;
+  transform: translateX(-10px);
+}
+
+#categoryList.category-fadein .category-item:nth-child(1) { animation-delay: 0.05s; }
+#categoryList.category-fadein .category-item:nth-child(2) { animation-delay: 0.1s; }
+#categoryList.category-fadein .category-item:nth-child(3) { animation-delay: 0.15s; }
+#categoryList.category-fadein .category-item:nth-child(4) { animation-delay: 0.2s; }
+#categoryList.category-fadein .category-item:nth-child(5) { animation-delay: 0.25s; }
+#categoryList.category-fadein .category-item:nth-child(n+6) { animation-delay: 0.3s; }
+
+@keyframes categoryItemSlideIn {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* [分类切换动效优化]+[步骤]+[6] 兼容原有的分类切换样式 */
+#categoryList.category-switching {
+  opacity: 0.7;
+  transform: translateY(-2px);
+}
+
+/* ===================== 预设卡片淡入动画（切换到预设视图时一次性执行） ===================== */
+/* 卡片默认状态：无位移，透明度为1；准备状态与淡入状态通过类控制 */
+.preset-list .preset-card {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.28s ease-out,
+              transform 0.32s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: opacity, transform;
+}
+
+.preset-list .preset-card.preset-card-fade-prepare {
+  opacity: 0 !important;
+  transform: translateY(8px) !important;
+  transition: none !important;
+}
+
+/* 预设列表初始隐藏守卫：当容器未标记显示时，所有卡片保持不可见，避免切换时先出现再消失 */
+.preset-list:not(.preset-list-show) .preset-card {
+  opacity: 0 !important;
+  transform: translateY(8px) !important;
+  transition: none !important;
+}
+
+.preset-list .preset-card.preset-card-fade {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+#categoryList .category-item,
+#categoryList .sidebar-header {
+  transition: opacity 0.2s ease-out, 
+              transform 0.15s ease-out;
+}
+
+#categoryList.category-switching .category-item,
+#categoryList.category-switching .sidebar-header {
+  opacity: 0.8;
+  transform: translateX(2px);
+}
+
+/* [预设列表-动画效果]+[步骤]+[1] 预设列表淡入动画 */
+.preset-list {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.4s ease-out 0.1s, 
+              transform 0.3s ease-out 0.1s;
+}
+
+body.show-preset .preset-list {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* [预设项目-动画效果]+[步骤]+[1] 预设项目逐个滑入动画 - 统一使用transition方式 */
+.preset-item {
+  opacity: 0;
+  transform: translateY(15px) scale(0.95);
+  transition: opacity 0.3s ease-out, 
+              transform 0.25s ease-out;
+}
+
+body.show-preset .preset-item {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* [预设项目-动画效果]+[步骤]+[2] 为预设项目添加错开的延迟动画 */
+body.show-preset .preset-item:nth-child(1) { transition-delay: 0.05s; }
+body.show-preset .preset-item:nth-child(2) { transition-delay: 0.08s; }
+body.show-preset .preset-item:nth-child(3) { transition-delay: 0.11s; }
+body.show-preset .preset-item:nth-child(4) { transition-delay: 0.14s; }
+body.show-preset .preset-item:nth-child(5) { transition-delay: 0.17s; }
+body.show-preset .preset-item:nth-child(6) { transition-delay: 0.20s; }
+body.show-preset .preset-item:nth-child(7) { transition-delay: 0.23s; }
+body.show-preset .preset-item:nth-child(8) { transition-delay: 0.26s; }
+body.show-preset .preset-item:nth-child(9) { transition-delay: 0.29s; }
+body.show-preset .preset-item:nth-child(10) { transition-delay: 0.32s; }
+
+/* [预设项目-动画效果]+[步骤]+[3] 对于更多项目使用通用延迟 */
+body.show-preset .preset-item:nth-child(n+11) { 
+  transition-delay: 0.35s; 
+}
+
+/* [预设切换动效优化]+[步骤]+[3] 动画完成后清理will-change属性 */
+body:not(.preset-switching) .sidebar,
+body:not(.preset-switching) .script-area,
+body:not(.preset-switching) #presetPanel,
+body:not(.preset-switching) .preset-list,
+body:not(.preset-switching) .preset-item {
+  will-change: auto;
+}
+
+/* 暗色主题下的边框与滚动条优化 */
+.preset-list::-webkit-scrollbar {
+  height: 10px;
+  width: 10px;
+}
+.preset-list::-webkit-scrollbar-thumb {
+  background: rgba(120, 120, 140, 0.35);
+  border-radius: 6px;
+}
+.preset-list::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.04);
+}
+
+/* 预设工具栏内的紧凑按钮在窄宽度下渐进缩放 */
+.preset-toolbar .btn.btn-mini {
+  padding: clamp(3px, 0.5vw, 4px) clamp(6px, 1vw, 8px);
+  font-size: clamp(10px, 1vw, 12px);
+  min-width: clamp(40px, 6.8vw, 50px);
+  white-space: nowrap;
+}
+
+/* 更紧凑的拨动开关按钮，避免遮挡文字 - 增强动画效果 */
+.btn-toggle.btn-mini {
+  padding: 2px 10px 2px 24px;
+  font-size: 11px;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-toggle.btn-mini::before {
+  width: 12px;
+  height: 12px;
+  left: 5px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 紧凑版本的激活状态 */
+.btn-toggle.btn-mini.active::before {
+  left: calc(100% - 17px);
+  background: radial-gradient(circle at 30% 30%, #00d4aa 0%, #00b894 60%, #00a085 100%);
+  box-shadow: 0 0 10px rgba(0, 212, 170, 0.7);
+  transform: translateY(-50%) scale(1.05);
+}
+
+.btn-toggle.btn-mini.active {
+  background: linear-gradient(145deg, #1a4a3a, #0f2f1f);
+  border-color: rgba(0, 212, 170, 0.3);
+  color: #00d4aa;
+  padding-left: 16px; /* 紧凑版本的文字左移 */
+}
+
+/* 紧凑版本的背景轨道 */
+.btn-toggle.btn-mini::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 50%;
+  width: calc(100% - 6px);
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateY(-50%);
+  transition: all 0.3s ease;
+  z-index: 1;
+}
+
+.btn-toggle.btn-mini.active::after {
+  background: rgba(0, 212, 170, 0.15);
+}
+
+/* 点击时的反馈动画 */
+.btn-toggle:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.btn-toggle.btn-mini:active {
+  transform: scale(0.98);
+}
+
+/* 小提示 */
+.help-tip {
+  color: #a2a2bb;
+  font-size: 11px;
+  margin-left: 6px;
+}
+
+/* 安全降级：当启用背景主题时的可读性 */
+body.has-background #presetPanel {
+  background: rgba(20, 20, 28, 0.35);
+  border-radius: 8px;
+}
+
+/* 列表中文件名高亮 */
+.highlight {
+  color: #d2b3ff;
+}
+
+/* 搜索无结果 */
+.preset-no-result {
+  padding: 10px 12px;
+  font-size: 12px;
+  color: #a0a0b8;
+}
+
+/* 兼容不同主题的基础边框色 */
+.theme-neumorphism #presetPanel,
+.theme-cute #presetPanel,
+.theme-handdrawn #presetPanel,
+.theme-glassmorphism-dark #presetPanel {
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+/* [预设界面-主题适配]+[功能名称]+[详细描述] 不同主题下的预设项目样式适配 */
+
+/* 轻拟物主题 */
+.theme-neumorphism .preset-item {
+  background: linear-gradient(145deg, #f8f9fa, #f1f3f4);
+  border: none;
+  box-shadow: 2px 2px 5px #a3b1c6, -2px -2px 5px #ffffff;
+}
+
+.theme-neumorphism .preset-item:hover {
+  background: linear-gradient(145deg, #f1f3f4, #f8f9fa);
+  box-shadow: inset 2px 2px 5px #a3b1c6, inset -2px -2px 5px #ffffff;
+}
+
+.theme-neumorphism .preset-list {
+  background: linear-gradient(145deg, #f8f9fa, #f1f3f4);
+  border: none;
+  box-shadow: inset 2px 2px 5px #a3b1c6, inset -2px -2px 5px #ffffff;
+}
+
+.theme-neumorphism .preset-item:not(.grid-mode) .preset-name {
+  color: #1a202c;
+}
+
+/* 可爱主题 */
+.theme-cute .preset-item {
+  background: linear-gradient(145deg, #fef7f7, #fdf2f8);
+  border: 2px solid #ff69b4;
+  border-radius: 12px;
+}
+
+.theme-cute .preset-item:hover {
+  background: linear-gradient(145deg, #fdf2f8, #fce7f3);
+  border-color: #ff1493;
+  transform: translateY(-2px) rotate(1deg);
+}
+
+.theme-cute .preset-list {
+  background: linear-gradient(145deg, #fef7f7, #fdf2f8);
+  border: 2px solid #ff69b4;
+}
+
+.theme-cute .preset-item:not(.grid-mode) .preset-name {
+  color: #9d174d;
+}
+
+/* 手绘主题 */
+.theme-handdrawn .preset-item {
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(120, 200, 80, 0.3) 0%, transparent 50%),
+    linear-gradient(135deg, #faf8f3 0%, #f5f2e8 100%);
+  border: 2px solid #8b4513;
+  border-radius: 8px;
+  position: relative;
+}
+
+.theme-handdrawn .preset-item:nth-child(even) {
+  transform: rotate(0.3deg);
+}
+
+.theme-handdrawn .preset-item:hover {
+  background:
+    radial-gradient(circle at 25% 75%, rgba(120, 119, 198, 0.4) 0%, transparent 50%),
+    radial-gradient(circle at 75% 25%, rgba(255, 119, 198, 0.4) 0%, transparent 50%),
+    linear-gradient(135deg, #f5f2e8 0%, #faf8f3 100%);
+  transform: rotate(-0.5deg) translateY(-2px);
+}
+
+.theme-handdrawn .preset-item::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, transparent 30%, rgba(139, 69, 19, 0.1) 50%, transparent 70%);
+  border-radius: 8px;
+  z-index: -1;
+}
+
+.theme-handdrawn .preset-list {
+  background:
+    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.2) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.2) 0%, transparent 50%),
+    linear-gradient(135deg, #faf8f3 0%, #f5f2e8 100%);
+  border: 2px solid #8b4513;
+}
+
+.theme-handdrawn .preset-item:not(.grid-mode) .preset-name {
+  color: #2A3A68;
+}
+
+/* 深色毛玻璃主题 */
+.theme-glassmorphism-dark .preset-item {
+  background: rgba(20, 20, 30, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.theme-glassmorphism-dark .preset-item:hover {
+  background: rgba(30, 30, 45, 0.4);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.theme-glassmorphism-dark .preset-list {
+  background: rgba(15, 15, 25, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+}
+
+/* 深色毛玻璃主题背景透明度调整 */
+body.has-background.theme-glassmorphism-dark .preset-list {
+  background: rgba(15, 15, 25, 0.15) !important; /* 原透明度0.3降低50% */
+}
+
+/* ===== 右侧“紫色星星视窗”始终贴靠右边缘（列表/网格通用） ===== */
+/* 1) 容器成为定位上下文，宽度始终 100% */
+.preset-item {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* 2) 针对实际的 script-category 元素进行精确定位修复（仅限预设视图） */
+body.show-preset .preset-item .script-category,
+body.show-preset .preset-item .script-category-grid,
+body.show-preset .preset-item .script-category-list {
+  position: absolute !important;
+  top: 2px !important;
+  bottom: 2px !important;     /* 高度随卡片变化，上下贴边 */
+  right: 2px !important;      /* 紧贴右边缘 */
+  z-index: 2 !important;
+  overflow: hidden !important;
+  pointer-events: auto !important;
+  transform: none !important; /* 移除可能的变换，避免缩放影响定位 */
+  box-sizing: border-box !important;
+  border-radius: 4px !important;
+  background: rgba(138, 43, 226, 0.1) !important;
+  border: 1px solid rgba(138, 43, 226, 0.3) !important;
+}
+
+/* 3) 列表模式为正文信息区预留右侧空间，避免被右侧视窗覆盖 */
+body:not(.show-preset) .preset-list:not(.grid-layout) .preset-item .preset-info {
+  /* 取消视觉缩放，保持布局尺寸和 padding-right 恒定生效 */
+  transform: none;
+  transform-origin: left center;
+  /* 动态右侧预览留白：由 JS 设置 --preview-width */
+  padding-right: var(--preview-width, 72px) !important;
+  box-sizing: border-box;
+}
+
+/* 4) 网格模式下的 script-category 定位与尺寸 */
+body:not(.show-preset) .preset-item.grid-mode .script-category,
+body:not(.show-preset) .preset-item.grid-mode .script-category-grid,
+body:not(.show-preset) .preset-item.grid-mode .script-category-list {
+  right: 2px !important;      /* 网格模式紧贴右边缘 */
+  top: 2px !important;
+  bottom: 2px !important;
+  width: 44px !important;     /* 网格固定宽度 */
+  max-width: 44px !important;
+}
+
+/* 5) 列表模式下的 script-category 定位与尺寸 - 固定宽度，始终紧贴右边缘 */
+body:not(.show-preset) .preset-item:not(.grid-mode) .script-category,
+body:not(.show-preset) .preset-item:not(.grid-mode) .script-category-list {
+  right: 2px !important;      /* 始终紧贴右边缘 */
+  top: 2px !important;
+  bottom: 2px !important;
+  /* 使用固定宽度，防止缩放时超出边界 */
+  width: 60px !important;
+  max-width: 60px !important;
+  min-width: 60px !important;
+}
+
+/* 6) 确保预览窗口内容正确缩放和居中 */
+.preset-item .script-category *,
+.preset-item .preset-preview-window * {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  border-radius: 3px !important;
+}
+
+/* 7) 预览窗口在不同缩放下的变换原点修正 */
+.preset-list:not(.grid-layout) .preset-item .script-category,
+.preset-list:not(.grid-layout) .preset-item .preset-preview-window {
+  transform-origin: top right !important;
+  /* 移除可能影响定位的变换 */
+  transform: none !important;
+}
+
+/* 8) 网格模式下预览窗口的固定尺寸 */
+body:not(.show-preset) .preset-item.grid-mode .script-category *,
+body:not(.show-preset) .preset-item.grid-mode .preset-preview-window * {
+  width: 38px !important;
+  height: 38px !important;
+  object-fit: cover !important;
+}
+
+/* 9) 预览窗口悬停效果 */
+.preset-item .script-category:hover,
+.preset
+/* 网格容器使用CSS变量驱动布局，便于拖动滑块时实时排布 */
+.preset-list.grid-layout {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-columns, 1), var(--grid-item-width, 72px));
+  grid-auto-rows: var(--grid-item-height, 96px);
+  grid-auto-flow: dense; /* 使卡片在拖动时自动紧密填充 */
+  gap: var(--grid-gap, 2px);
+  justify-content: start;
+  align-content: start;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* ================= 预设工具栏与模式按钮：各主题覆盖 ================= */
+/* 轻拟物主题 */
+.theme-neumorphism .preset-toolbar {
+  background: linear-gradient(145deg, #f8f9fa, #f1f3f4);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow:
+    inset 2px 2px 4px rgba(255, 255, 255, 0.9),
+    inset -2px -2px 4px rgba(0, 0, 0, 0.08);
+  color: #2c3e50;
+}
+.theme-neumorphism .preset-mode-btn {
+  background: linear-gradient(145deg, #e8e8eb, #f0f0f3);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: #333;
+}
+.theme-neumorphism .preset-mode-btn:hover {
+  background: linear-gradient(145deg, #f0f0f3, #e8e8eb);
+  border-color: rgba(0, 0, 0, 0.15);
+  color: #111;
+}
+.theme-neumorphism .btn-toggle {
+  background: linear-gradient(145deg, #e8e8eb, #f0f0f3);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: #2c3e50;
+}
+.theme-neumorphism .btn-toggle.active {
+  background: linear-gradient(145deg, #e7f7f3, #d9f5ee);
+  border-color: rgba(0, 212, 170, 0.3);
+  color: #00796b;
+}
+
+/* 可爱主题 */
+.theme-cute .preset-toolbar {
+  background: linear-gradient(145deg, #fef7f7, #fdf2f8);
+  border: 2px solid rgba(236, 72, 153, 0.3);
+  border-radius: 12px;
+  box-shadow:
+    8px 8px 20px rgba(236, 72, 153, 0.1),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.8),
+    inset -2px -2px 4px rgba(236, 72, 153, 0.05);
+  color: #9d174d;
+}
+.theme-cute .preset-mode-btn {
+  background: linear-gradient(145deg, #fef7f7, #fdf2f8);
+  border: 2px solid rgba(236, 72, 153, 0.3);
+  color: #be185d;
+}
+.theme-cute .preset-mode-btn:hover {
+  background: linear-gradient(145deg, #fdf2f8, #fce7f3);
+  border-color: rgba(236, 72, 153, 0.6);
+  color: #9d174d;
+  transform: translateY(-1px);
+}
+.theme-cute .btn-toggle {
+  background: linear-gradient(145deg, #fef7f7, #fdf2f8);
+  border: 2px solid rgba(236, 72, 153, 0.3);
+  color: #be185d;
+}
+.theme-cute .btn-toggle.active {
+  background: linear-gradient(145deg, #fdf2f8, #fce7f3);
+  border-color: rgba(236, 72, 153, 0.6);
+  color: #9d174d;
+}
+
+/* 手绘主题 */
+.theme-handdrawn .preset-toolbar {
+  background: linear-gradient(145deg, rgba(248, 244, 236, 0.9), rgba(245, 241, 232, 0.9));
+  border: 3px solid #4E3B31;
+  border-radius: 8px;
+  box-shadow:
+    6px 6px 0px rgba(78, 59, 49, 0.3),
+    10px 10px 20px rgba(0, 0, 0, 0.1);
+  color: #4E3B31;
+  transform: rotate(-0.3deg);
+}
+.theme-handdrawn .preset-mode-btn {
+  background: linear-gradient(145deg, rgba(248, 244, 236, 0.9), rgba(245, 241, 232, 0.9));
+  border: 2px solid #4E3B31;
+  color: #2A3A68;
+}
+.theme-handdrawn .preset-mode-btn:hover {
+  background: linear-gradient(145deg, rgba(255, 140, 66, 0.15), rgba(255, 140, 66, 0.1));
+  border-color: #FF8C42;
+  transform: translateY(-1px) rotate(-0.5deg);
+}
+.theme-handdrawn .btn-toggle {
+  background: linear-gradient(145deg, rgba(248, 244, 236, 0.9), rgba(245, 241, 232, 0.9));
+  border: 2px solid #4E3B31;
+  color: #4E3B31;
+}
+.theme-handdrawn .btn-toggle.active {
+  background: linear-gradient(145deg, rgba(255, 140, 66, 0.2), rgba(255, 140, 66, 0.15));
+  border-color: #FF8C42;
+  color: #4E3B31;
+}
+
+/* 深色毛玻璃主题 */
+.theme-glassmorphism-dark .preset-toolbar {
+  background: rgba(15, 15, 25, 0.4);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: #e2e8f0;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* [脚本视图守卫] 切回脚本视图时隐藏预设预览/script-category，避免左侧分类底部紫色条残留 */
+body:not(.show-preset) .script-category,
+body:not(.show-preset) .script-category-grid,
+body:not(.show-preset) .script-category-list,
+body:not(.show-preset) .preset-preview-window {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* 兜底：脚本视图下在侧边栏/脚本容器中若仍有残留节点，强制隐藏 */
+body:not(.show-preset) .sidebar .script-category,
+body:not(.show-preset) .sidebar .script-category-grid,
+body:not(.show-preset) .sidebar .script-category-list,
+body:not(.show-preset) .script-area .script-category,
+body:not(.show-preset) .script-area .script-category-grid,
+body:not(.show-preset) .script-area .script-category-list,
+body:not(.show-preset) #categoryList .script-category,
+body:not(.show-preset) #categoryList .script-category-grid,
+body:not(.show-preset) #categoryList .script-category-list {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* ========= 脚本视图：滚动条统一隐藏（保持滚动功能） ========= */
+body:not(.show-preset) .sidebar,
+body:not(.show-preset) #categoryList,
+body:not(.show-preset) .script-area,
+body:not(.show-preset) .script-list,
+body:not(.show-preset) .content,
+body:not(.show-preset) .panel,
+body:not(.show-preset) .pane {
+  scrollbar-width: none !important;           /* Firefox 隐藏滚动条 */
+  -ms-overflow-style: none !important;        /* IE/Edge 旧版 */
+}
+body:not(.show-preset) .sidebar::-webkit-scrollbar,
+body:not(.show-preset) #categoryList::-webkit-scrollbar,
+body:not(.show-preset) .script-area::-webkit-scrollbar,
+body:not(.show-preset) .script-list::-webkit-scrollbar,
+body:not(.show-preset) .content::-webkit-scrollbar,
+body:not(.show-preset) .panel::-webkit-scrollbar,
+body:not(.show-preset) .pane::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;                   /* Chromium/CEF 隐藏滚动条 */
+}
+body:not(.show-preset) .sidebar,
+body:not(.show-preset) #categoryList,
+body:not(.show-preset) .script-area,
+body:not(.show-preset) .script-list,
+body:not(.show-preset) .content,
+body:not(.show-preset) .panel,
+body:not(.show-preset) .pane {
+  overflow: auto !important;                  /* 仍可滚动 */
+}
+
+/* ========= 预设编辑窗口：只保留一个不可见滚动条 ========= */
+/* 外层编辑容器允许滚动，滚动条隐藏 */
+.preset-editor,
+.preset-edit-modal,
+.preset-settings,
+.modal.preset-editor,
+.dialog.preset-editor,
+.modal.preset-settings,
+.dialog.preset-settings {
+  overflow: auto !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+.preset-editor::-webkit-scrollbar,
+.preset-edit-modal::-webkit-scrollbar,
+.preset-settings::-webkit-scrollbar,
+.modal.preset-editor::-webkit-scrollbar,
+.dialog.preset-editor::-webkit-scrollbar,
+.modal.preset-settings::-webkit-scrollbar,
+.dialog.preset-settings::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
+}
+/* 内层区域一律不产生滚动，避免第二根滚动条 */
+.preset-editor .editor-body,
+.preset-editor .editor-content,
+.preset-settings .settings-body,
+.preset-settings .settings-content,
+.preset-edit-modal .modal-body,
+.preset-edit-modal .modal-content,
+.modal.preset-editor .modal-body,
+.dialog.preset-editor .modal-body,
+.modal.preset-settings .modal-body,
+.dialog.preset-settings .modal-body {
+  overflow: hidden !important;
+}
+
+/* 切换过程中（preset-switching）在脚本视图也强制隐藏任何滚动条闪现 */
+body.preset-switching:not(.show-preset) *::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
+}
+body.preset-switching:not(.show-preset) * {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+/* 进一步隐藏脚本视图滚动条的轨道与拇指，避免紫色条出现 */
+body:not(.show-preset) *::-webkit-scrollbar-track {
+  background: transparent !important;
+  display: none !important;
+}
+body:not(.show-preset) *::-webkit-scrollbar-thumb {
+  background: transparent !important;
+  border: none !important;
+  display: none !important;
+}
+body:not(.show-preset) {
+  /* Firefox/Chromium 统一：将滚动条颜色设为透明 */
+  scrollbar-color: transparent transparent !important;
+}
+.theme-glassmorphism-dark .preset-mode-btn {
+  background: rgba(20, 20, 30, 0.3);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e2e8f0;
+}
+.theme-glassmorphism-dark .preset-mode-btn:hover {
+  background: rgba(59, 130, 246, 0.25);
+  border-color: rgba(59, 130, 246, 0.4);
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+}
+.theme-glassmorphism-dark .btn-toggle {
+  background: rgba(20, 20, 30, 0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e2e8f0;
+}
+.theme-glassmorphism-dark .btn-toggle.active {
+  background: rgba(59, 130, 246, 0.3);
+  border-color: rgba(59, 130, 246, 0.5);
+  color: #ffffff;
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.25);
+}

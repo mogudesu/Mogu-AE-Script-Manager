@@ -1,0 +1,47 @@
+/* 覆盖底部整排的过渡，彻底删除调整窗口时的弹动动画 */
+.bottom-controls-compact,
+.bottom-controls-compact *,
+.bottom-controls__content,
+.bottom-controls__content * {
+  transition: none !important;
+}
+
+/* 左下角预设/脚本切换开关组件：脚本(aria-checked=false)球在左文字在右；预设(aria-checked=true)球在右文字在左 */
+.mode-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(4px, 6px * var(--bc-scale), 10px);
+  white-space: nowrap;
+  min-width: max-content;
+}
+.mode-toggle[aria-checked="true"] {
+  flex-direction: row-reverse; /* 预设：文字在左、球在右 */
+}
+
+/* 轨道与滑球：尺寸随 --bc-scale 缩放，隐藏溢出确保滑球不超出轨道，也不覆盖文字 */
+.mode-toggle__track {
+  position: relative;
+  display: inline-block;
+  width: clamp(28px, 32px * var(--bc-scale), 44px);
+  height: clamp(16px, 18px * var(--bc-scale), 24px);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.18);
+  flex: 0 0 auto;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.mode-toggle__ball {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: clamp(12px, 14px * var(--bc-scale), 20px);
+  height: clamp(12px, 14px * var(--bc-scale), 20px);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+.mode-toggle__label {
+  white-space: nowrap;
+  line-height: 1;
+  font-size: calc(11px * var(--bc-scale));
+}
