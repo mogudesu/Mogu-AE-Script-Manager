@@ -1,0 +1,228 @@
+/* ==========================================================================
+   Settings Sidebar & Tabs Styling
+   Theme: Arknights Endfield (Dark) & Microsoft Fluent (Light)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Layout Structure
+   -------------------------------------------------------------------------- */
+.settings-unified {
+    display: flex;
+    flex-direction: row;
+    width: 800px;
+    /* Increased wide format width */
+    max-width: 95vw;
+    height: 550px;
+    max-height: 85vh;
+    padding: 0;
+    overflow: hidden;
+}
+
+/* Sidebar Area */
+.settings-sidebar {
+    width: 180px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 16px 8px;
+    border-right: 1px solid transparent;
+    /* Themed below */
+    background-color: transparent;
+    /* Themed below */
+}
+
+.sidebar-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    padding-left: 12px;
+    opacity: 0.9;
+}
+
+/* Main Content Area */
+.settings-main-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Override default settings header to fit in main area */
+.settings-main-area .settings-header {
+    padding: 16px 24px;
+    flex-shrink: 0;
+}
+
+/* Tab Content Wrapper */
+.settings-tab-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0;
+    /* Content padding handled by .settings-body inside */
+    display: none;
+    /* Hidden by default */
+}
+
+.settings-tab-content.active {
+    display: flex;
+    /* Or block, depending on child layout */
+    flex-direction: column;
+}
+
+/* --------------------------------------------------------------------------
+   Tab Buttons Styling
+   -------------------------------------------------------------------------- */
+.settings-tab-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 10px 12px;
+    margin-bottom: 4px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    outline: none;
+    color: #888;
+}
+
+.settings-tab-btn.active {
+    background-color: rgba(255, 255, 255, 0.06);
+    color: #e0e0e0;
+    font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   Theme: Arknights Endfield (Dark)
+   -------------------------------------------------------------------------- */
+body.theme-dark .settings-sidebar {
+    background-color: #111;
+    /* Slightly lighter than main black */
+    border-right: 1px solid #333;
+}
+
+body.theme-dark .sidebar-title {
+    color: #fff;
+    letter-spacing: 1px;
+}
+
+body.theme-dark .settings-tab-btn {
+    color: #888;
+}
+
+body.theme-dark .settings-tab-btn:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #e0e0e0;
+}
+
+body.theme-dark .settings-tab-btn.active {
+    background-color: #FACC15;
+    /* Endfield Yellow */
+    color: #000;
+    font-weight: 700;
+    box-shadow: 0 0 10px rgba(250, 204, 21, 0.2);
+}
+
+/* --------------------------------------------------------------------------
+   Theme: Microsoft Fluent (Light)
+   -------------------------------------------------------------------------- */
+body.theme-neumorphism .settings-sidebar {
+    background-color: #f3f3f3;
+    border-right: 1px solid #e5e5e5;
+}
+
+body.theme-neumorphism .sidebar-title {
+    color: #333;
+}
+
+body.theme-neumorphism .settings-tab-btn {
+    color: #605e5c;
+}
+
+body.theme-neumorphism .settings-tab-btn:hover {
+    background-color: #e0e0e0;
+    color: #323130;
+}
+
+body.theme-neumorphism .settings-tab-btn.active {
+    background-color: #fff;
+    color: #0078d4;
+    /* Microsoft Blue */
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    position: relative;
+}
+
+/* Optional: Active indicator bar for Fluent theme */
+body.theme-neumorphism .settings-tab-btn.active::before {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 16px;
+    width: 3px;
+    background-color: #0078d4;
+    border-radius: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive Design
+   -------------------------------------------------------------------------- */
+@media (max-width: 650px) {
+    .settings-unified {
+        width: 95vw;
+        flex-direction: row;
+        /* Keep row, but scale sidebar */
+    }
+
+    .settings-sidebar {
+        width: 100px;
+        /* Shrink sidebar slightly */
+        padding: 12px 6px;
+    }
+
+    .sidebar-title {
+        font-size: 14px;
+        padding-left: 8px;
+    }
+
+    .settings-tab-btn {
+        padding: 8px 10px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 450px) {
+    .settings-unified {
+        flex-direction: column;
+        /* Stack on very small screens */
+        height: 90vh;
+    }
+
+    .settings-sidebar {
+        width: 100%;
+        height: auto;
+        flex-direction: row;
+        overflow-x: auto;
+        padding: 8px;
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar-title {
+        display: none;
+        /* Hide title to save space on mobile/tiny windows */
+    }
+
+    .settings-tab-btn {
+        width: auto;
+        white-space: nowrap;
+        margin-bottom: 0;
+        margin-right: 4px;
+    }
+}

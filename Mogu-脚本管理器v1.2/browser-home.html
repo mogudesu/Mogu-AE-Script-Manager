@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web-Bridge 主页</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #16181d;
+            --surface: #1f2128;
+            --surface2: #282c35;
+            --accent: #6c8cff;
+            --accent2: #a78bfa;
+            --text: #e2e8f0;
+            --subtext: #8b949e;
+            --border: rgba(255, 255, 255, 0.08);
+            --card-hover: rgba(108, 140, 255, 0.08);
+            --danger: #f87171;
+            --radius: 12px;
+            --radius-sm: 8px;
+        }
+
+        body {
+            font-family: -apple-system, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .hero {
+            padding: 36px 24px 18px;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 400px;
+            height: 300px;
+            background: radial-gradient(ellipse at center, rgba(108, 140, 255, 0.12) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-title {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 4px;
+        }
+
+        .hero-subtitle {
+            font-size: 13px;
+            color: var(--subtext);
+        }
+
+        .search-wrap {
+            padding: 0 20px 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 40px;
+            padding: 0 18px;
+            gap: 10px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .search-box:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(108, 140, 255, 0.15);
+        }
+
+        .search-icon {
+            color: var(--subtext);
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .search-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text);
+            font-size: 14px;
+            padding: 12px 0;
+        }
+
+        .search-input::placeholder {
+            color: var(--subtext);
+        }
+
+        .search-btn {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border: none;
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .section {
+            padding: 0 20px 20px;
+            max-width: 760px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--subtext);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .btn-add {
+            background: rgba(108, 140, 255, 0.12);
+            border: 1px solid rgba(108, 140, 255, 0.3);
+            color: var(--accent);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-add:hover {
+            background: rgba(108, 140, 255, 0.2);
+        }
+
+        .add-form {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 14px;
+            margin-bottom: 14px;
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .add-form.open {
+            display: flex;
+            animation: fadeUp 0.15s ease;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(-6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        .add-form-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .form-input {
+            flex: 1;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text);
+            padding: 7px 12px;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            border-color: var(--accent);
+        }
+
+        .form-input::placeholder {
+            color: var(--subtext);
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border: none;
+            color: #fff;
+            padding: 7px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .btn-cancel {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--subtext);
+            padding: 7px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .bookmark-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 8px;
+        }
+
+        .bookmark-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 12px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.18s;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 7px;
+            overflow: hidden;
+        }
+
+        .bookmark-card:hover {
+            background: var(--card-hover);
+            border-color: rgba(108, 140, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .bookmark-delete {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(248, 113, 113, 0.1);
+            border: none;
+            color: var(--danger);
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            font-size: 10px;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .bookmark-card:hover .bookmark-delete {
+            opacity: 1;
+        }
+
+        .bookmark-delete:hover {
+            background: rgba(248, 113, 113, 0.25);
+        }
+
+        .bookmark-favicon {
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            background: var(--surface2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .bookmark-favicon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .bookmark-name {
+            font-size: 11px;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+
+        .bookmark-empty {
+            grid-column: 1/-1;
+            text-align: center;
+            color: var(--subtext);
+            font-size: 13px;
+            padding: 16px;
+        }
+
+        .quick-sites {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            gap: 7px;
+        }
+
+        .quick-site {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 9px 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            transition: all 0.15s;
+        }
+
+        .quick-site:hover {
+            background: var(--card-hover);
+            border-color: rgba(108, 140, 255, 0.3);
+        }
+
+        .quick-site-icon {
+            font-size: 17px;
+            flex-shrink: 0;
+        }
+
+        .quick-site-name {
+            font-size: 12px;
+            color: var(--text);
+        }
+
+        .watchlist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 8px;
+        }
+
+        .watch-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.16s;
+        }
+
+        .watch-card:hover {
+            background: var(--card-hover);
+            border-color: rgba(108, 140, 255, 0.4);
+        }
+
+        .watch-code {
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .watch-name {
+            font-size: 11px;
+            color: var(--subtext);
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .watch-price {
+            font-size: 12px;
+        }
+
+        .watch-price.up {
+            color: #76d987;
+        }
+
+        .watch-price.down {
+            color: #ff8787;
+        }
+
+        .watch-price.flat {
+            color: var(--subtext);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 14px;
+            color: var(--subtext);
+            font-size: 11px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="hero">
+        <div class="hero-title">🌐 Web-Bridge</div>
+        <div class="hero-subtitle" id="heroSubtitle">AE内置浏览器 · 沉浸式工作空间</div>
+    </div>
+
+    <div class="search-wrap">
+        <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input class="search-input" id="searchInput" type="text" placeholder="输入网址或搜索词，回车跳转..." autocomplete="off">
+            <button class="search-btn" id="searchGoBtn" onclick="doSearch()">跳转</button>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-header">
+            <span class="section-title" id="bookmarksSectionTitle">📌 我的书签</span>
+            <button class="btn-add" id="addBookmarkBtn" onclick="toggleAddForm()">+ 新增书签</button>
+        </div>
+        <div class="add-form" id="addForm">
+            <div class="add-form-row">
+                <input class="form-input" id="addName" type="text" placeholder="书签名称（如：Bilibili）">
+                <input class="form-input" id="addUrl" type="text" placeholder="网址（如：https://bilibili.com）">
+            </div>
+            <div class="add-form-row">
+                <button class="btn-cancel" id="addCancelBtn" onclick="toggleAddForm()">取消</button>
+                <button class="btn-save" id="addSaveBtn" onclick="saveBookmark()">保存</button>
+            </div>
+        </div>
+        <div class="bookmark-grid" id="bookmarkGrid">
+            <div class="bookmark-empty">暂无书签，点击「新增书签」添加吧！</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-header">
+            <span class="section-title" id="recommendSectionTitle">⚡ 推荐</span>
+        </div>
+        <div class="quick-sites">
+            <div class="quick-site" onclick="navigate('https://www.bilibili.com')"><span
+                    class="quick-site-icon">📺</span>
+                <div class="quick-site-name">Bilibili</div>
+            </div>
+            <div class="quick-site" onclick="navigate('https://chat.deepseek.com')"><span
+                    class="quick-site-icon">🤖</span>
+                <div class="quick-site-name">DeepSeek</div>
+            </div>
+            <div class="quick-site" onclick="navigate('https://www.doubao.com/chat/')"><span
+                    class="quick-site-icon">🧠</span>
+                <div class="quick-site-name">豆包</div>
+            </div>
+            <div class="quick-site" onclick="navigate('https://gemini.google.com')"><span
+                    class="quick-site-icon">✨</span>
+                <div class="quick-site-name">Gemini</div>
+            </div>
+            <div class="quick-site" onclick="navigate('https://chat.qwen.ai/')"><span
+                    class="quick-site-icon">🌀</span>
+                <div class="quick-site-name">Qwen</div>
+            </div>
+            <div class="quick-site" onclick="navigate('https://www.kimi.com/')"><span
+                    class="quick-site-icon">🌙</span>
+                <div class="quick-site-name">Kimi</div>
+            </div>
+            <div class="quick-site" onclick="navigate('https://waytoagi.feishu.cn/wiki/QPe5w5g7UisbEkkow8XcDmOpn8e')"><span
+                    class="quick-site-icon">📚</span>
+                <div class="quick-site-name">WayToAGI</div>
+            </div>
+            <div class="quick-site" onclick="navigate('https://www.douyin.com/')"><span
+                    class="quick-site-icon">🎵</span>
+                <div class="quick-site-name">抖</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-header">
+            <span class="section-title">Watchlist</span>
+        </div>
+        <div class="watchlist-grid" id="watchlistGrid">
+            <div class="bookmark-empty">No watchlist items yet. Add them in Tools Center.</div>
+        </div>
+    </div>
+
+    <div class="footer">Web-Bridge · Mogu Script Manager</div>
+
+    <script>
+        'use strict';
+
+        let bookmarks = [];
+        let watchlist = [];
+        let watchQuoteMap = {};
+        let currentLanguage = 'zh-CN';
+        const homeI18n = {
+            'zh-CN': {
+                title: 'Web-Bridge 主页',
+                subtitle: 'AE内置浏览器 · 沉浸式工作空间',
+                searchPlaceholder: '输入网址或搜索词，回车跳转...',
+                searchGo: '跳转',
+                bookmarks: '📌 我的书签',
+                addBookmark: '+ 新增书签',
+                addNamePlaceholder: '书签名称（如：Bilibili）',
+                addUrlPlaceholder: '网址（如：https://bilibili.com）',
+                cancel: '取消',
+                save: '保存',
+                bookmarksEmpty: '暂无书签，点击「新增书签」添加吧！',
+                recommend: '⚡ 推荐',
+                deleteBookmark: '删除'
+            },
+            'en-US': {
+                title: 'Web-Bridge Home',
+                subtitle: 'Built-in AE browser · Immersive workspace',
+                searchPlaceholder: 'Enter URL or keywords, press Enter...',
+                searchGo: 'Go',
+                bookmarks: '📌 My Bookmarks',
+                addBookmark: '+ Add Bookmark',
+                addNamePlaceholder: 'Bookmark name (e.g. Bilibili)',
+                addUrlPlaceholder: 'URL (e.g. https://bilibili.com)',
+                cancel: 'Cancel',
+                save: 'Save',
+                bookmarksEmpty: 'No bookmarks yet. Click "Add Bookmark" to create one.',
+                recommend: '⚡ Recommended',
+                deleteBookmark: 'Delete'
+            }
+        };
+
+        function normalizeLanguage(lang) {
+            return String(lang || '').toLowerCase().indexOf('en') === 0 ? 'en-US' : 'zh-CN';
+        }
+
+        function detectLanguage() {
+            try {
+                if (window.parent && window.parent.I18n && typeof window.parent.I18n.getLanguage === 'function') {
+                    return normalizeLanguage(window.parent.I18n.getLanguage());
+                }
+            } catch (e) { }
+            try {
+                return normalizeLanguage(localStorage.getItem('preferredLanguage'));
+            } catch (e) { }
+            return 'zh-CN';
+        }
+
+        function tr(key) {
+            var dict = homeI18n[currentLanguage] || homeI18n['zh-CN'];
+            return dict[key] || key;
+        }
+
+        function applyLanguage(nextLanguage) {
+            currentLanguage = normalizeLanguage(nextLanguage);
+            document.documentElement.lang = currentLanguage;
+            document.title = tr('title');
+
+            var heroSubtitle = document.getElementById('heroSubtitle');
+            if (heroSubtitle) heroSubtitle.textContent = tr('subtitle');
+            var searchInputEl = document.getElementById('searchInput');
+            if (searchInputEl) searchInputEl.placeholder = tr('searchPlaceholder');
+            var searchGoBtn = document.getElementById('searchGoBtn');
+            if (searchGoBtn) searchGoBtn.textContent = tr('searchGo');
+            var bookmarksTitleEl = document.getElementById('bookmarksSectionTitle');
+            if (bookmarksTitleEl) bookmarksTitleEl.textContent = tr('bookmarks');
+            var addBookmarkBtn = document.getElementById('addBookmarkBtn');
+            if (addBookmarkBtn) addBookmarkBtn.textContent = tr('addBookmark');
+            var addNameEl = document.getElementById('addName');
+            if (addNameEl) addNameEl.placeholder = tr('addNamePlaceholder');
+            var addUrlEl = document.getElementById('addUrl');
+            if (addUrlEl) addUrlEl.placeholder = tr('addUrlPlaceholder');
+            var cancelBtn = document.getElementById('addCancelBtn');
+            if (cancelBtn) cancelBtn.textContent = tr('cancel');
+            var saveBtn = document.getElementById('addSaveBtn');
+            if (saveBtn) saveBtn.textContent = tr('save');
+            var recommendTitleEl = document.getElementById('recommendSectionTitle');
+            if (recommendTitleEl) recommendTitleEl.textContent = tr('recommend');
+            renderBookmarks();
+        }
+
+        function bindLanguageSync() {
+            applyLanguage(detectLanguage());
+
+            window.addEventListener('message', function (evt) {
+                try {
+                    if (evt && evt.data && evt.data.type === 'language:changed') {
+                        applyLanguage(normalizeLanguage(evt.data.language || detectLanguage()));
+                    }
+                } catch (e) { }
+            });
+
+            window.addEventListener('storage', function (evt) {
+                if (!evt || evt.key !== 'preferredLanguage') return;
+                applyLanguage(normalizeLanguage(evt.newValue || detectLanguage()));
+            });
+
+            window.addEventListener('focus', function () {
+                applyLanguage(detectLanguage());
+            });
+        }
+
+        function normalizeHomeWatchCode(code) {
+            var value = String(code || '').trim().toUpperCase();
+            if (!value) return '';
+            if (/^(\d{6})\.(SH|SS)$/i.test(value)) return RegExp.$1 + '.SS';
+            if (/^(\d{6})\.(SZ)$/i.test(value)) return RegExp.$1 + '.SZ';
+            if (/^(SH)(\d{6})$/i.test(value)) return RegExp.$2 + '.SS';
+            if (/^(SZ)(\d{6})$/i.test(value)) return RegExp.$2 + '.SZ';
+            if (/^\d{6}$/.test(value)) return value + (/^[569]/.test(value) ? '.SS' : '.SZ');
+            if (/^(\d{4,5})\.(HK)$/i.test(value)) return String(parseInt(RegExp.$1, 10)).padStart(5, '0') + '.HK';
+            if (/^\d{4,5}$/.test(value)) return String(parseInt(value, 10)).padStart(5, '0') + '.HK';
+            if (/^(US)([A-Z.\-]{1,12})$/i.test(value)) return RegExp.$2.replace(/[^A-Z0-9.\-]/g, '');
+            return value;
+        }
+
+        function normalizeHomeWatchlist(data) {
+            var seen = {};
+            return (Array.isArray(data) ? data : []).map(function (item) {
+                var code = normalizeHomeWatchCode(item && item.code || '');
+                if (!code || seen[code]) return null;
+                seen[code] = true;
+                return {
+                    code: code,
+                    name: String(item && item.name || ''),
+                    ts: Number(item && item.ts || Date.now())
+                };
+            }).filter(function (item) { return !!item; });
+        }
+
+        window.loadWatchlistFromHost = function (data) {
+            watchlist = normalizeHomeWatchlist(data);
+            renderWatchlist();
+            refreshWatchQuotes();
+        };
+
+        // ---- Receive bookmarks pushed by executeJavaScript from browser-manager.js ----
+        // This is exposed as a global so browser-manager.js can call it via executeJavaScript
+        window.loadBookmarksFromHost = function (data) {
+            bookmarks = data || [];
+            renderBookmarks();
+        };
+
+        // Also handle postMessage from parent frame (fallback)
+        window.addEventListener('message', function (e) {
+            if (e.data && e.data.type === 'LOAD_BOOKMARKS') {
+                bookmarks = e.data.bookmarks || [];
+                renderBookmarks();
+            } else if (e.data && e.data.type === 'LOAD_WATCHLIST') {
+                watchlist = normalizeHomeWatchlist(e.data.watchlist);
+                renderWatchlist();
+                refreshWatchQuotes();
+            }
+        });
+
+        function getFavicon(url) {
+            try {
+                var u = new URL(url);
+                return 'https://www.google.com/s2/favicons?domain=' + u.hostname + '&sz=64';
+            } catch (e) { return null; }
+        }
+
+        function renderBookmarks() {
+            var grid = document.getElementById('bookmarkGrid');
+            if (!grid) return;
+            if (!bookmarks || bookmarks.length === 0) {
+                grid.innerHTML = '<div class="bookmark-empty">' + tr('bookmarksEmpty') + '</div>';
+                return;
+            }
+            grid.innerHTML = '';
+            bookmarks.forEach(function (b, idx) {
+                var card = document.createElement('div');
+                card.className = 'bookmark-card';
+                var favicon = getFavicon(b.url);
+                var iconHtml = favicon
+                    ? '<div class="bookmark-favicon"><img src="' + favicon + '" onerror="this.parentNode.textContent=\'🌐\'"></div>'
+                    : '<div class="bookmark-favicon">🌐</div>';
+                card.innerHTML = iconHtml +
+                    '<span class="bookmark-name" title="' + b.url + '">' + b.title + '</span>' +
+                    '<button class="bookmark-delete" title="' + tr('deleteBookmark') + '">✕</button>';
+                card.querySelector('.bookmark-delete').addEventListener('click', function (e) {
+                    e.stopPropagation(); deleteBookmark(idx);
+                });
+                card.addEventListener('click', function () { navigate(b.url); });
+                grid.appendChild(card);
+            });
+        }
+
+        function refreshWatchQuotes() {
+            if (!watchlist.length) {
+                watchQuoteMap = {};
+                renderWatchlist();
+                return;
+            }
+
+            function normalizeWatchCode(code) {
+                return normalizeHomeWatchCode(code);
+            }
+
+            function normalizeToYahooSymbol(code) {
+                var value = normalizeWatchCode(code);
+                if (!value) return '';
+                if (/^[A-Z]{1,10}\.(SS|SZ|HK)$/.test(value)) {
+                    var parts = value.split('.');
+                    var suffix = parts[1];
+                    if (suffix === 'HK') return String(parseInt(parts[0], 10)).padStart(4, '0') + '.HK';
+                    return parts[0] + '.' + suffix;
+                }
+                return value;
+            }
+
+            function toTencentSymbol(code) {
+                var value = normalizeWatchCode(code);
+                if (!value) return '';
+                if (/^(\d{6})\.(SS)$/i.test(value)) return 'sh' + RegExp.$1;
+                if (/^(\d{6})\.(SZ)$/i.test(value)) return 'sz' + RegExp.$1;
+                if (/^(\d{4,5})\.(HK)$/i.test(value)) return 'hk' + String(parseInt(RegExp.$1, 10)).padStart(5, '0');
+                if (/^\d{6}$/.test(value)) return (/^[569]/.test(value) ? 'sh' : 'sz') + value;
+                if (/^\d{4,5}$/.test(value)) return 'hk' + String(parseInt(value, 10)).padStart(5, '0');
+                var us = value.replace(/[^A-Z0-9]/g, '').slice(0, 12);
+                return us ? ('us' + us) : '';
+            }
+
+            function toEastmoneySecid(code) {
+                var value = normalizeWatchCode(code);
+                if (!value) return null;
+                if (/^(\d{6})\.(SS)$/.test(value)) return { secid: '1.' + RegExp.$1, code: value };
+                if (/^(\d{6})\.(SZ)$/.test(value)) return { secid: '0.' + RegExp.$1, code: value };
+                return null;
+            }
+
+            function requestJsonp(url, callbackParam, timeoutMs) {
+                return new Promise(function (resolve, reject) {
+                    var cbName = '__mogu_home_jsonp_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
+                    var script = document.createElement('script');
+                    var timer = null;
+                    var done = false;
+                    var paramName = callbackParam || 'cb';
+
+                    function cleanup() {
+                        if (done) return;
+                        done = true;
+                        if (timer) clearTimeout(timer);
+                        try { delete window[cbName]; } catch (_) { window[cbName] = undefined; }
+                        try { if (script && script.parentNode) script.parentNode.removeChild(script); } catch (_) { }
+                    }
+
+                    window[cbName] = function (payload) {
+                        cleanup();
+                        resolve(payload);
+                    };
+                    script.onerror = function () {
+                        cleanup();
+                        reject(new Error('JSONP request failed'));
+                    };
+
+                    var sep = url.indexOf('?') >= 0 ? '&' : '?';
+                    script.src = url + sep + encodeURIComponent(paramName) + '=' + encodeURIComponent(cbName);
+                    timer = setTimeout(function () {
+                        cleanup();
+                        reject(new Error('JSONP timeout'));
+                    }, Number(timeoutMs || 7000));
+                    document.head.appendChild(script);
+                });
+            }
+
+            function fetchTextWithProxy(url) {
+                var target = String(url || '').trim();
+                if (!target) return Promise.reject(new Error('Empty URL'));
+                function fetchText(u) {
+                    return fetch(u).then(function (res) {
+                        if (!res || !res.ok) throw new Error('HTTP ' + (res ? res.status : '0'));
+                        return res.text();
+                    });
+                }
+                var allOriginsProxy = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(target);
+                var jinaProxy = /^https?:\/\//i.test(target) ? ('https://r.jina.ai/' + target) : ('https://r.jina.ai/http://' + target);
+                return fetchText(target).catch(function () {
+                    return fetchText(allOriginsProxy);
+                }).catch(function () {
+                    return fetchText(jinaProxy);
+                });
+            }
+
+            function fetchFallbackQuotes(codes) {
+                var secidMap = {};
+                var tencentMap = {};
+                var yahooMap = {};
+                (codes || []).forEach(function (code) {
+                    var normalized = normalizeWatchCode(code);
+                    if (!normalized) return;
+                    var cn = toEastmoneySecid(normalized);
+                    if (cn && cn.secid) {
+                        if (!secidMap[cn.secid]) secidMap[cn.secid] = normalized;
+                    }
+                    var tencentSymbol = toTencentSymbol(normalized);
+                    if (tencentSymbol) {
+                        var tencentKey = String(tencentSymbol).toLowerCase();
+                        if (!tencentMap[tencentKey]) tencentMap[tencentKey] = normalized;
+                    }
+                    var yahooSymbol = normalizeToYahooSymbol(normalized);
+                    if (yahooSymbol && !yahooMap[yahooSymbol]) yahooMap[yahooSymbol] = normalized;
+                });
+
+                var cnPromise = (function () {
+                    var secids = Object.keys(secidMap);
+                    if (!secids.length) return Promise.resolve([]);
+                    var eastUrl = 'https://push2.eastmoney.com/api/qt/ulist.np/get?fltt=2&invt=2&fields=f2,f3,f4,f9,f23,f12,f13,f14&secids='
+                        + encodeURIComponent(secids.join(','));
+                    return requestJsonp(eastUrl, 'cb', 7000).then(function (payload) {
+                        var rows = payload && payload.data && Array.isArray(payload.data.diff) ? payload.data.diff : [];
+                        return rows.map(function (row) {
+                            var key = (Number(row && row.f13) === 1 ? '1.' : '0.') + String(row && row.f12 || '').padStart(6, '0');
+                            var mappedCode = secidMap[key] || String(row && row.f12 || '').padStart(6, '0');
+                            return {
+                                code: mappedCode,
+                                query: mappedCode,
+                                name: String(row && row.f14 || mappedCode),
+                                price: Number(row && row.f2),
+                                change: Number(row && row.f4),
+                                changePercent: Number(row && row.f3),
+                                pe: Number(row && row.f9),
+                                pb: Number(row && row.f23),
+                                source: 'eastmoney'
+                            };
+                        });
+                    }).catch(function () {
+                        return [];
+                    });
+                })();
+
+                var tencentPromise = (function () {
+                    var symbols = Object.keys(tencentMap);
+                    if (!symbols.length) return Promise.resolve([]);
+                    var url = 'https://qt.gtimg.cn/q=' + encodeURIComponent(symbols.join(','));
+                    return fetchTextWithProxy(url).then(function (text) {
+                        var rows = [];
+                        String(text || '').split(/\r?\n/).forEach(function (line) {
+                            var match = line.match(/^v_([^=]+)="([\s\S]*)";$/);
+                            if (!match) return;
+                            var symbol = String(match[1] || '').trim().toLowerCase();
+                            var parts = String(match[2] || '').split('~');
+                            if (!symbol || parts.length < 40) return;
+                            var mappedCode = tencentMap[symbol] || symbol;
+                            var price = Number(parts[3]);
+                            var prev = Number(parts[4]);
+                            var change = Number(parts[31]);
+                            var pct = Number(parts[32]);
+                            if (!Number.isFinite(change) && Number.isFinite(price) && Number.isFinite(prev)) {
+                                change = price - prev;
+                            }
+                            if (!Number.isFinite(pct) && Number.isFinite(change) && Number.isFinite(prev) && prev !== 0) {
+                                pct = change / prev * 100;
+                            }
+                            rows.push({
+                                code: mappedCode,
+                                query: mappedCode,
+                                name: String(parts[1] || mappedCode),
+                                price: price,
+                                change: change,
+                                changePercent: pct,
+                                pe: Number(parts[39]),
+                                pb: Number(parts[43]),
+                                source: 'tencent'
+                            });
+                        });
+                        return rows;
+                    }).catch(function () {
+                        return [];
+                    });
+                })();
+
+                var yahooPromise = (function () {
+                    var symbols = Object.keys(yahooMap);
+                    if (!symbols.length) return Promise.resolve([]);
+                    return Promise.all(symbols.map(function (symbol) {
+                        var mappedCode = yahooMap[symbol];
+                        var url = 'https://query2.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent(symbol)
+                            + '?range=1d&interval=1d';
+                        return fetch(url).then(function (res) {
+                            if (!res || !res.ok) throw new Error('HTTP ' + (res ? res.status : '0'));
+                            return res.json();
+                        }).then(function (payload) {
+                            var result = payload && payload.chart && Array.isArray(payload.chart.result)
+                                ? payload.chart.result[0]
+                                : null;
+                            var meta = result && result.meta ? result.meta : null;
+                            if (!meta) return null;
+                            var price = Number(meta.regularMarketPrice);
+                            var prev = Number(meta.previousClose);
+                            var change = (Number.isFinite(price) && Number.isFinite(prev)) ? (price - prev) : Number.NaN;
+                            var pct = (Number.isFinite(change) && Number.isFinite(prev) && prev !== 0) ? (change / prev * 100) : Number.NaN;
+                            return {
+                                code: mappedCode,
+                                query: mappedCode,
+                                name: String(meta.shortName || meta.longName || mappedCode),
+                                price: price,
+                                change: change,
+                                changePercent: pct,
+                                pe: Number.NaN,
+                                pb: Number.NaN,
+                                source: 'yahoo-chart'
+                            };
+                        }).catch(function () {
+                            return null;
+                        });
+                    })).then(function (rows) {
+                        return rows.filter(function (row) { return !!row; });
+                    });
+                })();
+
+                return Promise.all([cnPromise, tencentPromise, yahooPromise]).then(function (parts) {
+                    var merged = {};
+                    function score(row) {
+                        var price = Number(row && row.price);
+                        var hasPrice = Number.isFinite(price) && price > 0 ? 100 : 0;
+                        var hasValuation = (Number.isFinite(Number(row && row.pe)) || Number.isFinite(Number(row && row.pb))) ? 10 : 0;
+                        var source = String(row && row.source || '').toLowerCase();
+                        var sourceBoost = source === 'eastmoney' ? 6 : (source === 'tencent' ? 5 : 3);
+                        return hasPrice + hasValuation + sourceBoost;
+                    }
+
+                    function putRow(row) {
+                        if (!row || !row.code) return;
+                        var key = String(row.code).toUpperCase();
+                        var current = merged[key];
+                        if (!current || score(row) > score(current)) merged[key] = row;
+                    }
+
+                    (parts[1] || []).forEach(putRow);
+                    (parts[2] || []).forEach(putRow);
+                    (parts[0] || []).forEach(putRow);
+
+                    return (codes || []).map(function (input) {
+                        var key = String(normalizeWatchCode(input) || input || '').toUpperCase();
+                        return merged[key] || {
+                            code: key,
+                            query: key,
+                            name: key,
+                            price: Number.NaN,
+                            change: Number.NaN,
+                            changePercent: Number.NaN,
+                            pe: Number.NaN,
+                            pb: Number.NaN,
+                            source: 'none'
+                        };
+                    });
+                });
+            }
+
+            function applyRows(rows) {
+                watchQuoteMap = {};
+                (rows || []).forEach(function (row) {
+                    if (!row) return;
+                    var key = String(row.code || row.query || '').toUpperCase();
+                    if (key) watchQuoteMap[key] = row;
+                });
+                renderWatchlist();
+            }
+
+            var codes = watchlist.map(function (item) { return normalizeWatchCode(item.code); });
+
+            function hasRealQuote(rows) {
+                return Array.isArray(rows) && rows.some(function (row) {
+                    var price = Number(row && row.price);
+                    var source = String(row && row.source || '').toLowerCase();
+                    return Number.isFinite(price) && price > 0 && source !== 'none';
+                });
+            }
+
+            try {
+                if (window.parent && window.parent.BrowserManager
+                    && typeof window.parent.BrowserManager.fetchStockQuotes === 'function') {
+                    Promise.all([
+                        Promise.resolve(window.parent.BrowserManager.fetchStockQuotes(codes)).then(function (rows) {
+                            return Array.isArray(rows) ? rows : [];
+                        }).catch(function () { return []; }),
+                        fetchFallbackQuotes(codes).catch(function () { return []; })
+                    ]).then(function (pair) {
+                        var hostRows = pair[0] || [];
+                        var fallbackRows = pair[1] || [];
+                        if (hasRealQuote(fallbackRows)) {
+                            applyRows(fallbackRows);
+                            return;
+                        }
+                        if (hasRealQuote(hostRows)) {
+                            applyRows(hostRows);
+                            return;
+                        }
+                        applyRows(fallbackRows.length ? fallbackRows : hostRows);
+                    }).catch(function () {
+                        fetchFallbackQuotes(codes).then(applyRows).catch(function () { });
+                    });
+                    return;
+                }
+            } catch (e) { }
+            fetchFallbackQuotes(codes).then(applyRows).catch(function () { });
+        }
+
+        function renderWatchlist() {
+            var grid = document.getElementById('watchlistGrid');
+            if (!grid) return;
+            if (!watchlist || watchlist.length === 0) {
+                grid.innerHTML = '<div class="bookmark-empty">No watchlist items yet. Add them in Tools Center.</div>';
+                return;
+            }
+
+            grid.innerHTML = '';
+            watchlist.slice(0, 12).forEach(function (item) {
+                var code = normalizeHomeWatchCode(item.code);
+                var quote = watchQuoteMap[code] || watchQuoteMap[String(item.code || '').toUpperCase()] || null;
+                var priceText = '--';
+                var deltaText = 'No live quote';
+                var valuationText = '';
+                var cls = 'flat';
+                if (quote && Number.isFinite(Number(quote.price))) {
+                    var price = Number(quote.price);
+                    var pct = Number(quote.changePercent);
+                    priceText = price.toFixed(2);
+                    if (Number.isFinite(pct)) {
+                        deltaText = (pct > 0 ? '+' : '') + pct.toFixed(2) + '%';
+                        cls = pct > 0 ? 'up' : (pct < 0 ? 'down' : 'flat');
+                    }
+                    var pe = Number(quote.pe);
+                    var pb = Number(quote.pb);
+                    if (Number.isFinite(pe) || Number.isFinite(pb)) {
+                        valuationText = ' PE ' + (Number.isFinite(pe) ? pe.toFixed(2) : '--')
+                            + ' / PB ' + (Number.isFinite(pb) ? pb.toFixed(2) : '--');
+                    }
+                }
+
+                var card = document.createElement('div');
+                card.className = 'watch-card';
+                card.innerHTML = [
+                    '<div class="watch-code">' + code + '</div>',
+                    '<div class="watch-name">' + (item.name || quote && quote.name || code) + '</div>',
+                    '<div class="watch-price ' + cls + '">' + priceText + '  ' + deltaText + '</div>',
+                    '<div class="watch-name">' + valuationText + '</div>'
+                ].join('');
+                card.addEventListener('click', function () {
+                    var query = code + ' stock quote';
+                    navigate('https://cn.bing.com/search?q=' + encodeURIComponent(query));
+                });
+                grid.appendChild(card);
+            });
+        }
+
+        function deleteBookmark(idx) {
+            bookmarks.splice(idx, 1);
+            sendToHost({ type: 'SAVE_BOOKMARKS', bookmarks: bookmarks });
+            renderBookmarks();
+        }
+
+        function toggleAddForm() {
+            var f = document.getElementById('addForm');
+            f.classList.toggle('open');
+            if (f.classList.contains('open')) document.getElementById('addName').focus();
+        }
+
+        function saveBookmark() {
+            var name = document.getElementById('addName').value.trim();
+            var url = document.getElementById('addUrl').value.trim();
+            if (!url) return;
+            if (!url.startsWith('http://') && !url.startsWith('https://')) url = 'https://' + url;
+            bookmarks.push({ title: name || url, url: url, date: Date.now() });
+            sendToHost({ type: 'SAVE_BOOKMARKS', bookmarks: bookmarks });
+            renderBookmarks();
+            document.getElementById('addName').value = '';
+            document.getElementById('addUrl').value = '';
+            toggleAddForm();
+        }
+
+        function navigate(url) {
+            sendToHost({ type: 'NAVIGATE', url: url });
+        }
+
+        function doSearch() {
+            var v = document.getElementById('searchInput').value.trim();
+            if (!v) return;
+            if (!v.startsWith('http://') && !v.startsWith('https://')) {
+                v = (v.includes('.') && !v.includes(' ')) ? 'https://' + v : 'https://cn.bing.com/search?q=' + encodeURIComponent(v);
+            }
+            navigate(v);
+            document.getElementById('searchInput').value = '';
+        }
+
+        document.getElementById('searchInput').addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') doSearch();
+        });
+
+        bindLanguageSync();
+
+        function sendToHost(msg) {
+            try {
+                if (window.parent && window.parent !== window
+                    && window.parent.BrowserManager
+                    && typeof window.parent.BrowserManager.handleFrameMessage === 'function') {
+                    window.parent.BrowserManager.handleFrameMessage(msg);
+                    return true;
+                }
+            } catch (e) { }
+
+            // Fallback 1: dispatch a custom DOM event the preload script can capture
+            try {
+                var ev = new CustomEvent('home-ipc', { detail: msg });
+                document.dispatchEvent(ev);
+            } catch (e) { }
+            // Fallback: postMessage
+            try { window.parent.postMessage(msg, '*'); } catch (e) { }
+        }
+
+        // Ping host to load bookmarks on page ready
+        setTimeout(function () { sendToHost({ type: 'GET_BOOKMARKS' }); }, 200);
+        setTimeout(function () { sendToHost({ type: 'GET_WATCHLIST' }); }, 300);
+        setInterval(refreshWatchQuotes, 45000);
+    </script>
+</body>
+
+</html>

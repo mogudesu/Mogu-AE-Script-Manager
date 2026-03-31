@@ -1,0 +1,174 @@
+/* [搜索与标签面板]+[布局]+[01] 输入与标签按钮 */
+.tags-panel { display: flex; flex-wrap: wrap; gap: 4px; }
+.tag-button { 
+    background: rgba(255, 255, 255, 0.03); 
+    color: #a1a1aa; 
+    border: 1px solid rgba(255, 255, 255, 0.1); 
+    padding: 3px 8px; 
+    border-radius: 6px; 
+    font-size: 11px; 
+    cursor: pointer; 
+    position: relative; 
+    transition: all 0.2s ease; 
+    will-change: transform; 
+    box-shadow: none; 
+    backdrop-filter: blur(5px);
+    font-weight: 500;
+}
+.tag-button:hover { 
+    transform: translateY(-1px); 
+    background: rgba(255, 255, 255, 0.08); 
+    color: #e4e4e7;
+}
+.tag-button.active { 
+    transform: translateY(-1px); 
+    filter: brightness(1.1); 
+    border: 1px solid transparent; 
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3); 
+}
+.tag-button--xs { font-size: 9px; padding: 2px 6px; }
+.tag-button .delete-tag { margin-left: 6px; opacity: 0.6; transition: opacity 0.2s; }
+.tag-button .delete-tag:hover { opacity: 1; }
+
+/* [标签颜色]+[规则]+[02] 自动描边颜色分配 (默认/未选中状态) */
+.tag-button:nth-child(4n+1) { border-color: rgba(231, 76, 60, 0.4); color: rgba(231, 76, 60, 0.9); }
+.tag-button:nth-child(4n+2) { border-color: rgba(52, 152, 219, 0.4); color: rgba(52, 152, 219, 0.9); }
+.tag-button:nth-child(4n+3) { border-color: rgba(46, 204, 113, 0.4); color: rgba(46, 204, 113, 0.9); }
+.tag-button:nth-child(4n+4) { border-color: rgba(241, 196, 15, 0.4); color: rgba(241, 196, 15, 0.9); }
+
+/* =========================================
+   [主题特定样式覆盖]
+   ========================================= */
+
+/* --- Theme 1: Endfield / Dark Industrial Style --- */
+.theme-dark .tag-button {
+    background: rgba(20, 20, 20, 0.8);
+    border: 1px solid #444;
+    border-radius: 2px; /* Sharp corners */
+    color: #aaa;
+}
+.theme-dark .tag-button:hover {
+    border-color: #F7D000;
+    color: #F7D000;
+    background: rgba(247, 208, 0, 0.1);
+}
+.theme-dark .tag-button.active {
+    background: #F7D000;
+    color: #000; /* 纯黑文字 */
+    border-color: #F7D000;
+    box-shadow: 0 0 10px rgba(247, 208, 0, 0.4);
+    font-weight: 700; /* 加粗以提高对比度 */
+}
+/* Override automatic colors for Endfield - 提高选择器权重 */
+body.theme-dark .tag-button:nth-child(n) { border-color: #444; color: #aaa; }
+body.theme-dark .tag-button:nth-child(n):hover { border-color: #F7D000; color: #F7D000; }
+body.theme-dark .tag-button:nth-child(n).active {
+    background: #F7D000;
+    color: #000;
+    border-color: #F7D000;
+}
+
+/* --- Theme 2: Microsoft / Neumorphism Style --- */
+.theme-neumorphism .tag-button {
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    color: #605e5c;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    backdrop-filter: blur(4px);
+}
+.theme-neumorphism .tag-button:hover {
+    background: #f0f6ff;
+    border-color: rgba(0, 120, 212, 0.3);
+    color: #0078d4;
+}
+.theme-neumorphism .tag-button.active {
+    background: linear-gradient(135deg, #0078d4, #005a9e);
+    color: #ffffff;
+    border-color: transparent;
+    box-shadow: 0 2px 6px rgba(0, 120, 212, 0.3);
+}
+/* Override automatic colors for Microsoft */
+.theme-neumorphism .tag-button:nth-child(n) { border-color: rgba(0, 0, 0, 0.1); color: #605e5c; }
+.theme-neumorphism .tag-button:nth-child(n):hover { border-color: rgba(0, 120, 212, 0.3); color: #0078d4; }
+.theme-neumorphism .tag-button:nth-child(n).active {
+    background: linear-gradient(135deg, #0078d4, #005a9e);
+    color: #ffffff;
+    border-color: transparent;
+    box-shadow: 0 2px 6px rgba(0, 120, 212, 0.3);
+    font-weight: 600;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+/* --- Theme 3: Cute / Xiaohongshu Style (Refactored) --- */
+.theme-cute .tag-button {
+    background: #f5f5f5;
+    border: 1px solid transparent;
+    border-radius: 16px;
+    color: #333;
+    padding: 4px 12px;
+    font-weight: 500;
+    font-size: 12px;
+}
+.theme-cute .tag-button:hover {
+    background: #eeeeee;
+    color: #000;
+}
+.theme-cute .tag-button.active {
+    background: #ffffff;
+    color: #ff2442;
+    border: 1px solid #ff2442;
+    box-shadow: none;
+    font-weight: 600;
+}
+.theme-cute .tag-button:nth-child(n) { border-color: transparent; color: #333; }
+.theme-cute .tag-button:nth-child(n):hover { background: #eeeeee; color: #000; }
+
+/* --- Theme 4: Meituan Style --- */
+.theme-handdrawn .tag-button {
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    color: #333;
+    font-family: "Comic Sans MS", "Chalkboard SE", sans-serif;
+}
+.theme-handdrawn .tag-button:hover {
+    background: #fffcf0;
+    border-color: #FFC300;
+    color: #222;
+}
+.theme-handdrawn .tag-button.active {
+    background: #FFC300;
+    color: #222;
+    border-color: #FFC300;
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+    font-weight: bold;
+}
+.theme-handdrawn .tag-button:nth-child(n) { border-color: #e0e0e0; color: #333; }
+.theme-handdrawn .tag-button:nth-child(n):hover { border-color: #FFC300; color: #222; }
+
+/* --- Theme 5: Pop / Comic Style (Azur Lane) --- */
+.theme-glassmorphism-dark .tag-button {
+    background: #ffffff;
+    border: 2px solid #000000;
+    border-radius: 6px;
+    color: #000000;
+    box-shadow: 2px 2px 0px #000000;
+    font-weight: bold;
+}
+.theme-glassmorphism-dark .tag-button:hover {
+    background: #FFF9C4;
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0px #000000;
+    color: #000000;
+}
+.theme-glassmorphism-dark .tag-button.active {
+    background: #5D5FEF;
+    color: #ffffff;
+    border-color: #000000;
+    box-shadow: 2px 2px 0px #000000;
+}
+.theme-glassmorphism-dark .tag-button:nth-child(n) { border-color: #000000; color: #000000; }
+.theme-glassmorphism-dark .tag-button:nth-child(n):hover { border-color: #000000; color: #000000; }

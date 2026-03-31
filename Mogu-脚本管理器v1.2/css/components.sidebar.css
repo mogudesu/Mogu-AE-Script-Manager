@@ -1,0 +1,336 @@
+/* [侧栏组件]+[容器]+[01] 基础侧栏 */
+.sidebar {
+    width: 110px;
+    min-width: 40px;
+    max-width: 300px;
+    background: rgba(18, 18, 18, 0.6);
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    z-index: 10;
+    border-radius: 6px;
+    margin-right: 8px;
+    backdrop-filter: blur(20px);
+}
+
+.sidebar-header {
+    font-size: 12px;
+    font-weight: 700;
+    color: #a1a1aa;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* [侧栏组件]+[列表]+[02] 分类列表 */
+.category-list {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* [侧栏组件]+[列表项]+[03] 分类项样式 */
+.category-item {
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    flex-shrink: 0;
+    color: #a1a1aa;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.category-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: #e4e4e7;
+    transform: translateY(-1px);
+}
+
+.category-item.active {
+    background: rgba(255, 191, 0, 0.15);
+    color: #ffbf00;
+    border: 1px solid rgba(255, 191, 0, 0.3);
+    font-weight: 600;
+    box-shadow: 0 0 10px rgba(255, 191, 0, 0.1);
+}
+
+/* [Modified] Removed short line as requested */
+.category-item.active::before {
+    display: none;
+}
+
+/* [侧栏组件]+[按钮]+[04] 添加按钮 */
+#addCategoryBtn {
+    margin-top: 8px;
+    width: 100%;
+    padding: 6px;
+    border: 1px dashed rgba(255, 255, 255, 0.2);
+    background: transparent;
+    color: #666;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+#addCategoryBtn:hover {
+    border-color: #ffbf00;
+    color: #ffbf00;
+    background: rgba(255, 191, 0, 0.05);
+}
+
+/* [侧栏组件]+[拖拽]+[05] 调整大小手柄 */
+.sidebar-resizer {
+    position: absolute;
+    top: 0;
+    right: -4px;
+    width: 8px;
+    height: 100%;
+    cursor: ew-resize;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.sidebar-resizer::after {
+    content: '';
+    width: 2px;
+    height: 40px;
+    background: #00e5ff;
+    border-radius: 2px;
+}
+
+/* [侧栏组件]+[主题-暗色工业]+[Endfield] */
+.theme-dark .sidebar {
+    background: rgba(18, 18, 18, 0.95);
+    border-right: 1px solid #333;
+    border-radius: 4px;
+}
+
+.theme-dark .sidebar-header {
+    color: #888;
+    border-bottom: 1px solid #333;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.theme-dark .category-item {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid transparent;
+    border-radius: 2px;
+    color: #aaa;
+}
+
+.theme-dark .category-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: #444;
+    color: #fff;
+}
+
+.theme-dark .category-item.active {
+    background: rgba(255, 204, 0, 0.1);
+    color: #ffcc00;
+    border: 1px solid rgba(255, 204, 0, 0.3);
+    box-shadow: none;
+}
+
+.theme-dark #addCategoryBtn {
+    border: 1px dashed #444;
+    color: #666;
+    border-radius: 2px;
+}
+
+.theme-dark #addCategoryBtn:hover {
+    border-color: #ffcc00;
+    color: #ffcc00;
+    background: rgba(255, 204, 0, 0.05);
+}
+
+/* [侧栏组件]+[主题-微软流畅]+[Microsoft Gradient] */
+.theme-neumorphism .sidebar {
+    background: rgba(255, 255, 255, 0.5);
+    /* 半透明白 */
+    backdrop-filter: blur(30px) saturate(125%);
+    /* 毛玻璃增强 */
+    border-right: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.02);
+    border-radius: 8px;
+}
+
+.theme-neumorphism .sidebar-header {
+    color: #5d5d5d;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    font-weight: 600;
+}
+
+.theme-neumorphism .category-item {
+    background: rgba(255, 255, 255, 0.3);
+    border: 1px solid transparent;
+    color: #323130;
+    border-radius: 6px;
+    margin-bottom: 4px;
+    transition: all 0.2s ease;
+}
+
+.theme-neumorphism .category-item:hover {
+    background: rgba(255, 255, 255, 0.7);
+    color: #000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.theme-neumorphism .category-item.active {
+    background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 120, 212, 0.25);
+    font-weight: 600;
+}
+
+.theme-neumorphism #addCategoryBtn {
+    border: 1px dashed rgba(0, 0, 0, 0.2);
+    color: #605e5c;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.theme-neumorphism #addCategoryBtn:hover {
+    background: rgba(0, 120, 212, 0.1);
+    color: #0078d4;
+    border-color: #0078d4;
+    border-style: solid;
+}
+
+/* --- Theme 3: Cute / Xiaohongshu Style (Refactored) --- */
+.theme-cute .sidebar {
+    background: #ffffff;
+    border-right: 1px solid #f0f0f0;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.02);
+}
+
+.theme-cute .sidebar-header {
+    color: #333;
+    font-weight: 700;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.theme-cute .category-item {
+    background: transparent;
+    color: #666;
+    border: none;
+    border-radius: 20px;
+    /* Pill shape */
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
+.theme-cute .category-item:hover {
+    background: #f5f5f5;
+    color: #333;
+}
+
+.theme-cute .category-item.active {
+    background: #ff2442;
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(255, 36, 66, 0.2);
+}
+
+.theme-cute #addCategoryBtn {
+    border: 1px dashed #ddd;
+    color: #999;
+    border-radius: 20px;
+}
+
+.theme-cute #addCategoryBtn:hover {
+    border-color: #ff2442;
+    color: #ff2442;
+    background: #fff0f2;
+}
+
+/* [侧栏组件]+[主题-美团]+[Meituan] */
+.theme-handdrawn .sidebar {
+    background: #ffc300;
+    border-right: 2px solid #000;
+    border-radius: 12px;
+}
+
+.theme-handdrawn .category-item {
+    background: #fff;
+    border: 2px solid transparent;
+    color: #000;
+    border-radius: 8px;
+}
+
+.theme-handdrawn .category-item.active {
+    background: #000;
+    color: #ffc300;
+    border: 2px solid #000;
+    box-shadow: none;
+}
+
+/* [侧栏组件]+[主题-Pop/Comic]+[AzurLane] */
+.theme-glassmorphism-dark .sidebar {
+    background: #ffffff;
+    border: 3px solid #000000;
+    border-radius: 12px;
+    box-shadow: 8px 8px 0px #000000;
+    backdrop-filter: none;
+    margin-right: 12px;
+}
+
+.theme-glassmorphism-dark .sidebar-header {
+    color: #000000;
+    border-bottom: 3px solid #000000;
+    font-weight: 900;
+    font-size: 14px;
+}
+
+.theme-glassmorphism-dark .category-item {
+    background: #ffffff;
+    border: 2px solid transparent;
+    color: #000000;
+    border-radius: 6px;
+    font-weight: bold;
+}
+
+.theme-glassmorphism-dark .category-item:hover {
+    background: #FFF9C4;
+    border: 2px solid #000000;
+    transform: translate(-1px, -1px);
+    box-shadow: 2px 2px 0px #000000;
+}
+
+.theme-glassmorphism-dark .category-item.active {
+    background: #5D5FEF;
+    color: #ffffff;
+    border: 2px solid #000000;
+    box-shadow: 2px 2px 0px #000000;
+    transform: translate(-1px, -1px);
+}
+
+.theme-glassmorphism-dark #addCategoryBtn {
+    border: 2px dashed #000000;
+    color: #000000;
+    border-radius: 6px;
+}
+
+.theme-glassmorphism-dark #addCategoryBtn:hover {
+    background: #FF6B6B;
+    color: #ffffff;
+    border-style: solid;
+    box-shadow: 2px 2px 0px #000000;
+}

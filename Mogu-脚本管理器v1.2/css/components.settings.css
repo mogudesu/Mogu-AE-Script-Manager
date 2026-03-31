@@ -1,0 +1,324 @@
+/* [设置窗口]+[布局]+[01] 通用设置模态容器与内容框 */
+.settings-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+.settings-content { 
+    background: rgba(24, 24, 27, 0.95);
+    border-radius: 12px; 
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05); 
+    backdrop-filter: blur(20px); 
+    border: 1px solid rgba(255, 255, 255, 0.08); 
+    width: 500px; 
+    max-width: 90vw; 
+    max-height: 78vh; 
+    overflow-y: auto; 
+    overflow-x: hidden; 
+    display: flex; 
+    flex-direction: column; 
+}
+
+body.theme-dark .settings-content .form-input,
+body.theme-dark .settings-content input[type="text"],
+body.theme-dark .settings-content input[type="number"],
+body.theme-dark .settings-content textarea,
+body.theme-dark .settings-content select {
+    background: #09090b;
+    border: 1px solid #3f3f46;
+    color: #e4e4e7;
+}
+
+body.theme-dark .settings-content .form-input:focus,
+body.theme-dark .settings-content input[type="text"]:focus,
+body.theme-dark .settings-content input[type="number"]:focus,
+body.theme-dark .settings-content textarea:focus,
+body.theme-dark .settings-content select:focus {
+    border-color: #F7D000;
+    box-shadow: 0 0 0 1px rgba(247, 208, 0, 0.2);
+    outline: none;
+}
+
+body.theme-dark .settings-content .tags-panel {
+    background: #09090b;
+    border: 1px solid #3f3f46;
+}
+
+/* 兼容脚本/预设设置窗口复用 .dialog-footer 的情况 */
+.settings-content .dialog-footer {
+    padding: 16px 20px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+/* 微软主题模态框适配 */
+.theme-neumorphism .settings-content {
+    background: #ffffff;
+    border-radius: 8px;
+    border: 1px solid #d1d1d1;
+    box-shadow: 0 25.6px 57.6px rgba(0, 0, 0, 0.22), 0 4.8px 14.4px rgba(0, 0, 0, 0.18); /* Fluent UI Depth 64 */
+}
+
+/* 微软风格输入框美化 */
+.theme-neumorphism input[type="text"],
+.theme-neumorphism input[type="number"],
+.theme-neumorphism .form-input {
+    background: #ffffff;
+    border: 1px solid #8a8886; /* Neutral Dark */
+    border-bottom-color: #605e5c;
+    border-radius: 4px;
+    padding: 6px 12px;
+    color: #323130;
+    transition: all 0.2s ease;
+}
+.theme-neumorphism input[type="text"]:hover,
+.theme-neumorphism input[type="number"]:hover,
+.theme-neumorphism .form-input:hover {
+    border-color: #323130;
+}
+.theme-neumorphism input[type="text"]:focus,
+.theme-neumorphism input[type="number"]:focus,
+.theme-neumorphism .form-input:focus {
+    border-color: #0078d4;
+    border-bottom-width: 2px;
+    outline: none;
+}
+
+.settings-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 16px 24px; 
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08); 
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.theme-neumorphism .settings-header {
+    background: #ffffff;
+    border-bottom: 1px solid #e1dfdd;
+    padding-bottom: 12px;
+}
+
+.settings-header h3 { margin: 0; font-size: 16px; font-weight: 600; color: #e4e4e7; letter-spacing: 0.5px; }
+
+.theme-neumorphism .settings-header h3 {
+    color: #201f1e;
+    font-weight: 600;
+    font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+}
+
+.btn-close { 
+    width: 28px; 
+    height: 28px; 
+    border-radius: 6px; 
+    border: none; 
+    background: transparent; 
+    color: #a1a1aa; 
+    font-size: 16px; 
+    cursor: pointer; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    transition: all 0.2s ease; 
+    border: 1px solid transparent; 
+}
+.btn-close:hover { 
+    background: rgba(255, 255, 255, 0.05); 
+    color: #fff; 
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.theme-neumorphism .btn-close {
+    color: #605e5c;
+}
+.theme-neumorphism .btn-close:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: #323130;
+    border-color: transparent;
+}
+
+.settings-body { flex: 1; padding: 24px; overflow-y: auto; }
+
+/* [设置窗口]+[滚动条]+[02] 设置内容区滚动条美化 - 继承全局样式 */
+.settings-body::-webkit-scrollbar { width: 6px; }
+.settings-body::-webkit-scrollbar-track { background: transparent; }
+.settings-body::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 0; border: 1px solid #27272a; }
+.settings-body::-webkit-scrollbar-thumb:hover { background: #52525b; }
+.settings-body::-webkit-scrollbar-thumb:active { background: #FFBF00; }
+
+/* 微软主题适配 */
+body.theme-neumorphism .settings-body::-webkit-scrollbar { width: 8px; }
+body.theme-neumorphism .settings-body::-webkit-scrollbar-thumb { 
+    background: rgba(0, 0, 0, 0.2); 
+    border-radius: 4px; 
+    border: 2px solid transparent; 
+    background-clip: content-box; 
+}
+
+/* [设置窗口]+[表单]+[03] 表单块与主按钮 */
+.setting-item { margin-bottom: 24px; }
+.setting-item label { display: block; margin-bottom: 8px; font-weight: 500; color: #d4d4d8; font-size: 13px; }
+
+.theme-neumorphism .setting-item label {
+    color: #605e5c;
+}
+
+.settings-find-link {
+    color: #f7d000;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(247, 208, 0, 0.12);
+    border: 1px solid rgba(247, 208, 0, 0.25);
+}
+
+.settings-find-link:hover {
+    color: #ffdf4d;
+    background: rgba(247, 208, 0, 0.18);
+    border-color: rgba(247, 208, 0, 0.45);
+}
+
+/* 修复滑块宽度问题 */
+input[type="range"] {
+    width: 100%;
+    display: block;
+    margin: 8px 0;
+    accent-color: #0047AB; /* 默认蓝色 */
+}
+
+/* 微软主题滑块适配 */
+body.theme-neumorphism input[type="range"] {
+    accent-color: #0078d4;
+}
+
+/* 明日方舟主题滑块适配 */
+body.theme-dark input[type="range"] {
+    accent-color: #0078d4; /* 保持蓝色，或改为 #FFBF00 */
+}
+
+.path-setting { display: flex; gap: 12px; align-items: center; }
+.folder-path-display { 
+    flex: 1; 
+    padding: 10px 14px; 
+    background: rgba(0, 0, 0, 0.2); 
+    border: 1px solid rgba(255, 255, 255, 0.08); 
+    border-radius: 6px; 
+    color: #a1a1aa; 
+    font-size: 12px; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    white-space: nowrap; 
+}
+
+.theme-neumorphism .folder-path-display {
+    background: rgba(255, 255, 255, 0.5);
+    border-color: rgba(0, 0, 0, 0.1);
+    color: #323130;
+}
+
+/* [设置窗口]+[按钮]+[04] 统一按钮样式 */
+.btn, .btn-primary, .btn-secondary, .btn-small, .btn-mini {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.4;
+    text-decoration: none;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+/* 默认/Dark 主题按钮 - 基础 */
+.btn-primary {
+    background: #0047AB; /* 克莱因蓝 */
+    color: white;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+.btn-primary:hover {
+    background: #0056cf;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+.btn-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: #e4e4e7;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-small {
+    padding: 4px 10px;
+    font-size: 12px;
+}
+
+.btn-mini {
+    padding: 2px 8px;
+    font-size: 11px;
+    height: 24px;
+}
+
+/* 微软/Light 主题按钮适配 - 全局覆盖 */
+.theme-neumorphism .btn-primary {
+    background: #2563eb; /* 科技蓝 */
+    color: white;
+    border: none;
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+}
+.theme-neumorphism .btn-primary:hover {
+    background: #1d4ed8;
+    box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
+}
+
+.theme-neumorphism .btn-secondary {
+    background: white;
+    color: #0f172a;
+    border: 1px solid rgba(37, 99, 235, 0.2);
+    box-shadow: 0 1px 2px rgba(37, 99, 235, 0.05);
+}
+.theme-neumorphism .btn-secondary:hover {
+    background: #f8fafc;
+    border-color: #2563eb;
+    color: #2563eb;
+}
+
+.theme-neumorphism .btn-small,
+.theme-neumorphism .btn-mini {
+    background: white;
+    color: #0f172a;
+    border: 1px solid rgba(37, 99, 235, 0.2);
+    box-shadow: 0 1px 2px rgba(37, 99, 235, 0.05);
+}
+.theme-neumorphism .btn-small:hover,
+.theme-neumorphism .btn-mini:hover {
+    background: #ffffff;
+    border-color: #2563eb;
+    color: #2563eb;
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.15);
+}
+
+/* 按钮组容器 */
+.settings-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.theme-neumorphism .settings-footer {
+    border-top-color: rgba(0, 0, 0, 0.05);
+}

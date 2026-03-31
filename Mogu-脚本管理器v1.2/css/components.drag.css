@@ -1,0 +1,126 @@
+/* 拖拽与文件拖拽反馈样式 */
+
+/* 1. 拖拽克隆体 (The Ghost) */
+.drag-clone {
+    position: fixed;
+    z-index: 99999 !important; /* 确保在任何弹窗或遮罩之上 */
+    pointer-events: none;      /* 允许点击穿透，不阻挡鼠标事件 */
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5), 0 0 0 1px rgba(138, 43, 226, 0.5);
+    opacity: 1 !important;     /* [修复] 强制不透明，防止看起来模糊 */
+    background: #2a2a2a;       /* 兜底背景色，防止透明 */
+    border-radius: 8px;
+    overflow: hidden;
+    will-change: left, top;    /* 性能优化 */
+    transform: scale(1.05);    /* 稍微放大一点点 */
+    transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1) !important;
+}
+
+/* 2. 拖拽占位符 (The Placeholder) */
+.drag-placeholder {
+    /* 基础样式，确保结构 */
+    box-sizing: border-box !important;
+    pointer-events: none;
+    
+    /* 视觉样式 */
+    background: rgba(138, 43, 226, 0.08) !important;
+    border: 2px dashed rgba(138, 43, 226, 0.4) !important;
+    border-radius: 8px;
+    
+    /* 确保可见 */
+    visibility: visible !important;
+    opacity: 1 !important;
+    
+    /* 禁用不必要的动画 */
+    transform: none !important;
+    transition: none !important;
+    box-shadow: none !important;
+    
+    /* 隐藏内部文本 */
+    color: transparent !important;
+}
+
+/* 强制隐藏占位符的所有子元素 */
+.drag-placeholder * {
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
+/* 3. 被拖拽的原始元素 (The Source) */
+.script-item.is-dragging-source {
+    display: none !important; /* 彻底隐藏 */
+}
+
+/* 4. 长按按下状态 (Press State) */
+.script-item.is-pressed {
+    transform: scale(0.96);
+    filter: brightness(0.85);
+    transition: transform 0.1s ease;
+}
+
+/* 5. 列表容器状态 */
+.script-list.drag-mode {
+    cursor: grabbing;
+    user-select: none;
+}
+.script-list.drag-mode .script-item {
+    pointer-events: none;
+    will-change: transform;
+}
+.script-list.drag-mode .script-item.drag-over,
+.script-list.drag-mode .script-item:hover {
+    transform: none !important;
+}
+
+.preset-list.drag-mode,
+.preset-container.drag-mode {
+    cursor: grabbing;
+    user-select: none;
+}
+
+.preset-list.drag-mode .preset-item,
+.preset-container.drag-mode .preset-item {
+    pointer-events: none;
+    will-change: transform;
+}
+
+.preset-list.drag-mode .preset-preview-window,
+.preset-container.drag-mode .preset-preview-window {
+    will-change: transform;
+}
+
+/* 文件拖拽全屏遮罩 */
+.global-file-drag-over { position: relative; }
+.global-file-drag-over::before { 
+    content: '拖拽文件到此处\A图片/视频: 直接导入AE项目\A脚本/预设: 自动安装到对应目录\A支持格式: JPG, PNG, MP4, JSX, FFX 等'; 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    background: rgba(0, 0, 0, 0.85); 
+    color: white; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-size: 16px; 
+    font-weight: 500; 
+    text-align: center; 
+    white-space: pre-line; 
+    z-index: 10000; 
+    backdrop-filter: blur(5px); 
+    border: 4px dashed rgba(138, 43, 226, 0.8); 
+    box-sizing: border-box; 
+    animation: globalDragPulse 2s ease-in-out infinite; 
+}
+@keyframes globalDragPulse { 
+    0%, 100% { border-color: rgba(138, 43, 226, 0.8); background: rgba(0, 0, 0, 0.8); } 
+    50% { border-color: rgba(138, 43, 226, 1); background: rgba(0, 0, 0, 0.9); } 
+}
+
+/* 局部文件拖拽反馈 */
+.file-drag-over { 
+    position: relative; 
+    background: linear-gradient(145deg, rgba(138, 43, 226, 0.1), rgba(75, 0, 130, 0.05)) !important; 
+    border: 2px dashed rgba(138, 43, 226, 0.6) !important; 
+    border-radius: 8px; 
+}

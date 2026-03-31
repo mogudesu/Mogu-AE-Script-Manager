@@ -1,0 +1,2611 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mogu Tools Center</title>
+    <style>
+        :root {
+            --bg: #12151c;
+            --surface: #1d212b;
+            --surface-soft: #252b37;
+            --text: #e6ebf5;
+            --subtext: #9aa4b5;
+            --accent: #3fa7ff;
+            --accent-2: #00d4a7;
+            --danger: #ff6b6b;
+            --border: rgba(255, 255, 255, 0.08);
+            --radius: 12px;
+            --radius-sm: 8px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+            background: radial-gradient(circle at top right, rgba(63, 167, 255, 0.12), transparent 40%), var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .app {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, rgba(63, 167, 255, 0.18), rgba(0, 212, 167, 0.1));
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 18px;
+            margin-bottom: 16px;
+        }
+
+        .hero-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .hero-subtitle {
+            margin: 8px 0 0;
+            color: var(--subtext);
+            font-size: 13px;
+        }
+
+        .tool-nav {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .nav-btn {
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            border-radius: 999px;
+            padding: 8px 10px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover {
+            border-color: rgba(63, 167, 255, 0.5);
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(135deg, rgba(63, 167, 255, 0.3), rgba(0, 212, 167, 0.25));
+            border-color: rgba(63, 167, 255, 0.55);
+        }
+
+        .tool-section {
+            display: none;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+        }
+
+        .tool-section.active {
+            display: block;
+        }
+
+        .section-title {
+            margin: 0 0 12px;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .field-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .field label {
+            color: var(--subtext);
+            font-size: 12px;
+        }
+
+        input,
+        select,
+        textarea,
+        button {
+            font-family: inherit;
+        }
+
+        input,
+        select,
+        textarea {
+            background: var(--surface-soft);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text);
+            font-size: 13px;
+            padding: 8px 10px;
+            outline: none;
+        }
+
+        .btn-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            border: 1px solid var(--border);
+            background: var(--surface-soft);
+            color: var(--text);
+            border-radius: var(--radius-sm);
+            padding: 8px 12px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            border-color: rgba(63, 167, 255, 0.5);
+            background: rgba(63, 167, 255, 0.14);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, rgba(63, 167, 255, 0.35), rgba(0, 212, 167, 0.25));
+            border-color: rgba(63, 167, 255, 0.55);
+        }
+
+        .btn-danger {
+            border-color: rgba(255, 107, 107, 0.45);
+            color: #ffb0b0;
+        }
+
+        .result-box {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px dashed var(--border);
+            border-radius: var(--radius-sm);
+            padding: 12px;
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--text);
+        }
+
+        .hint {
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--subtext);
+        }
+
+        .site-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .site-card {
+            background: var(--surface-soft);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 12px;
+        }
+
+        .site-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin: 0 0 6px;
+        }
+
+        .site-desc {
+            font-size: 12px;
+            color: var(--subtext);
+            margin: 0 0 10px;
+            min-height: 34px;
+        }
+
+        .search-result-list {
+            display: grid;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .search-result-item {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 8px;
+            align-items: center;
+            background: var(--surface-soft);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 8px 10px;
+        }
+
+        .search-result-title {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .search-result-sub {
+            font-size: 11px;
+            color: var(--subtext);
+            margin-top: 2px;
+        }
+
+        .novel-shelf-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-top: 8px;
+            margin-bottom: 8px;
+        }
+
+        .novel-shelf-title {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .novel-shelf {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 10px;
+        }
+
+        .novel-book-card {
+            display: grid;
+            grid-template-columns: 54px 1fr;
+            gap: 10px;
+            background: var(--surface-soft);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 10px;
+            min-height: 132px;
+        }
+
+        .novel-book-cover {
+            width: 54px;
+            border-radius: 8px;
+            background: linear-gradient(145deg, rgba(63, 167, 255, 0.32), rgba(0, 212, 167, 0.28));
+            border: 1px solid rgba(63, 167, 255, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: 700;
+            color: #dff1ff;
+        }
+
+        .novel-book-main {
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .novel-book-title {
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.35;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .novel-book-sub {
+            font-size: 11px;
+            color: var(--subtext);
+            line-height: 1.35;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .novel-book-meta {
+            font-size: 11px;
+            color: var(--subtext);
+            margin-top: 2px;
+            line-height: 1.35;
+        }
+
+        .novel-book-actions {
+            margin-top: auto;
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .stocks-list {
+            display: grid;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .stock-item {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 10px;
+            align-items: center;
+            background: var(--surface-soft);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 10px;
+        }
+
+        .stock-code {
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .stock-name {
+            font-size: 12px;
+            color: var(--subtext);
+            margin-top: 4px;
+        }
+
+        .stock-quote {
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .stock-quote.up {
+            color: #7ddf8f;
+        }
+
+        .stock-quote.down {
+            color: #ff8d8d;
+        }
+
+        .stock-quote.flat {
+            color: #9aa4b5;
+        }
+
+        .stock-meta {
+            font-size: 11px;
+            color: var(--subtext);
+            margin-top: 2px;
+        }
+
+        .stock-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .empty {
+            color: var(--subtext);
+            font-size: 13px;
+            text-align: center;
+            padding: 14px;
+            border: 1px dashed var(--border);
+            border-radius: var(--radius-sm);
+        }
+
+        @media (max-width: 900px) {
+            .tool-nav {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .field-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .novel-shelf {
+                grid-template-columns: repeat(1, minmax(0, 1fr));
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <div class="hero">
+            <h1 class="hero-title" id="heroTitle">Mogu Browser Tool Center</h1>
+            <p class="hero-subtitle" id="heroSubtitle">Built-in FX converter, yield calculator, novel shortcuts, and stock watchlist.</p>
+        </div>
+
+        <div class="tool-nav" id="toolNav">
+            <button class="nav-btn" id="navFxBtn" data-section="fx">FX Converter</button>
+            <button class="nav-btn" id="navYieldBtn" data-section="yield">Yield Calculator</button>
+            <button class="nav-btn" id="navNovelBtn" data-section="novel">Novel Shortcuts</button>
+            <button class="nav-btn" id="navStocksBtn" data-section="stocks">Stock Watchlist</button>
+        </div>
+
+        <section class="tool-section" data-section="fx">
+            <h2 class="section-title" id="fxTitle">FX Converter</h2>
+            <div class="field-grid">
+                <div class="field">
+                    <label id="fxAmountLabel" for="fxAmount">Amount</label>
+                    <input id="fxAmount" type="number" min="0" step="0.01" value="100">
+                </div>
+                <div class="field">
+                    <label id="fxFromLabel" for="fxFrom">From</label>
+                    <select id="fxFrom"></select>
+                </div>
+                <div class="field">
+                    <label id="fxToLabel" for="fxTo">To</label>
+                    <select id="fxTo"></select>
+                </div>
+                <div class="field">
+                    <label id="fxDateLabel" for="fxDate">Updated At</label>
+                    <input id="fxDate" type="text" readonly>
+                </div>
+            </div>
+            <div class="btn-row">
+                <button class="btn btn-primary" id="fxConvertBtn">Convert</button>
+                <button class="btn" id="fxRefreshBtn">Refresh Online Rates</button>
+            </div>
+            <div class="result-box" id="fxResult">Enter amount and click Convert.</div>
+            <div class="hint" id="fxHint">Using built-in rates by default. You can refresh from network.</div>
+        </section>
+
+        <section class="tool-section" data-section="yield">
+            <h2 class="section-title" id="yieldTitle">Yield Calculator</h2>
+            <div class="field-grid">
+                <div class="field">
+                    <label id="yieldPrincipalLabel" for="yieldPrincipal">Principal</label>
+                    <input id="yieldPrincipal" type="number" min="0" step="0.01" value="10000">
+                </div>
+                <div class="field">
+                    <label id="yieldRateLabel" for="yieldRate">Annual Rate (%)</label>
+                    <input id="yieldRate" type="number" step="0.01" value="8">
+                </div>
+                <div class="field">
+                    <label id="yieldYearsLabel" for="yieldYears">Years</label>
+                    <input id="yieldYears" type="number" min="0" step="0.1" value="3">
+                </div>
+                <div class="field">
+                    <label id="yieldFreqLabel" for="yieldFreq">Compounding</label>
+                    <select id="yieldFreq">
+                        <option id="yieldFreqYearly" value="1">Yearly</option>
+                        <option id="yieldFreqQuarterly" value="4">Quarterly</option>
+                        <option id="yieldFreqMonthly" value="12" selected>Monthly</option>
+                    </select>
+                </div>
+            </div>
+            <div class="field-grid">
+                <div class="field">
+                    <label id="yieldContributionLabel" for="yieldContribution">Periodic Contribution</label>
+                    <input id="yieldContribution" type="number" min="0" step="0.01" value="500">
+                </div>
+            </div>
+            <div class="btn-row">
+                <button class="btn btn-primary" id="yieldCalcBtn">Calculate</button>
+            </div>
+            <div class="result-box" id="yieldResult">Fill values and click Calculate.</div>
+        </section>
+
+        <section class="tool-section" data-section="novel">
+            <h2 class="section-title" id="novelTitle">Novel Shortcuts</h2>
+            <div class="field-grid">
+                <div class="field" style="grid-column: 1 / -1;">
+                    <label id="novelSearchLabel" for="novelSearchInput">Search novels from API</label>
+                    <div class="btn-row" style="margin-bottom: 0;">
+                        <input id="novelSearchInput" type="text" style="flex: 1;" placeholder="Input title or author">
+                        <button class="btn btn-primary" id="novelSearchBtn">Search</button>
+                    </div>
+                    <div class="search-result-list" id="novelSearchResults"></div>
+                </div>
+            </div>
+            <div class="novel-shelf-head">
+                <h3 class="novel-shelf-title" id="novelShelfTitle">Bookshelf</h3>
+                <button class="btn" id="novelShelfRefreshBtn">Refresh Shelf</button>
+            </div>
+            <div class="novel-shelf" id="novelShelf"></div>
+            <div class="hint" id="novelHint">Click Read to open the dedicated reader page with chapters.</div>
+        </section>
+
+        <section class="tool-section" data-section="stocks">
+            <h2 class="section-title" id="stocksTitle">Stock Watchlist</h2>
+            <div class="field-grid">
+                <div class="field" style="grid-column: 1 / -1;">
+                    <label id="stockSearchLabel" for="stockSearchInput">Search by name or code</label>
+                    <div class="btn-row" style="margin-bottom: 0;">
+                        <input id="stockSearchInput" type="text" style="flex: 1;" placeholder="Input stock name/code">
+                        <button class="btn btn-primary" id="stockSearchBtn">Search</button>
+                    </div>
+                    <div class="search-result-list" id="stockSearchResults"></div>
+                </div>
+            </div>
+
+            <div class="field-grid">
+                <div class="field">
+                    <label id="stockCodeLabel" for="stockCode">Ticker</label>
+                    <input id="stockCode" type="text" placeholder="e.g. 600519 / AAPL / TSLA">
+                </div>
+                <div class="field">
+                    <label id="stockNameLabel" for="stockName">Name (Optional)</label>
+                    <input id="stockName" type="text" placeholder="e.g. Kweichow Moutai">
+                </div>
+            </div>
+            <div class="btn-row">
+                <button class="btn btn-primary" id="stockAddBtn">Add</button>
+                <button class="btn" id="stockRefreshBtn">Refresh Quotes</button>
+                <button class="btn" id="stockClearBtn">Clear</button>
+            </div>
+            <div class="result-box" id="stockSummary">Watchlist count: 0</div>
+            <div class="stocks-list" id="stocksList"></div>
+        </section>
+    </div>
+
+    <script>
+        'use strict';
+
+        var defaultRates = {
+            USD: 1,
+            CNY: 7.2,
+            EUR: 0.92,
+            GBP: 0.78,
+            JPY: 149.5,
+            HKD: 7.82,
+            SGD: 1.34
+        };
+        var fxRates = Object.assign({}, defaultRates);
+        var watchlist = [];
+        var WATCHLIST_KEY = 'mogu_tools_watchlist';
+        var quoteMap = {};
+        var lastQuoteAt = 0;
+        var quoteLoading = false;
+        var lastQuoteError = '';
+        var currentLanguage = 'zh-CN';
+        var fxUpdatedAt = 'builtin';
+        var fxConvertHandler = null;
+        var yieldCalcHandler = null;
+
+        var toolTranslations = {
+            'zh-CN': {
+                'page.title': 'Mogu 浏览器工具中心',
+                'hero.title': 'Mogu 浏览器工具中心',
+                'hero.subtitle': '内置汇率换算、收益率计算、小说导航和自选股行情看板。',
+                'nav.fx': '汇率换算',
+                'nav.yield': '收益率计算器',
+                'nav.novel': '小说导航',
+                'nav.stocks': '自选股看板',
+                'common.builtin': '内置',
+
+                'fx.title': '汇率换算',
+                'fx.amount': '金额',
+                'fx.from': '源货币',
+                'fx.to': '目标货币',
+                'fx.updated_at': '更新时间',
+                'fx.convert': '计算',
+                'fx.refresh': '联网刷新汇率',
+                'fx.result.default': '输入金额后点击“计算”。',
+                'fx.hint.default': '默认使用内置汇率，可点击联网刷新。',
+                'fx.err.incomplete': '汇率数据不完整，请刷新后重试。',
+                'fx.hint.loading': '正在联网刷新汇率...',
+                'fx.hint.updated': '汇率已更新。',
+                'fx.hint.failed': '联网刷新失败，继续使用内置汇率。',
+
+                'yield.title': '收益率计算器',
+                'yield.principal': '初始本金',
+                'yield.rate': '年化收益率 (%)',
+                'yield.years': '投资年限',
+                'yield.freq': '复利频率',
+                'yield.freq.yearly': '每年',
+                'yield.freq.quarterly': '每季度',
+                'yield.freq.monthly': '每月',
+                'yield.contribution': '每期追加投入',
+                'yield.calc': '计算收益',
+                'yield.result.default': '填写参数后点击“计算收益”。',
+                'yield.result.final_value': '期末总资产: <strong>{value}</strong>',
+                'yield.result.total_invested': '累计投入: {value}',
+                'yield.result.estimated_profit': '预估收益: {value}',
+                'yield.result.total_return': '总收益率: {value}%',
+
+                'novel.title': '小说导航',
+                'novel.search_label': '通过 API 搜索小说',
+                'novel.search_placeholder': '输入书名或作者',
+                'novel.search_btn': '搜索',
+                'novel.search_empty': '输入关键词后再搜索。',
+                'novel.search_loading': '正在搜索小说...',
+                'novel.search_no_result': '未找到可阅读结果。',
+                'novel.search_error': '搜索失败: {msg}',
+                'novel.read_btn': '阅读',
+                'novel.hint': '点击“阅读”将在独立阅读页打开，并支持章节切换与进度保存。',
+                'novel.shelf.title': '继续阅读书架',
+                'novel.shelf.refresh': '刷新书架',
+                'novel.shelf.empty': '书架还没有内容，先搜索并阅读一本小说。',
+                'novel.shelf.open': '继续阅读',
+                'novel.shelf.remove': '移除',
+                'novel.shelf.progress': '进度: {progress}%',
+                'novel.shelf.chapter': '章节: {current}/{total}',
+                'novel.shelf.updated': '更新: {time}',
+                'novel.reader.title': '阅读器',
+                'novel.reader.continue': '继续上次阅读',
+                'novel.reader.empty_meta': '尚未加载书籍。',
+                'novel.reader.empty_content': '先搜索，再点击结果开始阅读。',
+                'novel.reader.loading': '正在加载《{title}》...',
+                'novel.reader.progress': '阅读进度: {progress}%',
+                'novel.reader.loaded_meta': '{author} | 来源: {source}',
+                'novel.reader.load_error': '加载失败: {msg}',
+                'novel.reader.no_history': '没有可继续的阅读记录。',
+                'novel.site.open': '打开',
+                'novel.site.open_tab': '新标签',
+                'novel.site.qidian.name': '起点',
+                'novel.site.qidian.desc': '更新快，分类完整。',
+                'novel.site.jinjiang.name': '晋江',
+                'novel.site.jinjiang.desc': '原创社区，题材丰富。',
+                'novel.site.zongheng.name': '纵横',
+                'novel.site.zongheng.desc': '长篇较多，分类清晰。',
+                'novel.site.17k.name': '17K',
+                'novel.site.17k.desc': '小说库大，多端可读。',
+                'novel.site.douban.name': '豆瓣阅读',
+                'novel.site.douban.desc': '精品化内容较多。',
+
+                'stocks.title': '自选股看板',
+                'stocks.search_label': '按名称或代码搜索',
+                'stocks.search_placeholder': '输入股票名称或代码',
+                'stocks.search_btn': '搜索',
+                'stocks.search_empty': '输入关键词后再搜索。',
+                'stocks.search_loading': '正在搜索股票...',
+                'stocks.search_no_result': '未找到股票结果。',
+                'stocks.search_error': '搜索失败: {msg}',
+                'stocks.search_add': '加入',
+                'stocks.ticker': '股票代码',
+                'stocks.name_optional': '名称 (可选)',
+                'stocks.code_placeholder': '如 600519 / AAPL / TSLA',
+                'stocks.name_placeholder': '如 贵州茅台',
+                'stocks.add': '加入自选',
+                'stocks.refresh': '刷新行情',
+                'stocks.clear': '清空',
+                'stocks.summary.count': '自选数量: {count}',
+                'stocks.summary.loading': '正在加载实时行情...',
+                'stocks.summary.updated': '更新时间: {time}',
+                'stocks.summary.error': '错误: {msg}',
+                'stocks.empty': '还没有自选股票，先添加一个吧。',
+                'stocks.no_live_quote': '暂无实时行情',
+                'stocks.unnamed': '未命名',
+                'stocks.btn.view': '查看',
+                'stocks.btn.new_tab': '新标签',
+                'stocks.btn.delete': '删除',
+                'stocks.meta.source': '来源: {source}',
+                'stocks.meta.source_currency': '来源: {source} | {currency}',
+                'stocks.meta.valuation': 'PE: {pe} | PB: {pb}',
+                'stocks.quote_fetch_failed': '行情获取失败'
+            },
+            'en-US': {
+                'page.title': 'Mogu Browser Tool Center',
+                'hero.title': 'Mogu Browser Tool Center',
+                'hero.subtitle': 'Built-in FX converter, yield calculator, novel shortcuts, and stock watchlist.',
+                'nav.fx': 'FX Converter',
+                'nav.yield': 'Yield Calculator',
+                'nav.novel': 'Novel Shortcuts',
+                'nav.stocks': 'Stock Watchlist',
+                'common.builtin': 'Built-in',
+
+                'fx.title': 'FX Converter',
+                'fx.amount': 'Amount',
+                'fx.from': 'From',
+                'fx.to': 'To',
+                'fx.updated_at': 'Updated At',
+                'fx.convert': 'Convert',
+                'fx.refresh': 'Refresh Online Rates',
+                'fx.result.default': 'Enter amount and click Convert.',
+                'fx.hint.default': 'Using built-in rates by default. You can refresh from network.',
+                'fx.err.incomplete': 'Currency data is incomplete. Please refresh rates.',
+                'fx.hint.loading': 'Refreshing rates from network...',
+                'fx.hint.updated': 'Rates updated.',
+                'fx.hint.failed': 'Network refresh failed. Using built-in rates.',
+
+                'yield.title': 'Yield Calculator',
+                'yield.principal': 'Principal',
+                'yield.rate': 'Annual Rate (%)',
+                'yield.years': 'Years',
+                'yield.freq': 'Compounding',
+                'yield.freq.yearly': 'Yearly',
+                'yield.freq.quarterly': 'Quarterly',
+                'yield.freq.monthly': 'Monthly',
+                'yield.contribution': 'Periodic Contribution',
+                'yield.calc': 'Calculate',
+                'yield.result.default': 'Fill values and click Calculate.',
+                'yield.result.final_value': 'Final value: <strong>{value}</strong>',
+                'yield.result.total_invested': 'Total invested: {value}',
+                'yield.result.estimated_profit': 'Estimated profit: {value}',
+                'yield.result.total_return': 'Total return: {value}%',
+
+                'novel.title': 'Novel Shortcuts',
+                'novel.search_label': 'Search novels from API',
+                'novel.search_placeholder': 'Input title or author',
+                'novel.search_btn': 'Search',
+                'novel.search_empty': 'Please input a keyword first.',
+                'novel.search_loading': 'Searching novels...',
+                'novel.search_no_result': 'No readable result found.',
+                'novel.search_error': 'Search failed: {msg}',
+                'novel.read_btn': 'Read',
+                'novel.hint': 'Click "Read" to open a dedicated reader with chapters and progress saving.',
+                'novel.shelf.title': 'Bookshelf',
+                'novel.shelf.refresh': 'Refresh Shelf',
+                'novel.shelf.empty': 'No books yet. Search and open one to start.',
+                'novel.shelf.open': 'Continue',
+                'novel.shelf.remove': 'Remove',
+                'novel.shelf.progress': 'Progress: {progress}%',
+                'novel.shelf.chapter': 'Chapter: {current}/{total}',
+                'novel.shelf.updated': 'Updated: {time}',
+                'novel.reader.title': 'Reader',
+                'novel.reader.continue': 'Continue Last',
+                'novel.reader.empty_meta': 'No book loaded.',
+                'novel.reader.empty_content': 'Search and click a result to start reading.',
+                'novel.reader.loading': 'Loading "{title}"...',
+                'novel.reader.progress': 'Reading progress: {progress}%',
+                'novel.reader.loaded_meta': '{author} | Source: {source}',
+                'novel.reader.load_error': 'Load failed: {msg}',
+                'novel.reader.no_history': 'No reading history.',
+                'novel.site.open': 'Open',
+                'novel.site.open_tab': 'Open In New Tab',
+                'novel.site.qidian.name': 'Qidian',
+                'novel.site.qidian.desc': 'Online fiction platform with frequent updates.',
+                'novel.site.jinjiang.name': 'Jinjiang',
+                'novel.site.jinjiang.desc': 'Original literature community with rich genres.',
+                'novel.site.zongheng.name': 'Zongheng',
+                'novel.site.zongheng.desc': 'Structured categories, many long-form serial novels.',
+                'novel.site.17k.name': '17K',
+                'novel.site.17k.desc': 'Large novel library with multi-device reading support.',
+                'novel.site.douban.name': 'Douban Read',
+                'novel.site.douban.desc': 'Curated digital reading and original columns.',
+
+                'stocks.title': 'Stock Watchlist',
+                'stocks.search_label': 'Search by name or code',
+                'stocks.search_placeholder': 'Input stock name/code',
+                'stocks.search_btn': 'Search',
+                'stocks.search_empty': 'Please input a keyword first.',
+                'stocks.search_loading': 'Searching stocks...',
+                'stocks.search_no_result': 'No stock result found.',
+                'stocks.search_error': 'Search failed: {msg}',
+                'stocks.search_add': 'Add',
+                'stocks.ticker': 'Ticker',
+                'stocks.name_optional': 'Name (Optional)',
+                'stocks.code_placeholder': 'e.g. 600519 / AAPL / TSLA',
+                'stocks.name_placeholder': 'e.g. Kweichow Moutai',
+                'stocks.add': 'Add',
+                'stocks.refresh': 'Refresh Quotes',
+                'stocks.clear': 'Clear',
+                'stocks.summary.count': 'Watchlist count: {count}',
+                'stocks.summary.loading': 'Loading live quotes...',
+                'stocks.summary.updated': 'Updated: {time}',
+                'stocks.summary.error': 'Error: {msg}',
+                'stocks.empty': 'No symbols yet. Add one above.',
+                'stocks.no_live_quote': 'No live quote yet',
+                'stocks.unnamed': 'Unnamed',
+                'stocks.btn.view': 'View',
+                'stocks.btn.new_tab': 'New Tab',
+                'stocks.btn.delete': 'Delete',
+                'stocks.meta.source': 'Source: {source}',
+                'stocks.meta.source_currency': 'Source: {source} | {currency}',
+                'stocks.meta.valuation': 'PE: {pe} | PB: {pb}',
+                'stocks.quote_fetch_failed': 'quote fetch failed'
+            }
+        };
+
+        var stockSearchResults = [];
+        var novelSearchResults = [];
+        var novelProgress = {};
+        var NOVEL_PROGRESS_KEY = 'mogu_novel_reader_progress';
+        var FANQIE_DECODE_RANGES = [[58344, 58715], [58345, 58716]];
+        var FANQIE_DECODE_CHARSET = [["D","在","主","特","家","军","然","表","场","4","要","只","v","和","?","6","别","还","g","现","儿","岁","?","?","此","象","月","3","出","战","工","相","o","男","直","失","世","F","都","平","文","什","V","O","将","真","T","那","当","?","会","立","些","u","是","十","张","学","气","大","爱","两","命","全","后","东","性","通","被","1","它","乐","接","而","感","车","山","公","了","常","以","何","可","话","先","p","i","叫","轻","M","士","w","着","变","尔","快","l","个","说","少","色","里","安","花","远","7","难","师","放","t","报","认","面","道","S","?","克","地","度","I","好","机","U","民","写","把","万","同","水","新","没","书","电","吃","像","斯","5","为","y","白","几","日","教","看","但","第","加","候","作","上","拉","住","有","法","r","事","应","位","利","你","声","身","国","问","马","女","他","Y","比","父","x","A","H","N","s","X","边","美","对","所","金","活","回","意","到","z","从","j","知","又","内","因","点","Q","三","定","8","R","b","正","或","夫","向","德","听","更","?","得","告","并","本","q","过","记","L","让","打","f","人","就","者","去","原","满","体","做","经","K","走","如","孩","c","G","给","使","物","?","最","笑","部","?","员","等","受","k","行","一","条","果","动","光","门","头","见","往","自","解","成","处","天","能","于","名","其","发","总","母","的","死","手","入","路","进","心","来","h","时","力","多","开","已","许","d","至","由","很","界","n","小","与","Z","想","代","么","分","生","口","再","妈","望","次","西","风","种","带","J","?","实","情","才","这","?","E","我","神","格","长","觉","间","年","眼","无","不","亲","关","结","0","友","信","下","却","重","己","老","2","音","字","m","呢","明","之","前","高","P","B","目","太","e","9","起","稜","她","也","W","用","方","子","英","每","理","便","四","数","期","中","C","外","样","a","海","们","任"],["s","?","作","口","在","他","能","并","B","士","4","U","克","才","正","们","字","声","高","全","尔","活","者","动","其","主","报","多","望","放","h","w","次","年","?","中","3","特","于","十","入","要","男","同","G","面","分","方","K","什","再","教","本","己","结","1","等","世","N","?","说","g","u","期","Z","外","美","M","行","给","9","文","将","两","许","张","友","0","英","应","向","像","此","白","安","少","何","打","气","常","定","间","花","见","孩","它","直","风","数","使","道","第","水","已","女","山","解","d","P","的","通","关","性","叫","儿","L","妈","问","回","神","来","S","","四","望","前","国","些","O","v","l","A","心","平","自","无","军","光","代","是","好","却","c","得","种","就","意","先","立","z","子","过","Y","j","表","","么","所","接","了","名","金","受","J","满","眼","没","部","那","m","每","车","度","可","R","斯","经","现","门","明","V","如","走","命","y","6","E","战","很","上","f","月","西","7","长","夫","想","话","变","海","机","x","到","W","一","成","生","信","笑","但","父","开","内","东","马","日","小","而","后","带","以","三","几","为","认","X","死","员","目","位","之","学","远","人","音","呢","我","q","乐","象","重","对","个","被","别","F","也","书","稜","D","写","还","因","家","发","时","i","或","住","德","当","o","l","比","觉","然","吃","去","公","a","老","亲","情","体","太","b","万","C","电","理","?","失","力","更","拉","物","着","原","她","工","实","色","感","记","看","出","相","路","大","你","候","2","和","?","与","p","样","新","只","便","最","不","进","T","r","做","格","母","总","爱","身","师","轻","知","往","加","从","?","天","e","H","?","听","场","由","快","边","让","把","任","8","条","头","事","至","起","点","真","手","这","难","都","界","用","法","n","处","下","又","Q","告","地","5","k","t","岁","有","会","果","利","民"]];
+        try { localStorage.setItem('mogu_fanqie_charset', JSON.stringify(FANQIE_DECODE_CHARSET)); } catch (e) { }
+
+        function normalizeLanguage(lang) {
+            var value = String(lang || '').trim();
+            if (!value) return 'zh-CN';
+            if (value.toLowerCase().indexOf('en') === 0) return 'en-US';
+            return 'zh-CN';
+        }
+
+        function detectLanguage() {
+            try {
+                if (window.parent && window.parent !== window && window.parent.I18n
+                    && typeof window.parent.I18n.getLanguage === 'function') {
+                    return normalizeLanguage(window.parent.I18n.getLanguage());
+                }
+            } catch (e) { }
+            try {
+                return normalizeLanguage(localStorage.getItem('preferredLanguage'));
+            } catch (e) { }
+            return 'zh-CN';
+        }
+
+        function t(key, params) {
+            var dict = toolTranslations[currentLanguage] || toolTranslations['zh-CN'];
+            var text = dict[key] || key;
+            if (params && typeof params === 'object') {
+                Object.keys(params).forEach(function (name) {
+                    text = text.replace(new RegExp('\\{' + name + '\\}', 'g'), String(params[name]));
+                });
+            }
+            return text;
+        }
+
+        function setText(id, key) {
+            var el = document.getElementById(id);
+            if (!el) return;
+            el.textContent = t(key);
+        }
+
+        function setPlaceholder(id, key) {
+            var el = document.getElementById(id);
+            if (!el) return;
+            el.setAttribute('placeholder', t(key));
+        }
+
+        function applyLanguage(nextLanguage) {
+            currentLanguage = normalizeLanguage(nextLanguage);
+            document.documentElement.lang = currentLanguage;
+            document.title = t('page.title');
+
+            setText('heroTitle', 'hero.title');
+            setText('heroSubtitle', 'hero.subtitle');
+            setText('navFxBtn', 'nav.fx');
+            setText('navYieldBtn', 'nav.yield');
+            setText('navNovelBtn', 'nav.novel');
+            setText('navStocksBtn', 'nav.stocks');
+
+            setText('fxTitle', 'fx.title');
+            setText('fxAmountLabel', 'fx.amount');
+            setText('fxFromLabel', 'fx.from');
+            setText('fxToLabel', 'fx.to');
+            setText('fxDateLabel', 'fx.updated_at');
+            setText('fxConvertBtn', 'fx.convert');
+            setText('fxRefreshBtn', 'fx.refresh');
+
+            setText('yieldTitle', 'yield.title');
+            setText('yieldPrincipalLabel', 'yield.principal');
+            setText('yieldRateLabel', 'yield.rate');
+            setText('yieldYearsLabel', 'yield.years');
+            setText('yieldFreqLabel', 'yield.freq');
+            setText('yieldFreqYearly', 'yield.freq.yearly');
+            setText('yieldFreqQuarterly', 'yield.freq.quarterly');
+            setText('yieldFreqMonthly', 'yield.freq.monthly');
+            setText('yieldContributionLabel', 'yield.contribution');
+            setText('yieldCalcBtn', 'yield.calc');
+
+            setText('novelTitle', 'novel.title');
+            setText('novelSearchLabel', 'novel.search_label');
+            setPlaceholder('novelSearchInput', 'novel.search_placeholder');
+            setText('novelSearchBtn', 'novel.search_btn');
+            setText('novelHint', 'novel.hint');
+            setText('novelShelfTitle', 'novel.shelf.title');
+            setText('novelShelfRefreshBtn', 'novel.shelf.refresh');
+
+            setText('stocksTitle', 'stocks.title');
+            setText('stockSearchLabel', 'stocks.search_label');
+            setPlaceholder('stockSearchInput', 'stocks.search_placeholder');
+            setText('stockSearchBtn', 'stocks.search_btn');
+            setText('stockCodeLabel', 'stocks.ticker');
+            setText('stockNameLabel', 'stocks.name_optional');
+            setPlaceholder('stockCode', 'stocks.code_placeholder');
+            setPlaceholder('stockName', 'stocks.name_placeholder');
+            setText('stockAddBtn', 'stocks.add');
+            setText('stockRefreshBtn', 'stocks.refresh');
+            setText('stockClearBtn', 'stocks.clear');
+
+            var fxResultEl = document.getElementById('fxResult');
+            if (fxResultEl && !fxResultEl.dataset.hasValue) {
+                fxResultEl.textContent = t('fx.result.default');
+            }
+            var fxHintEl = document.getElementById('fxHint');
+            if (fxHintEl && !fxHintEl.dataset.runtimeMessage) {
+                fxHintEl.textContent = t('fx.hint.default');
+            }
+            var yieldResultEl = document.getElementById('yieldResult');
+            if (yieldResultEl && !yieldResultEl.dataset.hasValue) {
+                yieldResultEl.textContent = t('yield.result.default');
+            }
+            var dateEl = document.getElementById('fxDate');
+            if (dateEl && fxUpdatedAt === 'builtin') {
+                dateEl.value = t('common.builtin');
+            }
+
+            var fxResultEl2 = document.getElementById('fxResult');
+            if (fxResultEl2 && fxResultEl2.dataset.hasValue && typeof fxConvertHandler === 'function') {
+                fxConvertHandler();
+            }
+            var yieldResultEl2 = document.getElementById('yieldResult');
+            if (yieldResultEl2 && yieldResultEl2.dataset.hasValue && typeof yieldCalcHandler === 'function') {
+                yieldCalcHandler();
+            }
+
+            if (typeof renderNovelSearchResults === 'function') {
+                if (novelSearchResults.length) renderNovelSearchResults();
+                else {
+                    var novelSearchEl = document.getElementById('novelSearchResults');
+                    if (novelSearchEl) novelSearchEl.innerHTML = '<div class="empty">' + escapeHtml(t('novel.search_empty')) + '</div>';
+                }
+            }
+            if (typeof renderNovelShelf === 'function') renderNovelShelf();
+            if (typeof renderStockSearchResults === 'function') {
+                if (stockSearchResults.length) renderStockSearchResults();
+                else {
+                    var stockSearchEl = document.getElementById('stockSearchResults');
+                    if (stockSearchEl) stockSearchEl.innerHTML = '<div class="empty">' + escapeHtml(t('stocks.search_empty')) + '</div>';
+                }
+            }
+            if (typeof renderWatchlist === 'function') renderWatchlist();
+        }
+
+        function bindLanguageSync() {
+            applyLanguage(detectLanguage());
+
+            try {
+                if (window.parent && window.parent !== window && typeof window.parent.addEventListener === 'function') {
+                    window.parent.addEventListener('language:changed', function (evt) {
+                        var lang = evt && evt.detail ? (evt.detail.language || evt.detail.lang) : '';
+                        applyLanguage(normalizeLanguage(lang || detectLanguage()));
+                    });
+                }
+            } catch (e) { }
+
+            window.addEventListener('storage', function (evt) {
+                if (!evt || evt.key !== 'preferredLanguage') return;
+                applyLanguage(normalizeLanguage(evt.newValue || detectLanguage()));
+            });
+        }
+
+        function sendToHost(msg) {
+            try {
+                if (window.parent && window.parent !== window && window.parent.BrowserManager
+                    && typeof window.parent.BrowserManager.handleFrameMessage === 'function') {
+                    window.parent.BrowserManager.handleFrameMessage(msg);
+                    return true;
+                }
+            } catch (e) { }
+
+            try {
+                window.parent.postMessage(msg, '*');
+                return true;
+            } catch (e) { }
+            return false;
+        }
+
+        window.loadWatchlistFromHost = function (data) {
+            if (!Array.isArray(data)) return;
+            watchlist = data.map(function (item) {
+                var code = normalizeWatchCode(item && item.code || '');
+                return code ? { code: code, name: String(item && item.name || ''), ts: Number(item && item.ts || Date.now()) } : null;
+            }).filter(function (item) { return !!item; });
+            saveWatchlist(false);
+            renderWatchlist();
+            refreshWatchlistQuotes();
+        };
+
+        window.addEventListener('message', function (evt) {
+            var payload = evt && evt.data ? evt.data : null;
+            if (!payload || typeof payload !== 'object') return;
+            if (payload.type === 'LOAD_WATCHLIST' && Array.isArray(payload.watchlist)) {
+                watchlist = payload.watchlist.map(function (item) {
+                    var code = normalizeWatchCode(item && item.code || '');
+                    return code ? { code: code, name: String(item && item.name || ''), ts: Number(item && item.ts || Date.now()) } : null;
+                }).filter(function (item) { return !!item; });
+                saveWatchlist(false);
+                renderWatchlist();
+                refreshWatchlistQuotes();
+            }
+        });
+
+        function openUrl(url, newTab) {
+            if (!url) return;
+            var message = newTab ? { type: 'OPEN_IN_TAB', url: url } : { type: 'NAVIGATE', url: url };
+            if (!sendToHost(message)) {
+                if (newTab) window.open(url, '_blank');
+                else window.location.href = url;
+            }
+        }
+
+        function getQuery(name) {
+            var params = new URLSearchParams(window.location.search || '');
+            return params.get(name);
+        }
+
+        function activateSection(sectionId) {
+            document.querySelectorAll('.tool-section').forEach(function (section) {
+                section.classList.toggle('active', section.getAttribute('data-section') === sectionId);
+            });
+            document.querySelectorAll('.nav-btn').forEach(function (btn) {
+                btn.classList.toggle('active', btn.getAttribute('data-section') === sectionId);
+            });
+        }
+
+        function setupNav() {
+            document.querySelectorAll('.nav-btn').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    activateSection(btn.getAttribute('data-section'));
+                });
+            });
+
+            var queryTool = getQuery('tool');
+            var valid = ['fx', 'yield', 'novel', 'stocks'];
+            activateSection(valid.indexOf(queryTool) >= 0 ? queryTool : 'fx');
+        }
+
+        function formatNumber(n) {
+            var locale = currentLanguage === 'en-US' ? 'en-US' : 'zh-CN';
+            return Number(n).toLocaleString(locale, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        function setupFxTool() {
+            var fromEl = document.getElementById('fxFrom');
+            var toEl = document.getElementById('fxTo');
+            var dateEl = document.getElementById('fxDate');
+
+            function renderCurrencyOptions() {
+                var keys = Object.keys(fxRates);
+                fromEl.innerHTML = '';
+                toEl.innerHTML = '';
+                keys.forEach(function (code) {
+                    var o1 = document.createElement('option');
+                    o1.value = code;
+                    o1.textContent = code;
+                    fromEl.appendChild(o1);
+
+                    var o2 = document.createElement('option');
+                    o2.value = code;
+                    o2.textContent = code;
+                    toEl.appendChild(o2);
+                });
+                fromEl.value = keys.indexOf('CNY') >= 0 ? 'CNY' : keys[0];
+                toEl.value = keys.indexOf('USD') >= 0 ? 'USD' : keys[0];
+            }
+
+            function updateFxDate() {
+                dateEl.value = (fxUpdatedAt === 'builtin') ? t('common.builtin') : fxUpdatedAt;
+            }
+
+            function convertFx() {
+                var amount = Number(document.getElementById('fxAmount').value || 0);
+                var from = fromEl.value;
+                var to = toEl.value;
+                var resultEl = document.getElementById('fxResult');
+
+                if (!fxRates[from] || !fxRates[to]) {
+                    resultEl.textContent = t('fx.err.incomplete');
+                    resultEl.dataset.hasValue = '';
+                    return;
+                }
+                var usdValue = amount / fxRates[from];
+                var converted = usdValue * fxRates[to];
+                resultEl.innerHTML = amount + ' ' + from + ' ~= <strong>' + formatNumber(converted) + ' ' + to + '</strong>';
+                resultEl.dataset.hasValue = '1';
+            }
+
+            function refreshRates() {
+                var hint = document.getElementById('fxHint');
+                hint.textContent = t('fx.hint.loading');
+                hint.dataset.runtimeMessage = '1';
+                fetch('https://open.er-api.com/v6/latest/USD')
+                    .then(function (res) { return res.json(); })
+                    .then(function (data) {
+                        if (!data || data.result !== 'success' || !data.rates) {
+                            throw new Error('bad-response');
+                        }
+                        fxRates = data.rates;
+                        fxUpdatedAt = data.time_last_update_utc || new Date().toLocaleString(currentLanguage === 'en-US' ? 'en-US' : 'zh-CN');
+                        renderCurrencyOptions();
+                        updateFxDate();
+                        hint.textContent = t('fx.hint.updated');
+                        convertFx();
+                    })
+                    .catch(function () {
+                        hint.textContent = t('fx.hint.failed');
+                        convertFx();
+                    });
+            }
+
+            renderCurrencyOptions();
+            updateFxDate();
+            document.getElementById('fxResult').textContent = t('fx.result.default');
+            document.getElementById('fxResult').dataset.hasValue = '';
+            document.getElementById('fxHint').textContent = t('fx.hint.default');
+            document.getElementById('fxHint').dataset.runtimeMessage = '';
+            fxConvertHandler = convertFx;
+
+            document.getElementById('fxConvertBtn').addEventListener('click', convertFx);
+            document.getElementById('fxRefreshBtn').addEventListener('click', refreshRates);
+        }
+
+        function setupYieldTool() {
+            function calcYield() {
+                var principal = Number(document.getElementById('yieldPrincipal').value || 0);
+                var annualRate = Number(document.getElementById('yieldRate').value || 0) / 100;
+                var years = Number(document.getElementById('yieldYears').value || 0);
+                var n = Number(document.getElementById('yieldFreq').value || 1);
+                var contribution = Number(document.getElementById('yieldContribution').value || 0);
+
+                var periods = Math.max(0, Math.round(years * n));
+                var periodicRate = annualRate / n;
+                var fvPrincipal = principal * Math.pow(1 + periodicRate, periods);
+                var fvContribution = 0;
+                if (periodicRate === 0) {
+                    fvContribution = contribution * periods;
+                } else {
+                    fvContribution = contribution * ((Math.pow(1 + periodicRate, periods) - 1) / periodicRate);
+                }
+
+                var totalInvested = principal + contribution * periods;
+                var finalValue = fvPrincipal + fvContribution;
+                var profit = finalValue - totalInvested;
+
+                document.getElementById('yieldResult').innerHTML = [
+                    t('yield.result.final_value', { value: formatNumber(finalValue) }),
+                    t('yield.result.total_invested', { value: formatNumber(totalInvested) }),
+                    t('yield.result.estimated_profit', { value: formatNumber(profit) }),
+                    t('yield.result.total_return', { value: (totalInvested > 0 ? ((profit / totalInvested) * 100).toFixed(2) : '0.00') })
+                ].join('<br>');
+                document.getElementById('yieldResult').dataset.hasValue = '1';
+            }
+
+            document.getElementById('yieldCalcBtn').addEventListener('click', calcYield);
+            document.getElementById('yieldResult').textContent = t('yield.result.default');
+            document.getElementById('yieldResult').dataset.hasValue = '';
+            yieldCalcHandler = calcYield;
+        }
+
+        function loadNovelProgressStore() {
+            try {
+                var raw = localStorage.getItem(NOVEL_PROGRESS_KEY) || '{}';
+                var parsed = JSON.parse(raw);
+                novelProgress = parsed && typeof parsed === 'object' ? parsed : {};
+            } catch (e) {
+                novelProgress = {};
+            }
+        }
+
+        function saveNovelProgressStore() {
+            try {
+                localStorage.setItem(NOVEL_PROGRESS_KEY, JSON.stringify(novelProgress || {}));
+            } catch (e) { }
+        }
+
+        function getNovelProgressKey(item) {
+            if (!item) return '';
+            return String(item.id || item.readUrl || item.title || '');
+        }
+
+        function requestNovelSearch(keyword) {
+            var api = null;
+            try {
+                if (window.parent && window.parent.BrowserManager
+                    && typeof window.parent.BrowserManager.searchNovelBooks === 'function') {
+                    api = window.parent.BrowserManager.searchNovelBooks;
+                }
+            } catch (e) { }
+            if (api) {
+                return Promise.resolve(api(keyword)).then(function (rows) {
+                    return Array.isArray(rows) ? rows : [];
+                }).catch(function () {
+                    return null;
+                }).then(function (rows) {
+                    if (Array.isArray(rows) && rows.length) return rows;
+                    return requestNovelSearchFallback(keyword);
+                });
+            }
+            return requestNovelSearchFallback(keyword);
+        }
+
+        function requestNovelContent(readUrl) {
+            var api = null;
+            try {
+                if (window.parent && window.parent.BrowserManager
+                    && typeof window.parent.BrowserManager.fetchNovelContent === 'function') {
+                    api = window.parent.BrowserManager.fetchNovelContent;
+                }
+            } catch (e) { }
+            if (api) {
+                return Promise.resolve(api(readUrl)).then(function (payload) {
+                    var content = String(payload && payload.content || '').trim();
+                    if (content) return payload;
+                    return requestNovelContentFallback(readUrl);
+                }).catch(function () {
+                    return requestNovelContentFallback(readUrl);
+                });
+            }
+            return requestNovelContentFallback(readUrl);
+        }
+
+        function requestNovelSearchFallback(keyword) {
+            var query = String(keyword || '').trim();
+            if (!query) return Promise.resolve([]);
+            function mapGutendexRows(payload) {
+                var rows = payload && Array.isArray(payload.results) ? payload.results : [];
+                return rows.map(function (row) {
+                    var formats = row && row.formats ? row.formats : {};
+                    var readUrl = '';
+                    Object.keys(formats || {}).forEach(function (key) {
+                        if (readUrl) return;
+                        if (/^text\//i.test(key) && formats[key]) {
+                            readUrl = String(formats[key]);
+                        }
+                    });
+                    if (!readUrl) return null;
+                    var authors = Array.isArray(row.authors)
+                        ? row.authors.map(function (a) { return a && a.name ? a.name : ''; }).filter(Boolean).join(', ')
+                        : '';
+                    return {
+                        id: 'gutendex-' + String(row.id || ''),
+                        title: String(row.title || ''),
+                        author: authors || 'Unknown',
+                        readUrl: String(readUrl),
+                        source: 'gutendex'
+                    };
+                }).filter(function (item) { return !!item; }).slice(0, 20);
+            }
+
+            function normalizeFanqieBookId(value) {
+                var text = String(value || '').trim();
+                if (!text) return '';
+                var matched = text.match(/\d+/);
+                return matched ? matched[0] : '';
+            }
+
+            function buildFanqieReadUrl(bookId) {
+                return 'fanqie://book/' + String(bookId || '').trim();
+            }
+
+            function mapFanqieRows(payload) {
+                var rows = payload && payload.data && Array.isArray(payload.data.ret_data)
+                    ? payload.data.ret_data
+                    : [];
+                var seen = {};
+                return rows.map(function (row) {
+                    var bookId = normalizeFanqieBookId(row && (row.book_id || row.bookId || row.item_id));
+                    if (!bookId || seen[bookId]) return null;
+                    seen[bookId] = true;
+                    var title = String(row && (row.title || row.book_name || row.bookName || '') || '').trim();
+                    if (!title) return null;
+                    return {
+                        id: 'fanqie-' + bookId,
+                        title: title,
+                        author: String(row && (row.author || row.author_name || row.authorName || '') || '').trim() || 'Unknown',
+                        readUrl: buildFanqieReadUrl(bookId),
+                        source: 'fanqie'
+                    };
+                }).filter(function (item) { return !!item; }).slice(0, 20);
+            }
+
+            function mapFanqieRowsApi5(payload) {
+                var rows = payload && Array.isArray(payload.data) ? payload.data : [];
+                var seen = {};
+                return rows.map(function (row) {
+                    var bookData = row && Array.isArray(row.book_data) && row.book_data.length ? row.book_data[0] : null;
+                    var bookId = normalizeFanqieBookId(bookData && bookData.book_id);
+                    if (!bookId || seen[bookId]) return null;
+                    seen[bookId] = true;
+                    var title = String(bookData && (bookData.book_name || bookData.title || '') || '').trim();
+                    if (!title) return null;
+                    return {
+                        id: 'fanqie-' + bookId,
+                        title: title,
+                        author: String(bookData && (bookData.author || bookData.author_name || '') || '').trim() || 'Unknown',
+                        readUrl: buildFanqieReadUrl(bookId),
+                        source: 'fanqie'
+                    };
+                }).filter(function (item) { return !!item; }).slice(0, 20);
+            }
+
+            var fanqieSearchUrl = 'https://novel.snssdk.com/api/novel/channel/homepage/search/search/v1/'
+                + '?q=' + encodeURIComponent(query)
+                + '&aid=1967';
+
+            return fetchTextWithProxy(fanqieSearchUrl).then(function (text) {
+                var payload = extractJsonFromMixedText(text) || {};
+                return mapFanqieRows(payload);
+            }).catch(function () {
+                return [];
+            }).then(function (fanqieMapped) {
+                if (fanqieMapped && fanqieMapped.length) return fanqieMapped;
+                var api5Url = 'https://api5-normal-lf.fqnovel.com/reading/bookapi/search/page/v/'
+                    + '?query=' + encodeURIComponent(query)
+                    + '&aid=1967&channel=0&os_version=0&device_type=0&device_platform=0'
+                    + '&iid=466614321180296&passback=0&version_code=999';
+                return fetchTextWithProxy(api5Url).then(function (text) {
+                    var payload = extractJsonFromMixedText(text) || {};
+                    return mapFanqieRowsApi5(payload);
+                }).catch(function () {
+                    return [];
+                });
+            }).then(function (fanqieMapped2) {
+                if (fanqieMapped2 && fanqieMapped2.length) return fanqieMapped2;
+                var gutendexUrl = 'https://gutendex.com/books?search=' + encodeURIComponent(query);
+                return fetchTextWithProxy(gutendexUrl).then(function (text) {
+                    var payload = extractJsonFromMixedText(text) || {};
+                    return mapGutendexRows(payload);
+                }).catch(function () {
+                    return [];
+                });
+            });
+        }
+
+        function requestNovelContentFallback(readUrl) {
+            var url = String(readUrl || '').trim();
+            var fanqieMatch = url.match(/^fanqie:\/\/book\/(\d+)/i);
+
+            function extractFanqieText(payload) {
+                var data = payload && payload.data ? payload.data : {};
+                var chapterData = data && data.chapterData ? data.chapterData : {};
+                var text = String(chapterData.content || data.content || '').trim();
+                if (!text) return '';
+                if (/<[a-z][\s\S]*>/i.test(text)) {
+                    text = decodeFanqieObfuscatedText(stripHtmlTextKeepLines(text));
+                }
+                return String(text || '').replace(/\r\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+            }
+
+            function fetchFanqieReaderChapter(chapterId, bookId) {
+                if (!chapterId) return Promise.reject(new Error('No chapter id'));
+                var readerUrl = 'https://fanqienovel.com/reader/' + encodeURIComponent(chapterId);
+                function fetchViaAllOrigins() {
+                    var proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(readerUrl);
+                    return fetch(proxyUrl).then(function (res) {
+                        if (!res || !res.ok) throw new Error('HTTP ' + (res ? res.status : '0'));
+                        return res.text();
+                    });
+                }
+                return fetchTextWithProxy(readerUrl).then(function (html) {
+                    var payload = extractFanqieChapterPayloadFromReaderPage(html);
+                    if (payload && payload.content) return payload;
+                    return fetchViaAllOrigins().then(function (proxyHtml) {
+                        var proxyPayload = extractFanqieChapterPayloadFromReaderPage(proxyHtml);
+                        if (!proxyPayload || !proxyPayload.content) {
+                            throw new Error('No readable chapter from reader page');
+                        }
+                        return proxyPayload;
+                    });
+                }).then(function (payload) {
+                    return {
+                        content: payload.content,
+                        chapterId: payload.chapterId || String(chapterId),
+                        nextChapterId: payload.nextChapterId || '',
+                        sourceUrl: 'https://fanqienovel.com/page/' + String(bookId || '')
+                    };
+                });
+            }
+
+            function fetchFanqieApiChapter(chapterId, bookId) {
+                var contentApiList = [
+                    'https://fanqienovel.com/api/reader/full?itemId=' + encodeURIComponent(chapterId),
+                    'https://novel.snssdk.com/api/novel/book/reader/full/v1/?device_platform=android'
+                    + '&parent_enterfrom=novel_channel_search.tab.'
+                    + '&aid=2329&platform_id=1967'
+                    + '&group_id=' + encodeURIComponent(chapterId)
+                    + '&item_id=' + encodeURIComponent(chapterId)
+                ];
+
+                var index = 0;
+                function next() {
+                    if (index >= contentApiList.length) {
+                        throw new Error('No readable chapter content');
+                    }
+                    var apiUrl = contentApiList[index];
+                    index += 1;
+                    return fetchTextWithProxy(apiUrl).then(function (body) {
+                        var contentPayload = extractJsonFromMixedText(body) || {};
+                        var content = extractFanqieText(contentPayload);
+                        if (!content) return next();
+                        return {
+                            content: content,
+                            sourceUrl: 'https://fanqienovel.com/page/' + String(bookId || '')
+                        };
+                    }).catch(function () {
+                        return next();
+                    });
+                }
+                return next();
+            }
+
+            function fetchFanqieBookContent(bookId) {
+                var directoryUrl = 'https://fanqienovel.com/api/reader/directory/detail?bookId=' + encodeURIComponent(bookId);
+                return fetchTextWithProxy(directoryUrl).then(function (text) {
+                    var payload = extractJsonFromMixedText(text) || {};
+                    var chapterIds = extractFanqieChapterIdsFromDirectory(payload);
+                    if (!chapterIds.length) throw new Error('No chapter available');
+
+                    var picked = null;
+                    function tryReader(index) {
+                        if (index >= chapterIds.length || index >= 8) {
+                            if (picked) return Promise.resolve(picked);
+                            return fetchFanqieApiChapter(chapterIds[0], bookId);
+                        }
+                        var chapterId = chapterIds[index];
+                        return fetchFanqieReaderChapter(chapterId, bookId).then(function (chapterPayload) {
+                            if (!picked) picked = chapterPayload;
+                            var length = String(chapterPayload && chapterPayload.content || '').length;
+                            if (length >= 80) return chapterPayload;
+                            return tryReader(index + 1);
+                        }).catch(function () {
+                            return tryReader(index + 1);
+                        });
+                    }
+                    return tryReader(0);
+                });
+            }
+
+            if (fanqieMatch && fanqieMatch[1]) {
+                return fetchFanqieBookContent(fanqieMatch[1]);
+            }
+
+            if (!/^https?:\/\//i.test(url)) return Promise.reject(new Error('Invalid URL'));
+            return fetchTextWithProxy(url).then(function (text) {
+                return {
+                    text: text,
+                    contentType: ''
+                };
+            }).then(function (payload) {
+                var text = String(payload && payload.text || '');
+                var contentType = String(payload && payload.contentType || '');
+                if (/text\/html/i.test(contentType) || /\.html?(\?|#|$)/i.test(url) || /<!doctype|<html/i.test(text)) {
+                    text = stripHtmlText(text);
+                }
+                return {
+                    content: String(text || '').replace(/\r\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim(),
+                    sourceUrl: url
+                };
+            }).catch(function () {
+                return fetch(url).then(function (res) {
+                    var contentType = String(res && res.headers && res.headers.get && res.headers.get('content-type') || '');
+                    return res.text().then(function (text) {
+                        return {
+                            text: text,
+                            contentType: contentType
+                        };
+                    });
+                }).then(function (payload) {
+                    var text = String(payload && payload.text || '');
+                    var contentType = String(payload && payload.contentType || '');
+                    if (/text\/html/i.test(contentType) || /\.html?(\?|#|$)/i.test(url)) {
+                        text = stripHtmlText(text);
+                    }
+                    return {
+                        content: String(text || '').replace(/\r\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim(),
+                        sourceUrl: url
+                    };
+                });
+            });
+        }
+
+        function buildNovelReaderUrl(item, resume) {
+            var current = String(window.location.href || '');
+            var base = current.replace(/[^\/?#]+(\?[^#]*)?(#.*)?$/, 'browser-novel-reader.html');
+            var params = new URLSearchParams();
+            params.set('id', String(item && item.id || ''));
+            params.set('title', String(item && item.title || ''));
+            params.set('author', String(item && item.author || ''));
+            params.set('source', String(item && item.source || ''));
+            params.set('readUrl', String(item && item.readUrl || ''));
+            if (resume) params.set('resume', '1');
+            return base + '?' + params.toString();
+        }
+
+        function getNovelShelfItems() {
+            var map = {};
+            Object.keys(novelProgress || {}).forEach(function (key) {
+                var row = novelProgress[key];
+                if (!row || typeof row !== 'object') return;
+                var readUrl = String(row.readUrl || '').trim();
+                if (!readUrl) return;
+                var id = String(row.id || '').trim();
+                var title = String(row.title || '').trim();
+                var dedupeKey = [id, readUrl, title].join('|');
+                var prev = map[dedupeKey];
+                var ts = Number(row.updatedAt || 0);
+                if (!prev || ts > Number(prev.updatedAt || 0)) {
+                    map[dedupeKey] = {
+                        id: id,
+                        title: title || String(row.chapterTitle || '').trim() || 'Untitled',
+                        author: String(row.author || '').trim(),
+                        source: String(row.source || 'fanqie').trim(),
+                        readUrl: readUrl,
+                        percent: Number(row.percent || 0),
+                        chapterIndex: Number(row.chapterIndex),
+                        totalChapters: Number(row.totalChapters || 0),
+                        updatedAt: ts
+                    };
+                }
+            });
+            return Object.keys(map).map(function (k) { return map[k]; }).sort(function (a, b) {
+                return Number(b.updatedAt || 0) - Number(a.updatedAt || 0);
+            });
+        }
+
+        function removeNovelFromShelf(targetItem) {
+            var targetReadUrl = String(targetItem && targetItem.readUrl || '').trim();
+            var targetId = String(targetItem && targetItem.id || '').trim();
+            if (!targetReadUrl && !targetId) return;
+
+            Object.keys(novelProgress || {}).forEach(function (key) {
+                var row = novelProgress[key];
+                if (!row || typeof row !== 'object') return;
+                var rowReadUrl = String(row.readUrl || '').trim();
+                var rowId = String(row.id || '').trim();
+                if ((targetReadUrl && rowReadUrl === targetReadUrl) || (targetId && rowId === targetId)) {
+                    delete novelProgress[key];
+                }
+            });
+            saveNovelProgressStore();
+        }
+
+        function renderNovelShelf() {
+            var container = document.getElementById('novelShelf');
+            if (!container) return;
+            var items = getNovelShelfItems();
+            if (!items.length) {
+                container.innerHTML = '<div class="empty">' + escapeHtml(t('novel.shelf.empty')) + '</div>';
+                return;
+            }
+
+            container.innerHTML = '';
+            items.slice(0, 60).forEach(function (item) {
+                var card = document.createElement('div');
+                card.className = 'novel-book-card';
+                var title = String(item.title || 'Untitled');
+                var firstChar = title ? title.charAt(0) : '书';
+                var progress = Math.max(0, Math.min(100, Number(item.percent || 0)));
+                var chapterMeta = '';
+                if (Number.isFinite(item.chapterIndex) && item.chapterIndex >= 0 && item.totalChapters > 0) {
+                    chapterMeta = t('novel.shelf.chapter', {
+                        current: item.chapterIndex + 1,
+                        total: item.totalChapters
+                    });
+                }
+                var updatedText = item.updatedAt
+                    ? t('novel.shelf.updated', {
+                        time: new Date(item.updatedAt).toLocaleString(currentLanguage === 'en-US' ? 'en-US' : 'zh-CN')
+                    })
+                    : '';
+
+                card.innerHTML = [
+                    '<div class="novel-book-cover">' + escapeHtml(firstChar) + '</div>',
+                    '<div class="novel-book-main">',
+                    '<div class="novel-book-title">' + escapeHtml(title) + '</div>',
+                    '<div class="novel-book-sub">' + escapeHtml(item.author || '-') + '</div>',
+                    '<div class="novel-book-meta">' + escapeHtml(t('novel.shelf.progress', { progress: progress.toFixed(1) })) + '</div>',
+                    chapterMeta ? '<div class="novel-book-meta">' + escapeHtml(chapterMeta) + '</div>' : '',
+                    updatedText ? '<div class="novel-book-meta">' + escapeHtml(updatedText) + '</div>' : '',
+                    '<div class="novel-book-actions">',
+                    '<button class="btn btn-primary novel-shelf-open">' + escapeHtml(t('novel.shelf.open')) + '</button>',
+                    '<button class="btn btn-danger novel-shelf-remove">' + escapeHtml(t('novel.shelf.remove')) + '</button>',
+                    '</div>',
+                    '</div>'
+                ].join('');
+
+                var openBtn = card.querySelector('.novel-shelf-open');
+                var removeBtn = card.querySelector('.novel-shelf-remove');
+                openBtn.addEventListener('click', function () {
+                    openUrl(buildNovelReaderUrl(item, true), true);
+                });
+                removeBtn.addEventListener('click', function () {
+                    removeNovelFromShelf(item);
+                    loadNovelProgressStore();
+                    renderNovelShelf();
+                });
+
+                container.appendChild(card);
+            });
+        }
+
+        function renderNovelSearchResults() {
+            var container = document.getElementById('novelSearchResults');
+            if (!container) return;
+            if (!novelSearchResults.length) {
+                container.innerHTML = '<div class="empty">' + escapeHtml(t('novel.search_no_result')) + '</div>';
+                return;
+            }
+
+            container.innerHTML = '';
+            novelSearchResults.forEach(function (item) {
+                var row = document.createElement('div');
+                row.className = 'search-result-item';
+                row.innerHTML = [
+                    '<div>',
+                    '<div class="search-result-title">' + escapeHtml(item.title || '') + '</div>',
+                    '<div class="search-result-sub">' + escapeHtml(item.author || '-') + '</div>',
+                    '</div>',
+                    '<button class="btn btn-primary">' + escapeHtml(t('novel.read_btn')) + '</button>'
+                ].join('');
+                var btn = row.querySelector('button');
+                btn.addEventListener('click', function () {
+                    openUrl(buildNovelReaderUrl(item, false), true);
+                });
+                container.appendChild(row);
+            });
+        }
+
+        function setupNovelTool() {
+            loadNovelProgressStore();
+            document.getElementById('novelSearchResults').innerHTML = '<div class="empty">' + escapeHtml(t('novel.search_empty')) + '</div>';
+            renderNovelShelf();
+
+            document.getElementById('novelSearchBtn').addEventListener('click', function () {
+                var input = document.getElementById('novelSearchInput');
+                var keyword = String(input && input.value || '').trim();
+                var container = document.getElementById('novelSearchResults');
+                if (!keyword) {
+                    if (container) container.innerHTML = '<div class="empty">' + escapeHtml(t('novel.search_empty')) + '</div>';
+                    return;
+                }
+                if (container) container.innerHTML = '<div class="empty">' + escapeHtml(t('novel.search_loading')) + '</div>';
+                requestNovelSearch(keyword).then(function (rows) {
+                    novelSearchResults = rows || [];
+                    renderNovelSearchResults();
+                }).catch(function (err) {
+                    if (container) {
+                        container.innerHTML = '<div class="empty">' + escapeHtml(
+                            t('novel.search_error', { msg: (err && err.message) ? err.message : 'error' })
+                        ) + '</div>';
+                    }
+                });
+            });
+
+            document.getElementById('novelSearchInput').addEventListener('keydown', function (evt) {
+                if (evt.key === 'Enter') {
+                    evt.preventDefault();
+                    document.getElementById('novelSearchBtn').click();
+                }
+            });
+
+            document.getElementById('novelShelfRefreshBtn').addEventListener('click', function () {
+                loadNovelProgressStore();
+                renderNovelShelf();
+            });
+
+            window.addEventListener('storage', function (evt) {
+                if (!evt || evt.key !== NOVEL_PROGRESS_KEY) return;
+                loadNovelProgressStore();
+                renderNovelShelf();
+            });
+        }
+
+        function loadWatchlist() {
+            try {
+                var raw = JSON.parse(localStorage.getItem(WATCHLIST_KEY) || '[]');
+                var seen = {};
+                watchlist = (Array.isArray(raw) ? raw : []).map(function (item) {
+                    var code = normalizeWatchCode(item && item.code || '');
+                    if (!code || seen[code]) return null;
+                    seen[code] = true;
+                    return {
+                        code: code,
+                        name: String(item && item.name || ''),
+                        ts: Number(item && item.ts || Date.now())
+                    };
+                }).filter(function (item) { return !!item; });
+                if (!Array.isArray(watchlist)) watchlist = [];
+            } catch (e) {
+                watchlist = [];
+            }
+        }
+
+        function saveWatchlist(syncHost) {
+            localStorage.setItem(WATCHLIST_KEY, JSON.stringify(watchlist));
+            if (syncHost !== false) {
+                sendToHost({ type: 'SYNC_WATCHLIST', watchlist: watchlist });
+            }
+        }
+
+        function quoteUrlFor(code) {
+            var keyword = currentLanguage === 'zh-CN' ? '股票 行情' : 'stock quote';
+            return 'https://cn.bing.com/search?q=' + encodeURIComponent(code + ' ' + keyword);
+        }
+
+        function escapeHtml(value) {
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function stripHtmlText(content) {
+            var source = String(content || '');
+            return source
+                .replace(/<script[\s\S]*?<\/script>/gi, '')
+                .replace(/<style[\s\S]*?<\/style>/gi, '')
+                .replace(/<[^>]+>/g, ' ')
+                .replace(/&nbsp;/gi, ' ')
+                .replace(/&amp;/gi, '&')
+                .replace(/&lt;/gi, '<')
+                .replace(/&gt;/gi, '>')
+                .replace(/&#39;/g, "'")
+                .replace(/&quot;/g, '"')
+                .replace(/\s{2,}/g, ' ')
+                .trim();
+        }
+
+        function stripHtmlTextKeepLines(content) {
+            var source = String(content || '');
+            return source
+                .replace(/<script[\s\S]*?<\/script>/gi, '')
+                .replace(/<style[\s\S]*?<\/style>/gi, '')
+                .replace(/<br\s*\/?>/gi, '\n')
+                .replace(/<\/(p|div|li|h\d|tr|section|article)>/gi, '\n')
+                .replace(/<[^>]+>/g, ' ')
+                .replace(/&nbsp;/gi, ' ')
+                .replace(/&amp;/gi, '&')
+                .replace(/&lt;/gi, '<')
+                .replace(/&gt;/gi, '>')
+                .replace(/&#39;/g, "'")
+                .replace(/&quot;/g, '"')
+                .replace(/\r\n/g, '\n')
+                .replace(/\n[ \t]+/g, '\n')
+                .replace(/[ \t]+\n/g, '\n')
+                .replace(/[ \t]{2,}/g, ' ')
+                .replace(/\n{3,}/g, '\n\n')
+                .trim();
+        }
+
+        function decodeUnicodeEscapes(text) {
+            return String(text || '')
+                .replace(/\\u([0-9a-fA-F]{4})/g, function (_, hex) {
+                    return String.fromCharCode(parseInt(hex, 16));
+                })
+                .replace(/\\x([0-9a-fA-F]{2})/g, function (_, hex) {
+                    return String.fromCharCode(parseInt(hex, 16));
+                })
+                .replace(/\\\\/g, '\\');
+        }
+
+        function countPrivateUseChars(text) {
+            var source = String(text || '');
+            var count = 0;
+            for (var i = 0; i < source.length; i += 1) {
+                var code = source.charCodeAt(i);
+                if ((code >= 0xE000 && code <= 0xF8FF) || (code >= 58344 && code <= 58716)) {
+                    count += 1;
+                }
+            }
+            return count;
+        }
+
+        function decodeFanqieObfuscatedText(text) {
+            var source = String(text || '');
+            if (!source) return '';
+            var decodedCandidates = [];
+            for (var mode = 0; mode < FANQIE_DECODE_RANGES.length; mode += 1) {
+                var range = FANQIE_DECODE_RANGES[mode] || [];
+                var map = FANQIE_DECODE_CHARSET[mode] || [];
+                var min = Number(range[0] || 0);
+                var max = Number(range[1] || 0);
+                var out = '';
+                for (var i = 0; i < source.length; i += 1) {
+                    var ch = source.charAt(i);
+                    var uni = source.charCodeAt(i);
+                    if (uni >= min && uni <= max) {
+                        var bias = uni - min;
+                        var replacement = map[bias];
+                        if (replacement && replacement !== '?') out += replacement;
+                        else out += ch;
+                    } else {
+                        out += ch;
+                    }
+                }
+                decodedCandidates.push(out);
+            }
+
+            if (!decodedCandidates.length) return source;
+            if (decodedCandidates.length === 1) return decodedCandidates[0];
+            var score0 = countPrivateUseChars(decodedCandidates[0]);
+            var score1 = countPrivateUseChars(decodedCandidates[1]);
+            if (score1 < score0) return decodedCandidates[1];
+            return decodedCandidates[0];
+        }
+
+        function parseJsonMaybe(text) {
+            var source = String(text || '').trim();
+            if (!source) return null;
+            try {
+                return JSON.parse(source);
+            } catch (e) { }
+            var match = source.match(/^[^(]+\(([\s\S]+)\)\s*;?\s*$/);
+            if (match && match[1]) {
+                try {
+                    return JSON.parse(match[1]);
+                } catch (e2) { }
+            }
+            return null;
+        }
+
+        function extractJsonFromMixedText(text) {
+            var source = String(text || '').trim();
+            if (!source) return null;
+            var parsed = parseJsonMaybe(source);
+            if (parsed) return parsed;
+
+            var marker = 'Markdown Content:';
+            var markerIndex = source.indexOf(marker);
+            if (markerIndex >= 0) {
+                var body = source.slice(markerIndex + marker.length).trim();
+                parsed = parseJsonMaybe(body);
+                if (parsed) return parsed;
+            }
+
+            var firstBrace = source.indexOf('{');
+            var lastBrace = source.lastIndexOf('}');
+            if (firstBrace >= 0 && lastBrace > firstBrace) {
+                parsed = parseJsonMaybe(source.slice(firstBrace, lastBrace + 1));
+                if (parsed) return parsed;
+            }
+            return null;
+        }
+
+        function extractAssignedJsonObject(source, marker) {
+            var text = String(source || '');
+            var assignment = String(marker || '');
+            if (!text || !assignment) return null;
+            var index = text.indexOf(assignment);
+            if (index < 0) return null;
+            var i = index + assignment.length;
+            while (i < text.length && /\s/.test(text.charAt(i))) i += 1;
+            if (text.charAt(i) !== '{') return null;
+
+            var start = i;
+            var depth = 0;
+            var inString = false;
+            var escaped = false;
+            for (; i < text.length; i += 1) {
+                var ch = text.charAt(i);
+                if (inString) {
+                    if (escaped) escaped = false;
+                    else if (ch === '\\') escaped = true;
+                    else if (ch === '"') inString = false;
+                    continue;
+                }
+                if (ch === '"') {
+                    inString = true;
+                    continue;
+                }
+                if (ch === '{') {
+                    depth += 1;
+                    continue;
+                }
+                if (ch === '}') {
+                    depth -= 1;
+                    if (depth === 0) {
+                        return parseJsonMaybe(text.slice(start, i + 1));
+                    }
+                }
+            }
+            return null;
+        }
+
+        function extractFanqieChapterPayloadFromReaderPage(html) {
+            var state = extractAssignedJsonObject(html, 'window.__INITIAL_STATE__=');
+            var chapterData = state && state.reader ? state.reader.chapterData : null;
+            if (!chapterData || typeof chapterData !== 'object') return null;
+            var content = String(chapterData.content || '').trim();
+            if (!content) return null;
+
+            var decodedText = decodeFanqieObfuscatedText(stripHtmlTextKeepLines(content));
+            decodedText = String(decodedText || '').replace(/\r\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+            if (!decodedText) return null;
+            return {
+                content: decodedText,
+                chapterId: String(chapterData.itemId || chapterData.groupId || '').trim(),
+                nextChapterId: String(chapterData.nextItemId || '').trim(),
+                title: String(chapterData.title || '').trim()
+            };
+        }
+
+        function extractFanqieChapterIdsFromDirectory(payload) {
+            var data = payload && payload.data ? payload.data : {};
+            var ids = [];
+            if (Array.isArray(data.allItemIds)) {
+                data.allItemIds.forEach(function (id) {
+                    var text = String(id || '').trim();
+                    if (text) ids.push(text);
+                });
+            }
+            if (ids.length) return ids;
+            var groups = Array.isArray(data.chapterListWithVolume) ? data.chapterListWithVolume : [];
+            for (var i = 0; i < groups.length; i += 1) {
+                var part = Array.isArray(groups[i]) ? groups[i] : [];
+                for (var j = 0; j < part.length; j += 1) {
+                    var item = part[j] || {};
+                    var chapterId = String(item.itemId || item.ItemID || item.chapterId || item.id || '').trim();
+                    if (chapterId) ids.push(chapterId);
+                }
+            }
+            return ids;
+        }
+
+        function requestJsonp(url, callbackParam, timeoutMs) {
+            return new Promise(function (resolve, reject) {
+                var cbParam = callbackParam || 'cb';
+                var cbName = '__mogu_jsonp_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
+                var timer = null;
+                var script = document.createElement('script');
+                var done = false;
+
+                function cleanup() {
+                    if (done) return;
+                    done = true;
+                    if (timer) clearTimeout(timer);
+                    try { delete window[cbName]; } catch (_) { window[cbName] = undefined; }
+                    try { if (script && script.parentNode) script.parentNode.removeChild(script); } catch (_) { }
+                }
+
+                window[cbName] = function (payload) {
+                    cleanup();
+                    resolve(payload);
+                };
+
+                script.onerror = function () {
+                    cleanup();
+                    reject(new Error('JSONP request failed.'));
+                };
+
+                var sep = url.indexOf('?') >= 0 ? '&' : '?';
+                script.src = url + sep + encodeURIComponent(cbParam) + '=' + encodeURIComponent(cbName);
+                timer = setTimeout(function () {
+                    cleanup();
+                    reject(new Error('JSONP timeout.'));
+                }, Number(timeoutMs || 7000));
+
+                document.head.appendChild(script);
+            });
+        }
+
+        function fetchTextWithProxy(url) {
+            var target = String(url || '').trim();
+            if (!target) return Promise.reject(new Error('Empty URL'));
+            function fetchText(u) {
+                return fetch(u).then(function (res) {
+                    if (!res || !res.ok) throw new Error('HTTP ' + (res ? res.status : '0'));
+                    return res.text();
+                });
+            }
+
+            function toJinaProxy(u) {
+                var src = String(u || '').trim();
+                if (!src) return '';
+                if (/^https?:\/\//i.test(src)) {
+                    return 'https://r.jina.ai/' + src;
+                }
+                return 'https://r.jina.ai/http://' + src.replace(/^\/+/, '');
+            }
+
+            var allOriginsProxy = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(target);
+            var jinaProxy = toJinaProxy(target);
+
+            return fetchText(target).catch(function () {
+                return fetchText(allOriginsProxy);
+            }).catch(function () {
+                return fetchText(jinaProxy);
+            });
+        }
+
+        function normalizeToYahooSymbol(code) {
+            var value = String(code || '').trim().toUpperCase();
+            if (!value) return '';
+            if (/^[A-Z]{1,10}\.(SS|SZ|HK)$/.test(value)) return value;
+            if (/^(SH|SZ)\d{6}$/.test(value)) {
+                return value.slice(2) + (value.slice(0, 2) === 'SH' ? '.SS' : '.SZ');
+            }
+            if (/^\d{6}$/.test(value)) {
+                return value + (/^[569]/.test(value) ? '.SS' : '.SZ');
+            }
+            if (/^\d{4,5}$/.test(value)) {
+                return String(parseInt(value, 10)).padStart(4, '0') + '.HK';
+            }
+            return value;
+        }
+
+        function normalizeWatchCode(rawCode) {
+            var value = String(rawCode || '').trim().toUpperCase();
+            if (!value) return '';
+            if (/^(\d{6})\.(SH|SS)$/i.test(value)) return RegExp.$1 + '.SS';
+            if (/^(\d{6})\.(SZ)$/i.test(value)) return RegExp.$1 + '.SZ';
+            if (/^(SH)(\d{6})$/i.test(value)) return RegExp.$2 + '.SS';
+            if (/^(SZ)(\d{6})$/i.test(value)) return RegExp.$2 + '.SZ';
+            if (/^\d{6}$/.test(value)) return value + (/^[569]/.test(value) ? '.SS' : '.SZ');
+            if (/^(\d{4,5})\.(HK)$/i.test(value)) return String(parseInt(RegExp.$1, 10)).padStart(5, '0') + '.HK';
+            if (/^\d{4,5}$/.test(value)) return String(parseInt(value, 10)).padStart(5, '0') + '.HK';
+            if (/^(US)([A-Z.\-]{1,12})$/i.test(value)) return RegExp.$2.replace(/[^A-Z0-9.\-]/g, '');
+            return value;
+        }
+
+        function toTencentSymbol(inputCode) {
+            var value = normalizeWatchCode(inputCode);
+            if (!value) return '';
+            if (/^(\d{6})\.(SS)$/i.test(value)) return 'sh' + RegExp.$1;
+            if (/^(\d{6})\.(SZ)$/i.test(value)) return 'sz' + RegExp.$1;
+            if (/^(\d{4,5})\.(HK)$/i.test(value)) return 'hk' + String(parseInt(RegExp.$1, 10)).padStart(5, '0');
+            if (/^\d{6}$/.test(value)) return (/^[569]/.test(value) ? 'sh' : 'sz') + value;
+            if (/^\d{4,5}$/.test(value)) return 'hk' + String(parseInt(value, 10)).padStart(5, '0');
+            var usSymbol = String(value).replace(/[^A-Z0-9]/g, '').slice(0, 12);
+            if (!usSymbol) return '';
+            return 'us' + usSymbol;
+        }
+
+        function requestStockQuotes(codes) {
+            function hasRealQuote(rows) {
+                return Array.isArray(rows) && rows.some(function (row) {
+                    var price = Number(row && row.price);
+                    var source = String(row && row.source || '').toLowerCase();
+                    return Number.isFinite(price) && price > 0 && source !== 'none';
+                });
+            }
+
+            var hostApi = null;
+            try {
+                if (window.parent && window.parent.BrowserManager
+                    && typeof window.parent.BrowserManager.fetchStockQuotes === 'function') {
+                    hostApi = window.parent.BrowserManager.fetchStockQuotes;
+                }
+            } catch (e) { }
+
+            if (hostApi) {
+                return Promise.all([
+                    Promise.resolve(hostApi(codes)).then(function (rows) {
+                        return Array.isArray(rows) ? rows : [];
+                    }).catch(function () {
+                        return [];
+                    }),
+                    requestStockQuotesFallback(codes).catch(function () {
+                        return [];
+                    })
+                ]).then(function (pair) {
+                    var hostRows = pair[0] || [];
+                    var fallbackRows = pair[1] || [];
+                    if (hasRealQuote(fallbackRows)) return fallbackRows;
+                    if (hasRealQuote(hostRows)) return hostRows;
+                    if (fallbackRows.length) return fallbackRows;
+                    return hostRows;
+                });
+            }
+            return requestStockQuotesFallback(codes);
+        }
+
+        function requestStockQuotesFallback(codes) {
+            var inputCodes = Array.isArray(codes) ? codes : [];
+            var tencentMap = {};
+            var secidMap = {};
+            var yahooMap = {};
+
+            inputCodes.forEach(function (code) {
+                var normalized = normalizeWatchCode(code);
+                if (!normalized) return;
+
+                var tencentSymbol = toTencentSymbol(normalized);
+                if (tencentSymbol) {
+                    var tencentKey = String(tencentSymbol).toLowerCase();
+                    if (!tencentMap[tencentKey]) tencentMap[tencentKey] = normalized;
+                }
+
+                if (/^(\d{6})\.(SS|SZ)$/.test(normalized)) {
+                    var prefix = RegExp.$2 === 'SS' ? '1.' : '0.';
+                    if (!secidMap[prefix + RegExp.$1]) secidMap[prefix + RegExp.$1] = normalized;
+                }
+
+                var yahooSymbol = normalizeToYahooSymbol(normalized);
+                if (yahooSymbol && !yahooMap[yahooSymbol]) yahooMap[yahooSymbol] = normalized;
+            });
+
+            var eastPromise = (function () {
+                var secids = Object.keys(secidMap);
+                if (!secids.length) return Promise.resolve([]);
+                var url = 'https://push2.eastmoney.com/api/qt/ulist.np/get?fltt=2&invt=2&fields=f2,f3,f4,f9,f23,f12,f13,f14&secids='
+                    + encodeURIComponent(secids.join(','));
+                return requestJsonp(url, 'cb', 7000).then(function (payload) {
+                    var rows = payload && payload.data && Array.isArray(payload.data.diff) ? payload.data.diff : [];
+                    return rows.map(function (row) {
+                        var market = Number(row && row.f13) === 1 ? 'SS' : 'SZ';
+                        var codeKey = (market === 'SS' ? '1.' : '0.') + String(row && row.f12 || '').padStart(6, '0');
+                        var mappedCode = secidMap[codeKey] || (String(row && row.f12 || '').padStart(6, '0') + '.' + market);
+                        return {
+                            code: mappedCode,
+                            query: mappedCode,
+                            name: String(row && row.f14 || mappedCode),
+                            price: Number(row && row.f2),
+                            change: Number(row && row.f4),
+                            changePercent: Number(row && row.f3),
+                            pe: Number(row && row.f9),
+                            pb: Number(row && row.f23),
+                            currency: 'CNY',
+                            source: 'eastmoney'
+                        };
+                    });
+                }).catch(function () {
+                    return [];
+                });
+            })();
+
+            var tencentPromise = (function () {
+                var symbols = Object.keys(tencentMap);
+                if (!symbols.length) return Promise.resolve([]);
+                var url = 'https://qt.gtimg.cn/q=' + encodeURIComponent(symbols.join(','));
+                return fetchTextWithProxy(url).then(function (text) {
+                    var lines = String(text || '').split(/\r?\n/);
+                    var rows = [];
+                    lines.forEach(function (line) {
+                        var match = line.match(/^v_([^=]+)="([\s\S]*)";$/);
+                        if (!match) return;
+                        var symbol = String(match[1] || '').trim().toLowerCase();
+                        var payload = String(match[2] || '');
+                        if (!symbol || !payload) return;
+                        var parts = payload.split('~');
+                        if (parts.length < 40) return;
+
+                        var mappedCode = tencentMap[symbol] || normalizeWatchCode(symbol);
+                        var price = Number(parts[3]);
+                        var prev = Number(parts[4]);
+                        var change = Number(parts[31]);
+                        var changePercent = Number(parts[32]);
+                        if (!Number.isFinite(change) && Number.isFinite(price) && Number.isFinite(prev)) {
+                            change = price - prev;
+                        }
+                        if (!Number.isFinite(changePercent) && Number.isFinite(change) && Number.isFinite(prev) && prev !== 0) {
+                            changePercent = (change / prev) * 100;
+                        }
+
+                        var currency = '';
+                        if (/^us/i.test(symbol)) currency = String(parts[35] || 'USD');
+                        else if (/^hk/i.test(symbol)) currency = String(parts[75] || 'HKD');
+                        else currency = 'CNY';
+
+                        rows.push({
+                            code: mappedCode,
+                            query: mappedCode,
+                            name: String(parts[1] || mappedCode),
+                            price: price,
+                            change: change,
+                            changePercent: changePercent,
+                            pe: Number(parts[39]),
+                            pb: Number(parts[43]),
+                            currency: currency,
+                            source: 'tencent'
+                        });
+                    });
+                    return rows;
+                }).catch(function () {
+                    return [];
+                });
+            })();
+
+            var yahooPromise = (function () {
+                var symbols = Object.keys(yahooMap);
+                if (!symbols.length) return Promise.resolve([]);
+                return Promise.all(symbols.map(function (symbol) {
+                    var mappedCode = yahooMap[symbol];
+                    var url = 'https://query2.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent(symbol)
+                        + '?range=1d&interval=1d';
+                    return fetch(url).then(function (res) {
+                        if (!res || !res.ok) throw new Error('HTTP ' + (res ? res.status : '0'));
+                        return res.json();
+                    }).then(function (payload) {
+                        var result = payload && payload.chart && Array.isArray(payload.chart.result)
+                            ? payload.chart.result[0]
+                            : null;
+                        var meta = result && result.meta ? result.meta : null;
+                        if (!meta) return null;
+                        var price = Number(meta.regularMarketPrice);
+                        var prev = Number(meta.previousClose);
+                        var change = (Number.isFinite(price) && Number.isFinite(prev)) ? (price - prev) : Number.NaN;
+                        var changePercent = (Number.isFinite(change) && Number.isFinite(prev) && prev !== 0) ? (change / prev * 100) : Number.NaN;
+                        return {
+                            code: mappedCode,
+                            query: mappedCode,
+                            name: String(meta.shortName || meta.longName || mappedCode),
+                            price: price,
+                            change: change,
+                            changePercent: changePercent,
+                            pe: Number.NaN,
+                            pb: Number.NaN,
+                            currency: String(meta.currency || ''),
+                            source: 'yahoo-chart'
+                        };
+                    }).catch(function () {
+                        return null;
+                    });
+                })).then(function (rows) {
+                    return rows.filter(function (row) { return !!row; });
+                });
+            })();
+
+            return Promise.all([eastPromise, tencentPromise, yahooPromise]).then(function (parts) {
+                var mergedMap = {};
+                function score(row) {
+                    if (!row) return -1;
+                    var price = Number(row.price);
+                    var hasPrice = Number.isFinite(price) && price > 0 ? 100 : 0;
+                    var hasValuation = (Number.isFinite(Number(row.pe)) || Number.isFinite(Number(row.pb))) ? 10 : 0;
+                    var source = String(row.source || '').toLowerCase();
+                    var sourceBoost = source === 'eastmoney' ? 6 : (source === 'tencent' ? 5 : 3);
+                    return hasPrice + hasValuation + sourceBoost;
+                }
+
+                (parts[1] || []).forEach(function (row) {
+                    if (!row || !row.code) return;
+                    mergedMap[String(row.code).toUpperCase()] = row;
+                });
+                (parts[2] || []).forEach(function (row) {
+                    if (!row || !row.code) return;
+                    var key = String(row.code).toUpperCase();
+                    var current = mergedMap[key];
+                    if (!current || score(row) > score(current)) mergedMap[key] = row;
+                });
+                (parts[0] || []).forEach(function (row) {
+                    if (!row || !row.code) return;
+                    var key = String(row.code).toUpperCase();
+                    var current = mergedMap[key];
+                    if (!current || score(row) > score(current)) mergedMap[key] = row;
+                });
+
+                return inputCodes.map(function (code) {
+                    var normalized = normalizeWatchCode(code);
+                    var key = String(normalized || code || '').toUpperCase();
+                    var row = mergedMap[key] || null;
+                    if (!row) {
+                        return {
+                            code: normalized || String(code || '').toUpperCase(),
+                            query: normalized || String(code || '').toUpperCase(),
+                            name: normalized || String(code || '').toUpperCase(),
+                            price: Number.NaN,
+                            change: Number.NaN,
+                            changePercent: Number.NaN,
+                            pe: Number.NaN,
+                            pb: Number.NaN,
+                            currency: '',
+                            source: 'none'
+                        };
+                    }
+                    return row;
+                });
+            });
+        }
+
+        function requestStockSearch(keyword) {
+            var api = null;
+            try {
+                if (window.parent && window.parent.BrowserManager
+                    && typeof window.parent.BrowserManager.searchStockSymbols === 'function') {
+                    api = window.parent.BrowserManager.searchStockSymbols;
+                }
+            } catch (e) { }
+            if (api) {
+                return Promise.resolve(api(keyword)).then(function (rows) {
+                    return Array.isArray(rows) ? rows : [];
+                }).catch(function () {
+                    return null;
+                }).then(function (rows) {
+                    if (Array.isArray(rows) && rows.length) return rows;
+                    return requestStockSearchFallback(keyword);
+                });
+            }
+            return requestStockSearchFallback(keyword);
+        }
+
+        function requestStockSearchFallback(keyword) {
+            var query = String(keyword || '').trim();
+            if (!query) return Promise.resolve([]);
+            var eastUrl = 'https://searchapi.eastmoney.com/api/suggest/get?input=' + encodeURIComponent(query)
+                + '&type=14&token=D43BF722C8E33BDC906FB84D85E326E8&count=20';
+            var eastPromise = requestJsonp(eastUrl, 'cb', 7000).then(function (payload) {
+                var table = payload && payload.QuotationCodeTable ? payload.QuotationCodeTable : null;
+                var rows = table && Array.isArray(table.Data) ? table.Data : [];
+                return rows.map(function (row) {
+                    var quoteId = String(row && row.QuoteID || '');
+                    var code = String(row && row.Code || '').toUpperCase();
+                    var normalizedCode = code;
+                    if (/^1\.(\d{6})$/.test(quoteId)) normalizedCode = RegExp.$1 + '.SS';
+                    else if (/^0\.(\d{6})$/.test(quoteId)) normalizedCode = RegExp.$1 + '.SZ';
+                    if (!normalizedCode) return null;
+                    return {
+                        code: normalizedCode,
+                        name: String(row && (row.Name || row.SecurityName || row.ShortName || normalizedCode) || normalizedCode),
+                        market: String(row && (row.SecurityTypeName || row.MktNum || '') || ''),
+                        source: 'eastmoney'
+                    };
+                }).filter(function (item) { return !!item; });
+            }).catch(function () {
+                return [];
+            });
+
+            var yahooUrl = 'https://query2.finance.yahoo.com/v1/finance/search?q=' + encodeURIComponent(query)
+                + '&quotesCount=20&newsCount=0';
+            var yahooPromise = fetch(yahooUrl).then(function (res) {
+                return res.json();
+            }).then(function (payload) {
+                var rows = payload && Array.isArray(payload.quotes) ? payload.quotes : [];
+                return rows.map(function (row) {
+                    var symbol = String(row && row.symbol || '').toUpperCase();
+                    if (!symbol) return null;
+                    return {
+                        code: symbol,
+                        name: String(row && (row.shortname || row.longname || symbol) || symbol),
+                        market: String(row && (row.exchDisp || row.exchange || row.quoteType) || ''),
+                        source: 'yahoo'
+                    };
+                }).filter(function (item) { return !!item; });
+            }).catch(function () {
+                return [];
+            });
+
+            var tencentUrl = 'https://smartbox.gtimg.cn/s3/?v=2&t=all&q=' + encodeURIComponent(query);
+            var tencentPromise = fetchTextWithProxy(tencentUrl).then(function (text) {
+                var matched = String(text || '').match(/v_hint\s*=\s*"([^"]*)"/);
+                if (!matched || !matched[1]) return [];
+                var decoded = decodeUnicodeEscapes(matched[1]);
+                if (!decoded) return [];
+                return decoded.split('^').map(function (rowText) {
+                    var parts = String(rowText || '').split('~');
+                    if (parts.length < 3) return null;
+                    var marketPrefix = String(parts[0] || '').toLowerCase();
+                    var rawCode = String(parts[1] || '').trim();
+                    var name = String(parts[2] || '').trim();
+                    if (!rawCode) return null;
+                    var code = rawCode.toUpperCase();
+                    if (marketPrefix === 'sh') code = rawCode.padStart(6, '0') + '.SS';
+                    else if (marketPrefix === 'sz') code = rawCode.padStart(6, '0') + '.SZ';
+                    else if (marketPrefix === 'hk') code = rawCode.padStart(5, '0') + '.HK';
+                    else if (marketPrefix === 'us') code = rawCode.toUpperCase();
+                    return {
+                        code: code,
+                        name: name || code,
+                        market: String(parts[4] || marketPrefix || '').toUpperCase(),
+                        source: 'tencent'
+                    };
+                }).filter(function (item) { return !!item; });
+            }).catch(function () {
+                return [];
+            });
+
+            return Promise.all([eastPromise, yahooPromise, tencentPromise]).then(function (results) {
+                var merged = (results[0] || []).concat(results[1] || [], results[2] || []);
+                var seen = {};
+                return merged.filter(function (item) {
+                    var key = String(item && item.code || '').toUpperCase();
+                    if (!key || seen[key]) return false;
+                    seen[key] = true;
+                    return true;
+                }).slice(0, 20);
+            });
+        }
+
+        function addWatchlistItem(code, name) {
+            var normalizedCode = normalizeWatchCode(code);
+            var normalizedName = String(name || '').trim();
+            if (!normalizedCode) return false;
+            var exists = watchlist.some(function (item) {
+                return normalizeWatchCode(item && item.code) === normalizedCode;
+            });
+            if (exists) return false;
+
+            watchlist.unshift({ code: normalizedCode, name: normalizedName, ts: Date.now() });
+            saveWatchlist();
+            renderWatchlist();
+            refreshWatchlistQuotes();
+            return true;
+        }
+
+        function renderStockSearchResults() {
+            var container = document.getElementById('stockSearchResults');
+            if (!container) return;
+            if (!stockSearchResults.length) {
+                container.innerHTML = '<div class="empty">' + escapeHtml(t('stocks.search_no_result')) + '</div>';
+                return;
+            }
+
+            container.innerHTML = '';
+            stockSearchResults.forEach(function (item) {
+                var code = normalizeWatchCode(item && item.code || '');
+                if (!code) return;
+                var row = document.createElement('div');
+                row.className = 'search-result-item';
+                row.innerHTML = [
+                    '<div>',
+                    '<div class="search-result-title">' + escapeHtml(String(item && item.name || code)) + '</div>',
+                    '<div class="search-result-sub">' + escapeHtml(code + (item && item.market ? (' | ' + item.market) : '')) + '</div>',
+                    '</div>',
+                    '<button class="btn btn-primary">' + escapeHtml(t('stocks.search_add')) + '</button>'
+                ].join('');
+                var btn = row.querySelector('button');
+                btn.addEventListener('click', function () {
+                    addWatchlistItem(code, String(item && item.name || ''));
+                    document.getElementById('stockCode').value = code;
+                    document.getElementById('stockName').value = String(item && item.name || '');
+                });
+                container.appendChild(row);
+            });
+        }
+
+        function applyQuotes(rows) {
+            quoteMap = {};
+            (rows || []).forEach(function (row) {
+                if (!row) return;
+                var key1 = String(row.code || '').toUpperCase();
+                var key2 = String(row.query || '').toUpperCase();
+                if (key1) quoteMap[key1] = row;
+                if (key2) quoteMap[key2] = row;
+            });
+        }
+
+        function formatSigned(value, digits) {
+            var num = Number(value);
+            if (!Number.isFinite(num)) return '--';
+            var fixed = num.toFixed(typeof digits === 'number' ? digits : 2);
+            return (num > 0 ? '+' : '') + fixed;
+        }
+
+        function refreshWatchlistQuotes() {
+            if (!watchlist.length) {
+                quoteMap = {};
+                lastQuoteAt = 0;
+                quoteLoading = false;
+                lastQuoteError = '';
+                renderWatchlist();
+                return;
+            }
+            quoteLoading = true;
+            lastQuoteError = '';
+            renderWatchlist();
+
+            var codes = watchlist.map(function (item) { return item.code; });
+            requestStockQuotes(codes).then(function (rows) {
+                applyQuotes(rows);
+                lastQuoteAt = Date.now();
+                quoteLoading = false;
+                lastQuoteError = '';
+                renderWatchlist();
+            }).catch(function (err) {
+                quoteLoading = false;
+                lastQuoteError = (err && err.message) ? err.message : t('stocks.quote_fetch_failed');
+                renderWatchlist();
+            });
+        }
+
+        function renderWatchlist() {
+            var listEl = document.getElementById('stocksList');
+            var summaryEl = document.getElementById('stockSummary');
+            var locale = currentLanguage === 'en-US' ? 'en-US' : 'zh-CN';
+            var summary = t('stocks.summary.count', { count: watchlist.length });
+            if (quoteLoading) summary += ' | ' + t('stocks.summary.loading');
+            else if (lastQuoteAt) summary += ' | ' + t('stocks.summary.updated', { time: new Date(lastQuoteAt).toLocaleTimeString(locale) });
+            if (lastQuoteError) summary += ' | ' + t('stocks.summary.error', { msg: lastQuoteError });
+            summaryEl.textContent = summary;
+
+            if (!watchlist.length) {
+                listEl.innerHTML = '<div class="empty">' + escapeHtml(t('stocks.empty')) + '</div>';
+                return;
+            }
+
+            listEl.innerHTML = '';
+            watchlist.forEach(function (item, index) {
+                var quote = quoteMap[String(item.code || '').toUpperCase()] || null;
+                var priceText = '--';
+                var quoteClass = 'flat';
+                var quoteLine = t('stocks.no_live_quote');
+                var quoteMeta = '';
+                var valuationMeta = '';
+
+                if (quote && Number.isFinite(Number(quote.price))) {
+                    var cp = Number(quote.changePercent);
+                    var delta = Number(quote.change);
+                    priceText = formatNumber(Number(quote.price));
+                    quoteClass = cp > 0 ? 'up' : (cp < 0 ? 'down' : 'flat');
+                    quoteLine = formatSigned(delta, 2) + ' (' + formatSigned(cp, 2) + '%)';
+                    quoteMeta = quote.currency
+                        ? t('stocks.meta.source_currency', { source: String(quote.source || 'unknown').toUpperCase(), currency: quote.currency })
+                        : t('stocks.meta.source', { source: String(quote.source || 'unknown').toUpperCase() });
+                    var peNum = Number(quote.pe);
+                    var pbNum = Number(quote.pb);
+                    if (Number.isFinite(peNum) || Number.isFinite(pbNum)) {
+                        valuationMeta = t('stocks.meta.valuation', {
+                            pe: Number.isFinite(peNum) ? peNum.toFixed(2) : '--',
+                            pb: Number.isFinite(pbNum) ? pbNum.toFixed(2) : '--'
+                        });
+                    }
+                }
+
+                var row = document.createElement('div');
+                row.className = 'stock-item';
+                row.innerHTML = [
+                    '<div>',
+                    '<div class="stock-code">' + escapeHtml(item.code) + '  ' + escapeHtml(priceText) + '</div>',
+                    '<div class="stock-name">' + escapeHtml(item.name || quote && quote.name || t('stocks.unnamed')) + '</div>',
+                    '<div class="stock-quote ' + quoteClass + '">' + escapeHtml(quoteLine) + '</div>',
+                    '<div class="stock-meta">' + escapeHtml(quoteMeta) + '</div>',
+                    '<div class="stock-meta">' + escapeHtml(valuationMeta) + '</div>',
+                    '</div>',
+                    '<div class="stock-actions">',
+                    '<button class="btn btn-primary">' + escapeHtml(t('stocks.btn.view')) + '</button>',
+                    '<button class="btn">' + escapeHtml(t('stocks.btn.new_tab')) + '</button>',
+                    '<button class="btn btn-danger">' + escapeHtml(t('stocks.btn.delete')) + '</button>',
+                    '</div>'
+                ].join('');
+                var btns = row.querySelectorAll('button');
+                btns[0].addEventListener('click', function () { openUrl(quoteUrlFor(item.code), false); });
+                btns[1].addEventListener('click', function () { openUrl(quoteUrlFor(item.code), true); });
+                btns[2].addEventListener('click', function () {
+                    watchlist.splice(index, 1);
+                    saveWatchlist();
+                    renderWatchlist();
+                });
+                listEl.appendChild(row);
+            });
+        }
+
+        function setupStocksTool() {
+            loadWatchlist();
+            renderWatchlist();
+
+            document.getElementById('stockSearchBtn').addEventListener('click', function () {
+                var keyword = String(document.getElementById('stockSearchInput').value || '').trim();
+                var container = document.getElementById('stockSearchResults');
+                if (!keyword) {
+                    container.innerHTML = '<div class="empty">' + escapeHtml(t('stocks.search_empty')) + '</div>';
+                    return;
+                }
+                container.innerHTML = '<div class="empty">' + escapeHtml(t('stocks.search_loading')) + '</div>';
+                requestStockSearch(keyword).then(function (rows) {
+                    stockSearchResults = rows || [];
+                    renderStockSearchResults();
+                }).catch(function (err) {
+                    container.innerHTML = '<div class="empty">' + escapeHtml(
+                        t('stocks.search_error', { msg: (err && err.message) ? err.message : 'error' })
+                    ) + '</div>';
+                });
+            });
+
+            document.getElementById('stockSearchInput').addEventListener('keydown', function (evt) {
+                if (evt.key === 'Enter') {
+                    evt.preventDefault();
+                    document.getElementById('stockSearchBtn').click();
+                }
+            });
+
+            document.getElementById('stockAddBtn').addEventListener('click', function () {
+                var code = String(document.getElementById('stockCode').value || '').trim().toUpperCase();
+                var name = String(document.getElementById('stockName').value || '').trim();
+                if (!code) return;
+                addWatchlistItem(code, name);
+
+                document.getElementById('stockCode').value = '';
+                document.getElementById('stockName').value = '';
+            });
+
+            document.getElementById('stockRefreshBtn').addEventListener('click', function () {
+                refreshWatchlistQuotes();
+            });
+
+            document.getElementById('stockClearBtn').addEventListener('click', function () {
+                watchlist = [];
+                saveWatchlist();
+                quoteMap = {};
+                lastQuoteAt = 0;
+                lastQuoteError = '';
+                renderWatchlist();
+            });
+
+            refreshWatchlistQuotes();
+        }
+
+        function init() {
+            bindLanguageSync();
+            setupNav();
+            setupFxTool();
+            setupYieldTool();
+            setupNovelTool();
+            setupStocksTool();
+            applyLanguage(detectLanguage());
+        }
+
+        init();
+    </script>
+</body>
+
+</html>
+

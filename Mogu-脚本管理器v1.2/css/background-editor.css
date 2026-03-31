@@ -1,0 +1,264 @@
+/* 背景图片裁剪编辑器 */
+.image-editor {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(18, 18, 18, 0.98);
+    /* 加深背景 */
+    backdrop-filter: blur(20px);
+    display: flex;
+    flex-direction: column;
+    /* 改为纵向布局，给底部按钮留空间 */
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    /* 提高层级 */
+}
+
+.image-canvas {
+    position: relative;
+    width: 80%;
+    /* 稍微缩小，留出边距 */
+    height: 70%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    /* 直角化 */
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    background-color: #000;
+    /* 画布背景 */
+}
+
+/* 裁剪框样式优化 */
+.crop-box {
+    position: absolute;
+    border: 1px solid #FFBF00;
+    /* 琥珀金 */
+    background: rgba(255, 191, 0, 0.1);
+    cursor: move;
+    min-width: 50px;
+    min-height: 50px;
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7);
+    /* 遮罩 */
+}
+
+/* 微软主题适配 */
+body.theme-neumorphism .image-editor {
+    background: rgba(255, 255, 255, 0.95);
+}
+
+body.theme-neumorphism .image-canvas {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    background-color: #f5f5f5;
+    border-radius: 8px;
+}
+
+body.theme-neumorphism .crop-box {
+    border-color: #0078d4;
+    background: rgba(0, 120, 212, 0.1);
+    box-shadow: 0 0 0 9999px rgba(255, 255, 255, 0.8);
+}
+
+body.theme-neumorphism .resize-handle {
+    background: #0078d4;
+    border-color: #fff;
+    border-radius: 50%;
+}
+
+/* 拖拽手柄样式 */
+.resize-handle {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #FFBF00;
+    /* 琥珀金 */
+    border: 2px solid #18181B;
+    border-radius: 50%;
+    z-index: 12;
+    transition: transform 0.2s ease;
+}
+
+.resize-handle:hover {
+    transform: scale(1.4);
+    box-shadow: 0 0 8px rgba(255, 191, 0, 0.6);
+}
+
+.resize-handle.top-left {
+    top: -5px;
+    left: -5px;
+    cursor: nw-resize;
+}
+
+.resize-handle.top-right {
+    top: -5px;
+    right: -5px;
+    cursor: ne-resize;
+}
+
+.resize-handle.bottom-left {
+    bottom: -5px;
+    left: -5px;
+    cursor: sw-resize;
+}
+
+.resize-handle.bottom-right {
+    bottom: -5px;
+    right: -5px;
+    cursor: se-resize;
+}
+
+.edge-handle {
+    position: absolute;
+    background: transparent;
+    z-index: 11;
+}
+
+.edge-handle.top,
+.edge-handle.bottom {
+    left: 10px;
+    right: 10px;
+    height: 8px;
+    cursor: ns-resize;
+}
+
+.edge-handle.top {
+    top: -4px;
+}
+
+.edge-handle.bottom {
+    bottom: -4px;
+}
+
+.edge-handle.left,
+.edge-handle.right {
+    top: 10px;
+    bottom: 10px;
+    width: 8px;
+    cursor: ew-resize;
+}
+
+.edge-handle.left {
+    left: -4px;
+}
+
+.edge-handle.right {
+    right: -4px;
+}
+
+.move-handle {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    cursor: move;
+    z-index: 10;
+}
+
+/* 背景填充选项 */
+.background-fit-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 16px;
+    /* 修复重叠问题：移除绝对定位，使用相对定位或Flex布局自然流 */
+    position: relative;
+    width: 100%;
+    background: rgba(32, 32, 35, 0.9);
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+}
+
+.background-fit-options .radio-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    color: #a1a1aa;
+    font-size: 13px;
+}
+
+.background-fit-options .radio-option:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+}
+
+.background-fit-options .radio-option input[type="radio"] {
+    margin: 0;
+    accent-color: #0047AB;
+    /* 克莱因蓝 */
+    width: 14px;
+    height: 14px;
+}
+
+/* [修复] 微软主题适配 - 背景填充选项 */
+body.theme-neumorphism .background-fit-options {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+body.theme-neumorphism .background-fit-options .radio-option {
+    color: #323130;
+}
+
+body.theme-neumorphism .background-fit-options .radio-option:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: #000;
+}
+
+/* [修复] 微软主题适配 - 背景设置文字颜色 */
+.theme-neumorphism .setting-item label {
+    color: #323130;
+    font-weight: 600;
+}
+
+.theme-neumorphism .setting-description {
+    color: #605e5c;
+}
+
+.theme-neumorphism #blurValue,
+.theme-neumorphism #brightnessValue,
+.theme-neumorphism #opacityValue,
+.theme-neumorphism #cardOpacityValue {
+    color: #0078d4;
+    font-weight: bold;
+}
+
+/* 背景预览区及媒体尺寸限制 */
+.background-preview {
+    margin-top: 10px;
+    width: 100%;
+    border-radius: 6px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.preview-container {
+    width: 100%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.preview-container img#previewImage,
+.preview-container video#previewVideo {
+    max-width: 100%;
+    max-height: 350px;
+    border-radius: 4px;
+    object-fit: contain;
+}

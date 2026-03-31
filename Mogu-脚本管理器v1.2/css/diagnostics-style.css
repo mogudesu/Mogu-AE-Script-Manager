@@ -1,0 +1,230 @@
+/* ==========================================================================
+   Diagnostics Window Styling
+   Theme: Arknights Endfield (Dark) & Microsoft Fluent (Light)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Diagnostics Content Layout
+   -------------------------------------------------------------------------- */
+#diagnosticsModal .settings-content {
+    width: 600px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#diagnosticsModal .settings-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Progress Bar */
+.diagnostics-progress {
+    margin-bottom: 16px;
+}
+
+.progress-bar {
+    height: 4px;
+    background-color: rgba(128, 128, 128, 0.2);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background-color: #0078d4;
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    font-size: 12px;
+    opacity: 0.8;
+    text-align: right;
+}
+
+/* Results Container */
+.diagnostics-results {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Summary Stats */
+.diagnostics-summary {
+    display: flex;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    background-color: rgba(128, 128, 128, 0.05);
+}
+
+.summary-stats {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+    justify-content: space-around;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.stat-item.success { color: #107C10; }
+.stat-item.warning { color: #D83B01; }
+.stat-item.error { color: #A80000; }
+.stat-item.info { color: #0078D4; }
+
+/* Diagnostic Item */
+.diagnostic-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 6px;
+    background-color: rgba(128, 128, 128, 0.05);
+    border-left: 3px solid transparent;
+    transition: background-color 0.2s;
+}
+
+.diagnostic-item:hover {
+    background-color: rgba(128, 128, 128, 0.1);
+}
+
+.diagnostic-item.success { border-left-color: #107C10; }
+.diagnostic-item.warning { border-left-color: #D83B01; }
+.diagnostic-item.error { border-left-color: #A80000; }
+.diagnostic-item.info { border-left-color: #0078D4; }
+
+.diagnostic-icon {
+    font-size: 16px;
+    font-weight: bold;
+    width: 20px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.diagnostic-item.success .diagnostic-icon { color: #107C10; }
+.diagnostic-item.warning .diagnostic-icon { color: #D83B01; }
+.diagnostic-item.error .diagnostic-icon { color: #A80000; }
+.diagnostic-item.info .diagnostic-icon { color: #0078D4; }
+
+.diagnostic-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.diagnostic-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.diagnostic-description {
+    font-size: 13px;
+    opacity: 0.9;
+    margin-bottom: 4px;
+}
+
+.diagnostic-details {
+    font-size: 12px;
+    opacity: 0.7;
+    margin-top: 6px;
+    padding: 8px;
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+    white-space: pre-wrap;
+    font-family: 'Consolas', 'Courier New', monospace;
+    display: block; /* Always visible */
+}
+
+/* Remove hover requirement */
+/* .diagnostic-item:hover .diagnostic-details { display: block; } */
+
+/* Actions Footer */
+.diagnostics-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(128, 128, 128, 0.2);
+}
+
+/* --------------------------------------------------------------------------
+   Theme: Arknights Endfield (Dark)
+   -------------------------------------------------------------------------- */
+body.theme-dark .progress-fill {
+    background-color: #FACC15; /* Endfield Yellow */
+}
+
+body.theme-dark .progress-bar {
+    background-color: #333;
+}
+
+body.theme-dark .diagnostics-summary {
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+}
+
+body.theme-dark .diagnostic-item {
+    background-color: #111;
+    border: 1px solid #333; /* Override border for unified look */
+    border-left-width: 3px;
+}
+
+body.theme-dark .diagnostic-item:hover {
+    background-color: #1a1a1a;
+}
+
+body.theme-dark .diagnostic-details {
+    background-color: #000;
+    color: #aaa;
+    border: 1px solid #333;
+}
+
+/* Dark Theme Colors */
+body.theme-dark .stat-item.success, body.theme-dark .diagnostic-item.success .diagnostic-icon { color: #4CC71E; }
+body.theme-dark .stat-item.warning, body.theme-dark .diagnostic-item.warning .diagnostic-icon { color: #FACC15; }
+body.theme-dark .stat-item.error, body.theme-dark .diagnostic-item.error .diagnostic-icon { color: #FF4D4F; }
+body.theme-dark .stat-item.info, body.theme-dark .diagnostic-item.info .diagnostic-icon { color: #40A9FF; }
+
+body.theme-dark .diagnostic-item.success { border-left-color: #4CC71E; }
+body.theme-dark .diagnostic-item.warning { border-left-color: #FACC15; }
+body.theme-dark .diagnostic-item.error { border-left-color: #FF4D4F; }
+body.theme-dark .diagnostic-item.info { border-left-color: #40A9FF; }
+
+/* --------------------------------------------------------------------------
+   Theme: Microsoft Fluent (Light)
+   -------------------------------------------------------------------------- */
+body.theme-neumorphism .progress-fill {
+    background-color: #0078d4;
+}
+
+body.theme-neumorphism .diagnostics-summary {
+    background-color: #f3f2f1;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+body.theme-neumorphism .diagnostic-item {
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border: 1px solid transparent;
+}
+
+body.theme-neumorphism .diagnostic-item:hover {
+    background-color: #f8f8f8;
+}
+
+body.theme-neumorphism .diagnostic-details {
+    background-color: #f3f2f1;
+    color: #605e5c;
+}

@@ -1,0 +1,31 @@
+
+/* [预览图编辑模式] */
+body.preview-edit-mode .script-item,
+body.preview-edit-mode .preset-item {
+    border: 1px dashed #4a90e2;
+    cursor: copy !important;
+}
+
+body.preview-edit-mode .script-item:hover,
+body.preview-edit-mode .preset-item:hover {
+    border-color: #357abd;
+    background: rgba(74, 144, 226, 0.1) !important;
+}
+
+/* 拖拽悬停高亮 */
+body.preview-edit-mode .script-item.drag-over-active,
+body.preview-edit-mode .preset-item.drag-over-active {
+    border: 2px solid #4a90e2 !important;
+    background: rgba(74, 144, 226, 0.2) !important;
+    transform: scale(1.02);
+    box-shadow: 0 0 15px rgba(74, 144, 226, 0.5);
+    z-index: 100;
+}
+
+/* 激活按钮样式 */
+#previewEditBtn.active {
+    background: rgba(74, 144, 226, 0.3);
+    border-color: #4a90e2;
+    color: #fff;
+    box-shadow: 0 0 8px rgba(74, 144, 226, 0.4);
+}

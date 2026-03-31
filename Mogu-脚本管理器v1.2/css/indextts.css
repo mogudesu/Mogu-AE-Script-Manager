@@ -1,0 +1,337 @@
+/* IndexTTS Manager Styles */
+.indextts-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    color: var(--text-color, #e4e4e7);
+    font-size: 12px;
+    position: relative;
+}
+
+.indextts-section {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 12px;
+}
+
+.indextts-section-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: #a1a1aa;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.indextts-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 8px;
+}
+
+.indextts-label {
+    min-width: 90px;
+    color: #d4d4d8;
+}
+
+.indextts-input, .indextts-select {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    padding: 6px 8px;
+    color: #fff;
+    font-size: 12px;
+}
+
+.indextts-input:focus, .indextts-select:focus {
+    outline: none;
+    border-color: #3b82f6;
+}
+
+.indextts-btn {
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    color: #e4e4e7;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s;
+}
+
+.indextts-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.indextts-btn-primary {
+    background: #3b82f6;
+    border-color: #2563eb;
+    color: white;
+}
+
+.indextts-btn-primary:hover {
+    background: #2563eb;
+}
+
+.indextts-btn-secondary {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.indextts-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Status Indicator */
+.indextts-status-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #ef4444; /* Red by default */
+    margin-right: 6px;
+    box-shadow: 0 0 4px rgba(239, 68, 68, 0.5);
+    transition: all 0.3s ease;
+}
+
+.indextts-status-indicator.ready {
+    background-color: #22c55e; /* Green */
+    box-shadow: 0 0 4px rgba(34, 197, 94, 0.5);
+}
+
+.indextts-status-text {
+    font-size: 11px;
+    color: #a1a1aa;
+}
+
+/* Sliders for Emotions */
+.indextts-slider-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.indextts-slider-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.indextts-slider-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #a1a1aa;
+}
+
+.indextts-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    outline: none;
+}
+
+.indextts-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #3b82f6;
+    cursor: pointer;
+    border: 2px solid #1e293b;
+}
+
+/* File Picker Area */
+.indextts-file-picker {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.indextts-file-path {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 6px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    color: #a1a1aa;
+    white-space: normal;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.indextts-drop-zone {
+    border: 1px dashed rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    color: #cbd5f5;
+}
+
+.indextts-drop-zone.is-empty {
+    color: #71717a;
+}
+
+.indextts-drop-zone.is-dragover {
+    border-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.indextts-audio-line {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.indextts-audio-icon {
+    font-size: 14px;
+    line-height: 1;
+}
+
+.indextts-audio-sub {
+    font-size: 11px;
+    color: #94a3b8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Advanced Settings Accordion */
+.indextts-accordion {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 12px;
+}
+
+.indextts-accordion-header {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 11px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #a1a1aa;
+}
+
+.indextts-accordion-header:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.indextts-accordion-content {
+    padding: 12px;
+    display: none;
+    background: rgba(0, 0, 0, 0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.indextts-accordion-content.open {
+    display: block;
+}
+
+/* Advanced Params Grid */
+.indextts-params-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.indextts-param-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.indextts-param-label {
+    font-size: 10px;
+    color: #71717a;
+}
+
+.indextts-floating {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 10px;
+    background: rgba(17, 24, 39, 0.92);
+    border: 1px solid rgba(59, 130, 246, 0.5);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    z-index: 120;
+}
+
+.indextts-floating-text {
+    color: #e5e7eb;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.indextts-floating-close {
+    border: none;
+    background: rgba(255, 255, 255, 0.08);
+    color: #e5e7eb;
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 18px;
+}
+
+/* Processing Overlay */
+.indextts-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    backdrop-filter: blur(2px);
+}
+
+.indextts-spinner {
+    width: 30px;
+    height: 30px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-top-color: #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 12px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.indextts-progress-text {
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+}

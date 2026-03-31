@@ -1,0 +1,512 @@
+@import "modelscope-dropdown.css";
+
+/* ModelScope Manager Styles */
+
+/* Reuse ComfyUI variables for consistency */
+.modelscope-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    color: var(--comfyui-text);
+}
+
+/* Module Switcher (Top Tabs) */
+.ai-module-tabs {
+    display: flex;
+    background: var(--comfyui-header-bg);
+    border-bottom: 1px solid var(--comfyui-border);
+    padding: 0 16px;
+}
+
+.ai-module-tab {
+    padding: 12px 16px;
+    cursor: pointer;
+    color: var(--comfyui-text-muted);
+    font-size: 13px;
+    font-weight: 500;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+}
+
+.ai-module-tab:hover {
+    color: var(--comfyui-text);
+}
+
+.ai-module-tab.active {
+    color: var(--comfyui-text);
+    border-bottom-color: #3b82f6;
+    /* Accent color */
+}
+
+/* ModelScope Internal Tabs */
+.modelscope-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 12px 16px 0;
+    border-bottom: 1px solid var(--comfyui-border);
+}
+
+.modelscope-tab {
+    padding: 8px 16px;
+    cursor: pointer;
+    background: var(--comfyui-btn-secondary-bg);
+    border-radius: 6px 6px 0 0;
+    color: var(--comfyui-text-muted);
+    font-size: 12px;
+    border: 1px solid transparent;
+    border-bottom: none;
+    transition: all 0.2s;
+}
+
+.modelscope-tab.active {
+    background: var(--comfyui-bg);
+    /* Match panel bg */
+    color: var(--comfyui-text);
+    border-color: var(--comfyui-border);
+    font-weight: 600;
+    margin-bottom: -1px;
+    /* Overlap border */
+    border-bottom: 1px solid var(--comfyui-bg);
+}
+
+/* Content Area */
+.modelscope-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+}
+
+.modelscope-pane {
+    display: none;
+}
+
+.modelscope-pane.active {
+    display: block;
+}
+
+/* Section Styles */
+.ms-section {
+    background: var(--comfyui-card-bg);
+    border: 1px solid var(--comfyui-card-border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    transition: all 0.2s ease;
+}
+
+.ms-section:hover {
+    border-color: rgba(59, 130, 246, 0.2);
+}
+
+.ms-section-title {
+    font-size: 12px;
+    text-transform: uppercase;
+    color: var(--comfyui-text);
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ms-section-title::before {
+    content: '';
+    width: 3px;
+    height: 14px;
+    background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+    border-radius: 2px;
+}
+
+/* Form Elements */
+.ms-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    gap: 10px;
+}
+
+.ms-batch-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.ms-batch-input {
+    max-width: 120px;
+    flex: 0 0 120px;
+}
+
+.ms-label {
+    width: 90px;
+    font-size: 12px;
+    color: var(--comfyui-text-muted);
+    flex-shrink: 0;
+    font-weight: 500;
+}
+
+.ms-input,
+.ms-select,
+.ms-textarea {
+    flex: 1;
+    background: var(--comfyui-input-bg);
+    border: 1px solid var(--comfyui-input-border);
+    color: var(--comfyui-text);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: inherit;
+    transition: all 0.2s ease;
+}
+
+.ms-input:focus,
+.ms-select:focus,
+.ms-textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    background: var(--comfyui-input-bg);
+}
+
+body.theme-dark .ms-select option,
+body.theme-dark select.ms-input option {
+    background: #18181b;
+    color: #e4e4e7;
+}
+
+body.theme-neumorphism .ms-select option,
+body.theme-neumorphism select.ms-input option {
+    background: #ffffff;
+    color: #0f172a;
+}
+
+body.theme-dark .ms-select,
+body.theme-dark select.ms-input {
+    color-scheme: dark;
+}
+
+body.theme-neumorphism .ms-select,
+body.theme-neumorphism select.ms-input {
+    color-scheme: light;
+}
+
+/* Range Slider */
+.ms-slider-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ms-slider {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    border-radius: 999px;
+    background: #111827;
+    border: 1px solid var(--comfyui-border);
+}
+
+.ms-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #f7d000;
+    border: 1px solid #b38f00;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.35);
+    cursor: pointer;
+}
+
+.ms-slider::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #f7d000;
+    border: 1px solid #b38f00;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.35);
+    cursor: pointer;
+}
+
+.ms-slider::-moz-range-track {
+    height: 6px;
+    border-radius: 999px;
+    background: #111827;
+    border: 1px solid var(--comfyui-border);
+}
+
+.ms-slider-value {
+    width: 32px;
+    text-align: right;
+    font-size: 11px;
+    color: var(--comfyui-text);
+}
+
+/* Image Source Manager */
+.ms-image-drop-zone {
+    border: 2px dashed var(--comfyui-border);
+    border-radius: 8px;
+    padding: 32px 20px;
+    text-align: center;
+    color: var(--comfyui-text-muted);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.ms-image-drop-zone:hover {
+    border-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.08);
+    transform: translateY(-2px);
+}
+
+.ms-image-drop-zone.drag-over {
+    border-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.15);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+}
+
+.ms-preview-image {
+    max-width: 100%;
+    max-height: 150px;
+    border-radius: 4px;
+    margin-top: 8px;
+    display: none;
+}
+
+.ms-source-buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.ms-btn-small {
+    flex: 1;
+    padding: 6px;
+    font-size: 11px;
+    background: var(--comfyui-btn-secondary-bg);
+    border: 1px solid var(--comfyui-border);
+    color: var(--comfyui-text);
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.ms-btn-small:hover {
+    background: var(--comfyui-btn-secondary-hover);
+}
+
+/* Main Action Button */
+.ms-action-btn {
+    width: 100%;
+    padding: 14px 20px;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(37, 99, 235, 0.15) 100%);
+    color: #60a5fa;
+    border: 1px solid rgba(59, 130, 246, 0.4);
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+.ms-action-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.ms-action-btn:hover::before {
+    left: 100%;
+}
+
+.ms-action-btn:hover {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.25) 0%, rgba(37, 99, 235, 0.25) 100%);
+    border-color: rgba(59, 130, 246, 0.6);
+    color: #93c5fd;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.ms-action-btn:active {
+    transform: translateY(0);
+}
+
+.ms-action-btn:disabled {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #6b7280;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.ms-action-btn:disabled::before {
+    display: none;
+}
+
+/* Status Bar */
+.ms-status-bar {
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--comfyui-text-muted);
+    text-align: center;
+    min-height: 16px;
+}
+
+/* Progress Bar */
+.ms-progress-container {
+    width: 100%;
+    height: 4px;
+    background: var(--comfyui-border);
+    border-radius: 2px;
+    margin-top: 8px;
+    overflow: hidden;
+    display: none;
+}
+
+.ms-progress-bar {
+    height: 100%;
+    background: #3b82f6;
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+.ms-angle-card .dialog-body {
+    padding: 16px;
+}
+
+.ms-angle-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 16px;
+    align-items: start;
+}
+
+.ms-angle-canvas-wrap {
+    background: #0b0b0f;
+    border: 1px solid var(--comfyui-border);
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.ms-angle-hint {
+    font-size: 11px;
+    color: var(--comfyui-text-muted);
+}
+
+.ms-angle-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.ms-angle-row {
+    display: grid;
+    grid-template-columns: 56px 1fr 64px;
+    gap: 8px;
+    align-items: center;
+}
+
+.ms-angle-label {
+    font-size: 12px;
+    color: var(--comfyui-text-muted);
+}
+
+.ms-angle-value {
+    font-size: 12px;
+    color: var(--comfyui-text);
+    text-align: right;
+}
+
+.ms-angle-desc {
+    padding: 8px 10px;
+    border: 1px solid var(--comfyui-border);
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.2);
+    font-size: 12px;
+    color: var(--comfyui-text);
+}
+
+.ms-angle-preview {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.ms-angle-preview-title {
+    font-size: 12px;
+    color: var(--comfyui-text-muted);
+}
+
+/* Scrubbable Inputs */
+.ms-scrubbable {
+    cursor: ew-resize !important;
+}
+
+/* Hide Spinners for scrubbable inputs */
+.ms-scrubbable::-webkit-inner-spin-button,
+.ms-scrubbable::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* LoRA Item */
+.ms-lora-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 6px;
+    border-radius: 4px;
+    margin-bottom: 4px;
+}
+
+.ms-tag-btn {
+    padding: 4px 8px;
+    background: var(--comfyui-btn-secondary-bg);
+    border: 1px solid var(--comfyui-border);
+    border-radius: 4px;
+    color: var(--comfyui-text-muted);
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.ms-tag-btn:hover {
+    background: var(--comfyui-btn-secondary-hover);
+    color: var(--comfyui-text);
+    border-color: #3b82f6;
+}
+
+.ms-lora-remove {
+    cursor: pointer;
+    color: #ef4444;
+    font-size: 16px;
+    line-height: 1;
+}

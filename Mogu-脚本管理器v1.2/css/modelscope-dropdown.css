@@ -1,0 +1,62 @@
+/* Searchable Select */
+.ms-search-select {
+    position: relative;
+    flex: 1;
+}
+
+.ms-dropdown-options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: 250px;
+    overflow-y: auto;
+    background: #18181b;
+    /* Solid background to prevent overlap issues */
+    border: 1px solid var(--comfyui-border);
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.theme-neumorphism .ms-dropdown-options {
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.ms-dropdown-option {
+    padding: 8px 12px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    border-bottom: 1px solid var(--comfyui-border);
+}
+
+.ms-dropdown-option:last-child {
+    border-bottom: none;
+}
+
+.ms-dropdown-option:hover {
+    background: var(--comfyui-btn-secondary-hover);
+}
+
+.ms-dropdown-option.selected {
+    background: rgba(59, 130, 246, 0.2);
+    border-left: 3px solid #3b82f6;
+}
+
+.ms-option-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--comfyui-text);
+}
+
+.ms-option-desc {
+    font-size: 11px;
+    color: var(--comfyui-text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

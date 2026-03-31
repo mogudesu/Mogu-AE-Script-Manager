@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mogu Novel Reader</title>
+    <style>
+        :root {
+            --bg: #0b1220;
+            --bg2: #101c33;
+            --panel: rgba(18, 30, 50, 0.92);
+            --line: rgba(90, 126, 170, 0.45);
+            --txt: #e8f2ff;
+            --sub: #97acc9;
+            --acc: #2fb4ff;
+            --ok: #14d6b2;
+            --err: #ff7c7c;
+        }
+        * { box-sizing: border-box; }
+        html, body { margin: 0; width: 100%; height: 100%; background: radial-gradient(1200px 680px at 12% 0%, #17416f 0%, var(--bg) 56%, #060b15 100%); color: var(--txt); font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; overflow: hidden; }
+        .app { height: 100%; display: flex; flex-direction: column; min-height: 0; }
+        .topbar { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: center; padding: 8px 10px; border-bottom: 1px solid var(--line); background: linear-gradient(180deg, rgba(22,35,58,.95), rgba(14,24,40,.88)); }
+        .topbar-left, .topbar-right { display: flex; gap: 6px; align-items: center; }
+        .book-title { margin: 0; font-size: 20px; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .book-meta { margin-top: 2px; font-size: 12px; color: var(--sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .btn { border: 1px solid var(--line); border-radius: 10px; background: rgba(20,35,56,.92); color: var(--txt); padding: 8px 12px; font-size: 13px; cursor: pointer; }
+        .btn:hover { border-color: rgba(47,180,255,.75); }
+        .btn:disabled { opacity: .55; cursor: default; }
+        .main { flex: 1; min-height: 0; position: relative; overflow: hidden; }
+        .chapters {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 320px;
+            max-width: 88vw;
+            background: var(--panel);
+            border-right: 1px solid var(--line);
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            z-index: 20;
+            transform: translateX(-105%);
+            transition: transform .2s ease;
+            box-shadow: 0 14px 34px rgba(0,0,0,.35);
+        }
+        .chapters.open { transform: translateX(0); }
+        .drawer-mask {
+            position: absolute;
+            inset: 0;
+            z-index: 10;
+            background: rgba(3, 6, 12, 0.48);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .2s ease;
+        }
+        .drawer-mask.show { opacity: 1; pointer-events: auto; }
+        .chapters-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px; border-bottom: 1px solid var(--line); }
+        .chapters-head-actions { display: flex; gap: 6px; }
+        .chapters-title { font-size: 14px; color: var(--sub); font-weight: 600; }
+        .chapter-list { flex: 1; min-height: 0; overflow: auto; padding: 8px; }
+        .chapter-item { width: 100%; text-align: left; border: 1px solid rgba(101,130,170,.35); background: rgba(19,31,50,.72); color: var(--txt); border-radius: 9px; padding: 8px 10px; margin-bottom: 8px; cursor: pointer; font-size: 13px; line-height: 1.35; }
+        .chapter-item.active { border-color: rgba(20,214,178,.75); background: linear-gradient(135deg, rgba(27,89,144,.9), rgba(17,120,120,.9)); }
+        .reader { background: rgba(16,26,44,.9); display: flex; flex-direction: column; min-height: 0; min-width: 0; height: 100%; }
+        .reader-head { display: flex; justify-content: space-between; gap: 10px; align-items: center; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+        .chapter-title { font-size: 16px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .chapter-progress { margin-top: 3px; font-size: 12px; color: var(--sub); }
+        .reader-status { min-height: 22px; padding: 8px 10px 0; font-size: 12px; color: var(--sub); }
+        .reader-status.error { color: var(--err); }
+        .reader-content { flex: 1; min-height: 0; overflow: auto; margin: 8px 10px 10px; padding: 14px 14px 20px; border: 1px solid var(--line); border-radius: 10px; background: rgba(10,18,30,.76); white-space: pre-wrap; line-height: 1.9; font-size: 16px; }
+        .empty { color: var(--sub); padding: 8px 4px; font-size: 13px; }
+        @media (max-width: 960px) {
+            .topbar { grid-template-columns: 1fr; gap: 6px; }
+            .topbar-right { justify-content: flex-start; }
+            .reader-content { font-size: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="btn" id="backBtn">Back</button>
+                <button class="btn" id="toggleCatalogBtn">Catalog</button>
+            </div>
+            <div class="topbar-main">
+                <h1 class="book-title" id="bookTitle">-</h1>
+                <div class="book-meta" id="bookMeta">-</div>
+            </div>
+            <div class="topbar-right">
+                <button class="btn" id="prevBtn">Previous</button>
+                <button class="btn" id="nextBtn">Next</button>
+            </div>
+        </header>
+        <div class="main">
+            <aside class="chapters" id="chaptersPanel">
+                <div class="chapters-head">
+                    <div class="chapters-title" id="chaptersTitle">Chapters</div>
+                    <div class="chapters-head-actions">
+                        <button class="btn" id="reloadChaptersBtn">Reload</button>
+                        <button class="btn" id="closeCatalogBtn">Close</button>
+                    </div>
+                </div>
+                <div class="chapter-list" id="chapterList"></div>
+            </aside>
+            <div class="drawer-mask" id="catalogMask"></div>
+            <section class="reader">
+                <div class="reader-head">
+                    <div>
+                        <div class="chapter-title" id="chapterTitle">-</div>
+                        <div class="chapter-progress" id="chapterProgress">-</div>
+                    </div>
+                </div>
+                <div class="reader-status" id="readerStatus"></div>
+                <article class="reader-content" id="readerContent"></article>
+            </section>
+        </div>
+    </div>
+    <script src="js/fanqie-charset.js"></script>
+    <script src="js/novel-reader.js"></script>
+</body>
+</html>

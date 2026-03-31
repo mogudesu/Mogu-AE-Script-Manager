@@ -1,0 +1,238 @@
+﻿/* [搴曢儴鎺у埗鍖哄煙]+[鍩烘湰缁撴瀯]+[01] 瀹瑰櫒涓庣粺涓€缂╂斁 */
+.bottom-controls-compact {
+    background: rgba(20, 20, 23, 0.4);
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: none;
+    backdrop-filter: blur(10px);
+    --bc-scale: 1;
+    position: relative;
+    height: 38px;
+    overflow: hidden;
+}
+
+/* 寰蒋娓愬彉涓婚閫傞厤 */
+.theme-neumorphism .bottom-controls-compact {
+    background: rgba(255, 255, 255, 0.5);
+    border-color: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(20px) saturate(125%);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.02);
+}
+
+.bottom-controls-compact .bottom-controls__content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%) scale(var(--bc-scale));
+    transform-origin: left center;
+    width: 100%;
+    min-width: 0;
+    padding: 0 12px;
+    box-sizing: border-box;
+}
+.bottom-controls-compact .bottom-left,
+.bottom-controls-compact .bottom-center,
+.bottom-controls-compact .bottom-right {
+    display: inline-flex;
+    align-items: center;
+    gap: calc(7px * var(--bc-scale)); /* [淇] 澧炲姞闂磋窛闃叉婊戝潡鎸′綇鏂囧瓧 */
+}
+.bottom-controls-compact .bottom-left { justify-self: start; flex: 1 1 auto; min-width: 0; overflow: hidden; white-space: nowrap; }
+.bottom-controls-compact .bottom-center { justify-self: center; flex: 0 0 auto; }
+.bottom-controls-compact .bottom-right { justify-self: end; flex: 0 0 auto; margin-left: auto; }
+
+/* [榛樿娣辫壊涓婚] 鎸夐挳鏍峰紡 */
+.bottom-controls-compact .btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #e4e4e7;
+    backdrop-filter: blur(4px);
+    transition: all 0.2s ease;
+}
+
+.bottom-controls-compact .btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+}
+
+/* Bottom-only sizing: improve readability and click area */
+.bottom-controls-compact .btn.btn-mini:not(.mode-toggle):not(.btn-icon) {
+    font-size: 8px;
+    height: 20px;
+    padding: 0 6px;
+    line-height: 1;
+}
+
+/* Keep text buttons visually consistent */
+.bottom-controls-compact #exportBtn,
+.bottom-controls-compact #importBtn {
+    font-size: 8px;
+    height: 20px;
+    padding: 0 6px;
+    font-weight: 500;
+}
+
+
+/* 寰蒋涓婚鎸夐挳閫傞厤 (瀵煎叆/瀵煎嚭绛? */
+.theme-neumorphism .bottom-controls-compact .btn {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(37, 99, 235, 0.2);
+    color: #0f172a;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.05);
+    transition: all 0.2s ease;
+}
+
+.theme-neumorphism .bottom-controls-compact .btn:hover {
+    background: #ffffff;
+    border-color: #2563eb;
+    color: #2563eb;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+    transform: translateY(-1px);
+}
+
+.theme-neumorphism .bottom-controls-compact .btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.1);
+}
+
+/* [淇] 瀵煎叆瀵煎嚭鎸夐挳鍦ㄦ繁鑹蹭富棰樹笅鏄剧ず涓虹櫧鑹茬殑闂 */
+body:not(.theme-neumorphism) .bottom-controls-compact .btn {
+    background: rgba(30, 30, 35, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #e4e4e7;
+}
+
+body:not(.theme-neumorphism) .bottom-controls-compact .btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+}
+
+/* [Icon Button Styles] */
+.bottom-controls-compact .btn.btn-icon {
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
+    flex: 0 0 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+}
+
+.bottom-controls-compact .btn.btn-icon svg {
+    width: 11px;
+    height: 11px;
+    display: block;
+    fill: currentColor;
+    transition: fill 0.2s ease;
+}
+
+.bottom-controls-compact #aiFunctionBtn .ai-icon {
+    font-size: 7px;
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 1;
+}
+
+/* Specific Icon Hover Colors */
+/* Text Manager: Blue/Cyan */
+#textManagerBtn:hover {
+    color: #60a5fa; /* Blue-400 */
+    border-color: rgba(96, 165, 250, 0.3);
+    background: rgba(96, 165, 250, 0.1);
+}
+
+/* Preview Edit: Yellow/Gold */
+#previewEditBtn:hover {
+    color: #facc15; /* Yellow-400 */
+    border-color: rgba(250, 204, 21, 0.3);
+    background: rgba(250, 204, 21, 0.1);
+}
+
+/* Active State for Preview Edit (when enabled) */
+#previewEditBtn.active {
+    color: #facc15;
+    background: rgba(250, 204, 21, 0.2);
+    border-color: rgba(250, 204, 21, 0.5);
+    box-shadow: 0 0 10px rgba(250, 204, 21, 0.2);
+}
+
+/* [搴曢儴鎺у埗鍖哄煙]+[鎺т欢]+[02] 涓婚鍒囨崲鍣ㄤ笌澶у皬婊戝潡 */
+.theme-switcher-new {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 4px;
+    padding: 2px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.theme-btn {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    color: #71717a;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 12px;
+}
+
+.theme-btn:hover {
+    color: #e4e4e7;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.theme-btn.active {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.bottom-controls-compact input.size-slider-compact {
+    width: var(--size-slider-width, clamp(86px, 20vw, 140px));
+    height: 5px;
+    -webkit-appearance: none;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    outline: none;
+    display: inline-block;
+    margin: 0;
+}
+
+.bottom-controls-compact .size-slider-compact::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #e4e4e7;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+.bottom-controls-compact .size-slider-compact::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    background: #fff;
+}
+
+.bottom-controls-compact .size-label {
+    font-size: 10px;
+    color: #a1a1aa;
+    margin-right: 4px;
+}
+
+/* [甯冨眬淇] 棰勮/鑴氭湰鍒囨崲鎸夐挳鏍峰紡 */
+

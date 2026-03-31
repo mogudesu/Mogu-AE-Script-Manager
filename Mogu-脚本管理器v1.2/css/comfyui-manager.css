@@ -1,0 +1,2009 @@
+/* ComfyUI Manager Panel Styles */
+
+/* CSS Variables for Theming - Aligned with Global Styles */
+:root {
+    /* Default Dark Theme (Matches styles.css & components.cards.css) */
+    --comfyui-bg: #121212;
+    --comfyui-bg-gradient-start: #18181B;
+    --comfyui-bg-gradient-end: #121212;
+    --comfyui-header-bg: rgba(24, 24, 27, 0.95);
+    --comfyui-border: rgba(255, 255, 255, 0.08);
+    --comfyui-text: #e4e4e7;
+    --comfyui-text-muted: #a1a1aa;
+
+    /* Input Styles (Matches components.dialogs.css .form-input) */
+    --comfyui-input-bg: rgba(255, 255, 255, 0.05);
+    --comfyui-input-border: rgba(255, 255, 255, 0.1);
+
+    /* Button Styles */
+    --comfyui-btn-secondary-bg: rgba(255, 255, 255, 0.1);
+    --comfyui-btn-secondary-hover: rgba(255, 255, 255, 0.15);
+
+    /* Card Styles (Matches .script-item in components.cards.css) */
+    --comfyui-card-bg: rgba(30, 30, 35, 0.6);
+    --comfyui-card-border: rgba(255, 255, 255, 0.08);
+
+    --comfyui-shadow: 0 -10px 30px rgba(0, 0, 0, 0.6);
+}
+
+.theme-neumorphism {
+    /* Light Theme Overrides (Matches .theme-neumorphism in styles.css) */
+    --comfyui-bg: rgba(255, 255, 255, 0.85);
+    /* Match --card-bg */
+    --comfyui-bg-gradient-start: rgba(255, 255, 255, 0.95);
+    --comfyui-bg-gradient-end: rgba(240, 249, 255, 0.95);
+    --comfyui-header-bg: rgba(255, 255, 255, 0.6);
+    --comfyui-border: rgba(37, 99, 235, 0.1);
+    /* Match --border-color */
+    --comfyui-text: #0f172a;
+    /* Match --text-color */
+    --comfyui-text-muted: #475569;
+    /* [优化] 加深灰色文字，提高对比度 */
+
+    /* Input Styles */
+    --comfyui-input-bg: #f8fafc;
+    /* [优化] 纯色背景，增强输入框识别度 */
+    --comfyui-input-border: rgba(37, 99, 235, 0.25);
+
+    /* Button Styles */
+    --comfyui-btn-secondary-bg: #e2e8f0;
+    /* [优化] 加深按钮背景，使其更明显 */
+    --comfyui-btn-secondary-hover: #ffffff;
+
+    /* Card Styles */
+    --comfyui-card-bg: rgba(255, 255, 255, 0.6);
+    --comfyui-card-border: rgba(37, 99, 235, 0.15);
+
+    --comfyui-shadow: 0 -10px 30px rgba(37, 99, 235, 0.15);
+}
+
+/* Fix for dropdown options in dark mode */
+.comfyui-select option {
+    background-color: #18181b;
+    color: #e4e4e7;
+}
+
+/* Fix for dropdown options in light mode */
+.theme-neumorphism .comfyui-select option {
+    background-color: #ffffff;
+    color: #0f172a;
+}
+
+/* AI Module Container - 统一模块容器样式 */
+.ai-module {
+    display: none;
+    flex-direction: column;
+    flex: 1;
+    overflow-y: auto;
+    padding: 0;
+    background: transparent;
+}
+
+.ai-module.active {
+    display: flex;
+}
+
+/* 模块内容区域 - 统一内边距和滚动 */
+.ai-module-content {
+    padding: 16px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+/* 模块标题样式 */
+.ai-module-header {
+    padding: 16px;
+    border-bottom: 1px solid var(--comfyui-border);
+    background: var(--comfyui-header-bg);
+}
+
+.ai-module-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--comfyui-text);
+    margin: 0;
+}
+
+.ai-module-description {
+    font-size: 12px;
+    color: var(--comfyui-text-muted);
+    margin-top: 4px;
+}
+
+/* 模块卡片样式 - 统一各模块的卡片外观 */
+.ai-card {
+    background: var(--comfyui-card-bg);
+    border: 1px solid var(--comfyui-card-border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    transition: all 0.2s ease;
+}
+
+.ai-card:hover {
+    border-color: rgba(59, 130, 246, 0.3);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+}
+
+.ai-card-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--comfyui-text);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ai-card-title::before {
+    content: '';
+    width: 3px;
+    height: 16px;
+    background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+    border-radius: 2px;
+}
+
+/* 模块网格布局 - 用于展示多个项目 */
+.ai-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+}
+
+/* 模块空状态 */
+.ai-empty-state {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--comfyui-text-muted);
+}
+
+.ai-empty-state-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.ai-empty-state-text {
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.ai-empty-state-hint {
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+.comfyui-panel {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 85%;
+    max-height: 90vh;
+    background-color: var(--comfyui-bg);
+    /* Arknights Dark Theme Texture */
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E"), linear-gradient(to bottom, var(--comfyui-bg-gradient-start), var(--comfyui-bg-gradient-end));
+    border-top: 1px solid var(--comfyui-border);
+    box-shadow: var(--comfyui-shadow);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    color: var(--comfyui-text);
+    transform: translateY(100%);
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+    font-family: 'Microsoft YaHei UI', 'Microsoft YaHei', 'PingFang SC', 'Noto Sans CJK SC', 'Source Han Sans SC', 'Inter', 'Segoe UI', system-ui, sans-serif;
+    backdrop-filter: blur(20px);
+}
+
+.theme-neumorphism .comfyui-panel {
+    backdrop-filter: blur(20px) saturate(180%);
+    /* Microsoft Light Theme Texture */
+    background:
+        radial-gradient(circle at 0% 0%, rgba(37, 99, 235, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.95) 0%, rgba(240, 249, 255, 0.85) 100%),
+        linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+.comfyui-panel.visible {
+    transform: translateY(0);
+}
+
+.comfyui-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background-color: var(--comfyui-header-bg);
+    border-bottom: 1px solid var(--comfyui-border);
+    height: 48px;
+    flex-shrink: 0;
+}
+
+/* AI Module Tabs Wrapper - 自适应容器 */
+.ai-module-tabs-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    border-bottom: 1px solid var(--comfyui-border);
+    background-color: var(--comfyui-header-bg);
+    padding: 6px 8px 0 8px;
+    flex-shrink: 0;
+    container-type: inline-size;
+    container-name: tabs-wrapper;
+}
+
+.ai-module-tabs-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
+/* AI Module Tabs - 自适应Flex布局 */
+.ai-module-tabs {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 4px;
+    padding-bottom: 6px;
+    width: 100%;
+    min-width: min-content;
+}
+
+/* AI Module Tab - 响应式标签 */
+.ai-module-tab {
+    padding: 6px 10px;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--comfyui-text-muted, #666);
+    border-radius: 6px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    background-color: transparent;
+    border: 1px solid transparent;
+    text-align: center;
+    flex-shrink: 0;
+    min-width: fit-content;
+    position: relative;
+}
+
+.ai-module-tab .tab-icon {
+    font-size: 14px;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.ai-module-tab .tab-text {
+    display: inline;
+    transition: opacity 0.2s ease;
+    font-size: 11px;
+}
+
+/* 默认状态 - 显示图标+简短文字 */
+@media (min-width: 601px) {
+    .ai-module-tab {
+        padding: 8px 12px;
+        gap: 6px;
+        font-size: 12px;
+    }
+
+    .ai-module-tab .tab-icon {
+        font-size: 16px;
+    }
+    .ai-module-tab .tab-text {
+        font-size: 12px;
+    }
+}
+
+/* 中等窗口 - 缩短文字 */
+@media (max-width: 600px) {
+    .ai-module-tabs {
+        gap: 3px;
+    }
+
+    .ai-module-tab {
+        padding: 6px 8px;
+        gap: 3px;
+        font-size: 10px;
+    }
+
+    .ai-module-tab .tab-icon {
+        font-size: 14px;
+    }
+
+    .ai-module-tab .tab-text {
+        font-size: 10px;
+        max-width: 50px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+/* 窄窗口 - 只显示图标 */
+@media (max-width: 450px) {
+    .ai-module-tabs {
+        gap: 4px;
+        justify-content: space-around;
+    }
+
+    .ai-module-tab {
+        padding: 8px;
+        gap: 0;
+        min-width: 40px;
+        flex: 1;
+        max-width: 60px;
+    }
+
+    .ai-module-tab .tab-text {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+    }
+
+    .ai-module-tab .tab-icon {
+        font-size: 18px;
+    }
+}
+
+/* 超窄窗口 - 更紧凑的图标布局 */
+@media (max-width: 350px) {
+    .ai-module-tabs-wrapper {
+        padding: 4px 4px 0 4px;
+    }
+
+    .ai-module-tabs {
+        gap: 2px;
+    }
+
+    .ai-module-tab {
+        padding: 6px;
+        min-width: 36px;
+    }
+
+    .ai-module-tab .tab-icon {
+        font-size: 16px;
+    }
+}
+
+/* Tooltip for icon-only mode - 只在小屏幕显示 */
+@media (max-width: 450px) {
+    .ai-module-tab:hover::after {
+        content: attr(title);
+        position: absolute;
+        bottom: -36px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.95);
+        color: white;
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-size: 11px;
+        white-space: nowrap;
+        z-index: 1000;
+        pointer-events: none;
+        opacity: 0;
+        animation: fadeInTooltip 0.2s ease forwards 0.3s;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .ai-module-tab:hover::before {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 4px solid transparent;
+        border-bottom-color: rgba(0, 0, 0, 0.95);
+        z-index: 1001;
+        opacity: 0;
+        animation: fadeInTooltip 0.2s ease forwards 0.3s;
+    }
+}
+
+@keyframes fadeInTooltip {
+    to {
+        opacity: 1;
+    }
+}
+
+.ai-module-tab:hover {
+    background-color: rgba(59, 130, 246, 0.1);
+    color: var(--comfyui-text, #333);
+    border-color: rgba(59, 130, 246, 0.2);
+}
+
+.ai-module-tab.active {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: #ffffff;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4), 0 0 0 1px rgba(59, 130, 246, 0.2);
+    border-color: transparent;
+}
+
+/* Theme dark overrides for the tabs */
+body.theme-dark .ai-module-tabs-wrapper {
+    background-color: rgba(24, 24, 27, 0.95);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+body.theme-dark .ai-module-tab:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+body.theme-dark .ai-module-tab.active {
+    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+    color: #000;
+    box-shadow: 0 2px 8px rgba(96, 165, 250, 0.4), 0 0 0 1px rgba(96, 165, 250, 0.3);
+}
+
+/* Light theme overrides */
+.theme-neumorphism .ai-module-tabs-wrapper {
+    background-color: rgba(255, 255, 255, 0.95);
+    border-bottom-color: rgba(37, 99, 235, 0.15);
+}
+
+.theme-neumorphism .ai-module-tab:hover {
+    background-color: rgba(37, 99, 235, 0.08);
+    color: #1e40af;
+    border-color: rgba(37, 99, 235, 0.2);
+}
+
+.theme-neumorphism .ai-module-tab.active {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3), 0 0 0 1px rgba(37, 99, 235, 0.2);
+}
+
+.comfyui-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--comfyui-text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#comfyui-close-btn {
+    background: transparent;
+    border: none;
+    color: var(--comfyui-text-muted);
+    font-size: 20px;
+    cursor: pointer;
+    padding: 4px 8px;
+    line-height: 1;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+#comfyui-close-btn:hover {
+    color: var(--comfyui-text);
+    background: var(--comfyui-btn-secondary-hover);
+}
+
+.comfyui-content {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+}
+
+.comfyui-section {
+    background: var(--comfyui-card-bg);
+    border: 1px solid var(--comfyui-card-border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    transition: all 0.2s ease;
+}
+
+.comfyui-section:hover {
+    border-color: rgba(59, 130, 246, 0.2);
+}
+
+.comfyui-section-title {
+    font-size: 12px;
+    color: var(--comfyui-text);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.comfyui-section-title::before {
+    content: '';
+    width: 3px;
+    height: 14px;
+    background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+    border-radius: 2px;
+}
+
+.comfyui-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    gap: 10px;
+}
+
+.comfyui-workflow-main-row {
+    margin-bottom: 0;
+}
+
+.comfyui-workflow-main-row .comfyui-select {
+    min-width: 0;
+}
+
+.comfyui-workflow-advanced-toggle {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.comfyui-workflow-advanced {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 420px;
+    opacity: 1;
+    margin-top: 10px;
+    overflow: hidden;
+    transition: max-height 0.22s ease, opacity 0.2s ease, margin-top 0.2s ease;
+}
+
+.comfyui-workflow-advanced.collapsed {
+    max-height: 0;
+    opacity: 0;
+    margin-top: 0;
+    pointer-events: none;
+}
+
+.comfyui-workflow-actions-row {
+    align-items: flex-start;
+}
+
+.comfyui-workflow-action-buttons {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.comfyui-label {
+    flex: 0 0 90px;
+    font-size: 12px;
+    color: var(--comfyui-text-muted);
+}
+
+.comfyui-select,
+.comfyui-input {
+    flex: 1;
+    background: var(--comfyui-input-bg);
+    border: 1px solid var(--comfyui-input-border);
+    color: var(--comfyui-text);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    min-width: 0;
+    line-height: 1.35;
+    font-family: inherit;
+    transition: all 0.2s ease;
+}
+
+.comfyui-select {
+    min-height: 34px;
+    height: 34px;
+    line-height: 32px;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+input.comfyui-input {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+textarea.comfyui-input {
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    text-overflow: clip;
+    overflow-x: hidden;
+}
+
+.comfyui-select option {
+    background-color: #18181b;
+    color: #e4e4e7;
+}
+
+.theme-neumorphism .comfyui-select option {
+    background-color: #ffffff;
+    color: #0f172a;
+}
+
+.comfyui-select:focus,
+.comfyui-input:focus {
+    border-color: #3b82f6;
+    outline: none;
+    background: var(--comfyui-input-bg);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.comfyui-file-input {
+    display: none;
+}
+
+.comfyui-btn {
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.comfyui-btn-primary {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(37, 99, 235, 0.15) 100%);
+    color: #60a5fa;
+    border: 1px solid rgba(59, 130, 246, 0.4);
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.comfyui-btn-primary:hover {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.25) 0%, rgba(37, 99, 235, 0.25) 100%);
+    border-color: rgba(59, 130, 246, 0.6);
+    color: #93c5fd;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.comfyui-btn-primary:active {
+    transform: translateY(0);
+}
+
+.comfyui-btn-primary:disabled {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #6b7280;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.comfyui-btn-secondary {
+    background: var(--comfyui-btn-secondary-bg);
+    color: var(--comfyui-text);
+    border-color: var(--comfyui-btn-secondary-bg);
+    transition: all 0.2s ease;
+}
+
+.comfyui-btn-secondary:hover {
+    background: var(--comfyui-btn-secondary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.comfyui-footer {
+    padding: 16px;
+    border-top: 1px solid var(--comfyui-border);
+    background: rgba(0, 0, 0, 0.2);
+    flex-shrink: 0;
+}
+
+.comfyui-generate-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.comfyui-batch-label {
+    flex: 0 0 auto;
+    font-size: 12px;
+    color: var(--comfyui-text-muted);
+}
+
+.comfyui-batch-input {
+    flex: 0 0 72px;
+    max-width: 72px;
+    text-align: center;
+    padding: 6px 8px;
+}
+
+.comfyui-scrubbable {
+    cursor: ew-resize !important;
+}
+
+.comfyui-scrubbable::-webkit-inner-spin-button,
+.comfyui-scrubbable::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.comfyui-generate-main-btn {
+    flex: 1 1 220px;
+    min-height: 38px;
+}
+
+.comfyui-btn-danger {
+    background: rgba(239, 68, 68, 0.14);
+    border-color: rgba(239, 68, 68, 0.45);
+    color: #fca5a5;
+    font-weight: 600;
+}
+
+.comfyui-btn-danger:hover {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.65);
+    color: #fecaca;
+}
+
+.comfyui-btn-danger:disabled {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #6b7280;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.comfyui-status {
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--comfyui-text-muted);
+    min-height: 16px;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.comfyui-preview {
+    margin-top: 10px;
+    border: 1px solid var(--comfyui-border);
+    border-radius: 4px;
+    overflow: hidden;
+    max-height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.3);
+    min-height: 100px;
+}
+
+.comfyui-preview img {
+    max-width: 100%;
+    max-height: 200px;
+    object-fit: contain;
+}
+
+.comfyui-node-picker {
+    margin-top: 12px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--comfyui-border);
+}
+
+.comfyui-target-buttons {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.comfyui-target-btn.active {
+    background: #2563eb;
+    color: #fff;
+    border-color: #2563eb;
+}
+
+.comfyui-remove-group-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    margin-left: 6px;
+    font-size: 14px;
+    line-height: 1;
+    color: inherit;
+    opacity: 0.6;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.comfyui-remove-group-icon:hover {
+    background: rgba(255, 255, 255, 0.2);
+    opacity: 1;
+    color: #f87171;
+}
+
+.theme-neumorphism .comfyui-remove-group-icon:hover {
+    background: rgba(0, 0, 0, 0.1);
+    color: #ef4444;
+}
+
+.comfyui-node-list {
+    margin-top: 8px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 8px;
+    max-height: 220px;
+    overflow-y: auto;
+    padding: 4px;
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--comfyui-border);
+    border-radius: 6px;
+}
+
+.comfyui-node-item,
+.comfyui-node-card {
+    background: var(--comfyui-card-bg);
+    border: 1px solid var(--comfyui-card-border);
+    border-radius: 6px;
+    padding: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.comfyui-node-item:hover,
+.comfyui-node-card:hover {
+    border-color: rgba(59, 130, 246, 0.6);
+    background: rgba(59, 130, 246, 0.1);
+}
+
+/* Coze Specific Cards */
+.coze-card.flow-card {
+    background-color: var(--comfyui-card-bg, rgba(255, 255, 255, 0.03));
+    border: 1px solid var(--comfyui-card-border, rgba(255, 255, 255, 0.1));
+}
+
+.coze-card.flow-card:hover {
+    border-color: #3b82f6;
+    background-color: var(--comfyui-card-hover-bg, rgba(59, 130, 246, 0.05));
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+    transform: translateY(-2px);
+}
+
+.coze-card.add-new {
+    background-color: var(--comfyui-card-bg, rgba(0, 0, 0, 0.1));
+    border-color: var(--comfyui-border-color, rgba(255, 255, 255, 0.2));
+}
+
+.coze-card.add-new:hover {
+    border-color: #3b82f6;
+    background-color: var(--comfyui-card-hover-bg, rgba(59, 130, 246, 0.05));
+    color: #3b82f6;
+}
+
+.coze-card.add-new:hover div {
+    color: #3b82f6 !important;
+}
+
+/* Base theming override for Coze Cards */
+body.theme-neumorphism .coze-card.flow-card {
+    background-color: #ffffff;
+    border: 1px solid #e5e5e5;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+body.theme-neumorphism .coze-card.flow-card:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+}
+
+body.theme-neumorphism .coze-card.flow-card div[style*="color: #e2e8f0"] {
+    color: #333 !important;
+    /* Force title color in light theme */
+}
+
+body.theme-neumorphism .coze-card.add-new {
+    background-color: #fafafa;
+    border-color: #ccc;
+}
+
+/* Coze responsive adaptations for small panel sizes */
+.coze-add-flow-overlay {
+    align-items: flex-start;
+    overflow-y: auto;
+    padding: 12px;
+    box-sizing: border-box;
+}
+
+.coze-add-flow-dialog {
+    width: 100% !important;
+    max-width: 580px !important;
+    max-height: calc(100vh - 24px);
+    margin: 0 auto;
+}
+
+.coze-add-flow-dialog .dialog-body {
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.coze-add-flow-dialog-footer {
+    flex-wrap: wrap;
+}
+
+.coze-add-flow-dialog-footer .btn-secondary,
+.coze-add-flow-dialog-footer .btn-primary {
+    min-width: 96px;
+}
+
+.coze-detail-layout,
+.coze-detail-content {
+    min-height: 0;
+}
+
+.coze-detail-topbar,
+.coze-detail-section-head {
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.coze-detail-topbar-actions {
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.coze-detail-title {
+    min-width: 0;
+    word-break: break-all;
+}
+
+@media (max-width: 640px) {
+    .coze-add-flow-dialog .dialog-header,
+    .coze-add-flow-dialog .dialog-body,
+    .coze-add-flow-dialog .dialog-footer {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    .coze-add-flow-dialog-footer .btn-secondary,
+    .coze-add-flow-dialog-footer .btn-primary {
+        flex: 1 1 calc(50% - 6px);
+    }
+}
+
+@media (max-width: 520px) {
+    .coze-detail-topbar-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}
+
+@media (max-height: 760px) {
+    .coze-add-flow-overlay {
+        padding-top: 8px;
+        padding-bottom: 8px;
+    }
+
+    .coze-add-flow-dialog {
+        max-height: calc(100vh - 16px);
+    }
+}
+
+.comfyui-node-title,
+.node-title {
+    font-size: 12px;
+    color: var(--comfyui-text);
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
+.comfyui-node-meta,
+.node-type,
+.node-id {
+    font-size: 10px;
+    color: var(--comfyui-text-muted);
+}
+
+.comfyui-node-tags,
+.node-tags {
+    margin-top: 6px;
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.comfyui-tag,
+.node-tag {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 999px;
+    background: var(--comfyui-btn-secondary-bg);
+    color: var(--comfyui-text);
+}
+
+.comfyui-tag-input,
+.node-tag.input {
+    background: rgba(59, 130, 246, 0.2);
+    color: #93c5fd;
+}
+
+.theme-neumorphism .comfyui-tag-input,
+.theme-neumorphism .node-tag.input {
+    background: rgba(59, 130, 246, 0.1);
+    color: #2563eb;
+}
+
+.comfyui-tag-prompt,
+.node-tag.prompt {
+    background: rgba(16, 185, 129, 0.2);
+    color: #6ee7b7;
+}
+
+.theme-neumorphism .comfyui-tag-prompt,
+.theme-neumorphism .node-tag.prompt {
+    background: rgba(16, 185, 129, 0.1);
+    color: #059669;
+}
+
+.comfyui-tag-output,
+.node-tag.output {
+    background: rgba(245, 158, 11, 0.2);
+    color: #fcd34d;
+}
+
+.theme-neumorphism .comfyui-tag-output,
+.theme-neumorphism .node-tag.output {
+    background: rgba(245, 158, 11, 0.1);
+    color: #d97706;
+}
+
+.comfyui-node-hint {
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--comfyui-text-muted);
+}
+
+.comfyui-node-empty {
+    font-size: 12px;
+    color: var(--comfyui-text-muted);
+    padding: 12px;
+}
+
+/* [New] Drag Zone & Parameters */
+.comfyui-drop-zone {
+    border: 2px dashed var(--comfyui-border);
+    border-radius: 8px;
+    padding: 24px 16px;
+    text-align: center;
+    color: var(--comfyui-text-muted);
+    background: var(--comfyui-btn-secondary-bg);
+    transition: all 0.3s ease;
+    margin-top: 8px;
+    cursor: pointer;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.comfyui-drop-zone:hover {
+    border-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.08);
+    color: var(--comfyui-text);
+    transform: translateY(-2px);
+}
+
+.comfyui-drop-zone.drag-over {
+    border-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.15);
+    color: var(--comfyui-text);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+}
+
+.comfyui-param-group {
+    display: flex;
+    gap: 8px;
+}
+
+.comfyui-param-item {
+    flex: 1;
+}
+
+.comfyui-param-label {
+    display: block;
+    font-size: 10px;
+    color: var(--comfyui-text-muted);
+    margin-bottom: 2px;
+}
+
+/* --- ComfyUI Panel Refactor: Use Mode & Config Mode --- */
+
+.comfyui-config-toggle-wrap {
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.comfyui-config-toggle-btn {
+    width: 100%;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px dashed rgba(255, 255, 255, 0.2);
+    color: #ccc;
+    cursor: pointer;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.comfyui-config-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.comfyui-config-section {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.comfyui-config-section.expanded {
+    max-height: 800px;
+    flex-shrink: 0;
+    overflow-y: auto;
+    padding: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Use Mode Panel */
+.comfyui-use-mode-section {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.comfyui-dynamic-params {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.comfyui-param-group {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.comfyui-param-group-title {
+    font-size: 11px;
+    color: #888;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 4px;
+}
+
+.comfyui-custom-param-row {
+    margin-bottom: 8px;
+    background: rgba(0, 0, 0, 0.15);
+    padding: 6px;
+    border-radius: 4px;
+}
+
+.comfyui-custom-param-row:last-child {
+    margin-bottom: 0;
+}
+
+/* Node Card Buttons */
+.node-card-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.comfyui-expose-param-btn,
+.comfyui-set-output-btn {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #ccc;
+    padding: 4px 0;
+    font-size: 11px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.comfyui-expose-param-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+}
+
+.comfyui-set-output-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+}
+
+.comfyui-set-output-btn.active {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #fca5a5;
+}
+
+.comfyui-node-card.output-node {
+    border-color: rgba(239, 68, 68, 0.5);
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.2);
+}
+
+/* Empty State */
+.comfyui-empty-params {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    color: #666;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+    text-align: center;
+}
+
+.comfyui-empty-params span {
+    font-size: 24px;
+    margin-bottom: 8px;
+    opacity: 0.5;
+}
+
+.comfyui-empty-params p {
+    margin: 0 0 4px 0;
+    font-size: 13px;
+    color: #aaa;
+}
+
+/* --- Compact Parameter Layout --- */
+
+.comfyui-node-group {
+    margin-bottom: 8px;
+    padding: 0;
+    border: 1px solid var(--comfyui-border);
+    background: rgba(0,0,0,0.1);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.comfyui-node-group-title {
+    background: rgba(255,255,255,0.03);
+    padding: 6px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--comfyui-border);
+    margin: 0;
+    color: var(--comfyui-text);
+}
+
+.comfyui-node-title-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.comfyui-node-id-tag {
+    font-family: monospace;
+    opacity: 0.5;
+    font-size: 10px;
+    background: rgba(0,0,0,0.2);
+    padding: 1px 4px;
+    border-radius: 3px;
+}
+
+.comfyui-node-group-content {
+    padding: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.comfyui-custom-param-row.compact {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.comfyui-custom-param-header-compact {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2px 4px;
+}
+
+.comfyui-param-label-compact {
+    font-size: 10px;
+    color: var(--comfyui-text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+}
+
+.comfyui-custom-param-actions-compact {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+.comfyui-custom-param-row.compact:hover .comfyui-custom-param-actions-compact {
+    opacity: 1;
+}
+
+.comfyui-custom-param-actions-compact .comfyui-btn-icon {
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    font-size: 12px;
+    line-height: 20px;
+    background: transparent;
+    border: none;
+    color: var(--comfyui-text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.comfyui-custom-param-actions-compact .comfyui-btn-icon:hover {
+    color: var(--comfyui-text);
+    background: rgba(255,255,255,0.1);
+    border-radius: 3px;
+}
+
+.comfyui-custom-param-body-compact {
+    padding: 0 4px 6px 4px;
+}
+
+/* Adjust inputs within compact view */
+.comfyui-custom-param-body-compact .comfyui-input,
+.comfyui-custom-param-body-compact .comfyui-select {
+    font-size: 11px;
+    padding: 4px 8px;
+    height: 28px;
+    min-height: 28px;
+    line-height: 1.3;
+}
+
+/* Checkbox specific adjustment */
+.comfyui-custom-param-body-compact label {
+    font-size: 11px;
+}
+
+/* Mode select in compact actions */
+.comfyui-custom-param-actions-compact .comfyui-custom-mode {
+    height: 20px;
+    font-size: 10px;
+    padding: 0 4px;
+    min-height: 0;
+    width: auto;
+    background: transparent;
+    border: none;
+    color: var(--comfyui-text-muted);
+    cursor: pointer;
+}
+
+.comfyui-custom-param-actions-compact .comfyui-custom-mode:hover {
+    color: var(--comfyui-text);
+}
+
+/* Compact File Panel Optimization */
+.comfyui-custom-param-body-compact .comfyui-custom-file-panel {
+    padding: 6px;
+    border: 1px dashed var(--comfyui-border);
+    background: rgba(0,0,0,0.1);
+    border-radius: 4px;
+}
+
+.comfyui-custom-param-body-compact .comfyui-custom-file-toolbar {
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.comfyui-custom-param-body-compact .comfyui-custom-file-caption {
+    font-size: 10px;
+    color: var(--comfyui-text-muted);
+    font-weight: 600;
+}
+
+.comfyui-custom-param-body-compact .comfyui-custom-file-toolbar-right {
+    display: flex;
+    gap: 4px;
+}
+
+/* Source Buttons Style */
+.comfyui-custom-source-btn {
+    padding: 2px 6px;
+    font-size: 10px;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--comfyui-text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.comfyui-custom-source-btn:hover {
+    background: rgba(255,255,255,0.1);
+    color: var(--comfyui-text);
+}
+
+.comfyui-custom-source-btn.active {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.4);
+    color: #93c5fd;
+}
+
+.theme-neumorphism .comfyui-custom-source-btn.active {
+    background: rgba(37, 99, 235, 0.1);
+    border-color: rgba(37, 99, 235, 0.3);
+    color: #2563eb;
+}
+
+/* Clear Button */
+.comfyui-custom-file-clear {
+    padding: 2px 6px;
+    font-size: 10px;
+    border-radius: 3px;
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--comfyui-text-muted);
+    cursor: pointer;
+    margin-left: 4px;
+}
+
+.comfyui-custom-file-clear:hover {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+}
+
+/* Drop Zone in Compact Mode */
+.comfyui-custom-param-body-compact .comfyui-custom-file-drop {
+    min-height: 32px;
+    padding: 8px;
+    border: 1px dashed var(--comfyui-border);
+    border-radius: 4px;
+    background: rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.comfyui-custom-param-body-compact .comfyui-custom-file-drop:hover {
+    border-color: rgba(59, 130, 246, 0.4);
+    background: rgba(59, 130, 246, 0.05);
+}
+
+.comfyui-custom-param-body-compact .comfyui-file-drop-hint {
+    font-size: 10px;
+    color: var(--comfyui-text-muted);
+    text-align: center;
+    pointer-events: none;
+}
+
+.comfyui-custom-param-body-compact .comfyui-custom-file-info {
+    font-size: 10px;
+    color: var(--comfyui-text);
+    word-break: break-all;
+    text-align: center;
+}
+
+/* Hide drop hint when file is selected (managed by JS usually, but CSS can help if classes applied) */
+/* Assuming JS updates content or hides elements */
+
+/* Source Hint Text */
+.comfyui-custom-param-body-compact .comfyui-custom-file-source-hint {
+    margin-top: 4px;
+    font-size: 9px;
+    color: var(--comfyui-text-muted);
+    opacity: 0.7;
+    padding-left: 2px;
+}
+
+/* Preview Area */
+.comfyui-custom-param-body-compact .comfyui-custom-file-preview {
+    margin-top: 6px;
+    background: #000;
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    max-height: 120px;
+}
+
+.comfyui-custom-param-body-compact .comfyui-custom-file-preview.is-hidden {
+    display: none;
+}
+
+.comfyui-custom-param-body-compact .comfyui-custom-file-preview img,
+.comfyui-custom-param-body-compact .comfyui-custom-file-preview video {
+    max-width: 100%;
+    max-height: 120px;
+    object-fit: contain;
+}
+
+.comfyui-custom-param-body-compact .comfyui-custom-file-preview audio {
+    width: 100%;
+    height: 32px;
+}
+
+.comfyui-prompt-editor {
+    position: relative;
+}
+
+.comfyui-custom-param-body-compact .comfyui-custom-prompt {
+    height: auto;
+    min-height: 96px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    overflow-x: hidden;
+    resize: vertical;
+    line-height: 1.45;
+    padding-bottom: 30px;
+}
+
+.comfyui-prompt-actions {
+    position: absolute;
+    right: 8px;
+    bottom: 7px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.55));
+    border-radius: 8px;
+    padding: 2px 4px;
+}
+
+.theme-neumorphism .comfyui-prompt-actions {
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(226, 232, 240, 0.9));
+}
+
+.comfyui-prompt-action-btn {
+    width: 20px;
+    height: 20px;
+    border: none;
+    background: transparent;
+    color: var(--comfyui-text-muted);
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    opacity: 0.85;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.comfyui-prompt-action-btn:hover {
+    opacity: 1;
+    transform: translateY(-1px);
+    color: var(--comfyui-text);
+}
+
+.comfyui-prompt-action-btn:disabled {
+    opacity: 0.45;
+    cursor: wait;
+}
+
+.comfyui-prompt-action-btn.is-loading {
+    animation: comfyPromptSpin 1.1s linear infinite;
+}
+
+@keyframes comfyPromptSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Remove spinners for scrubbable inputs */
+.comfyui-scrubbable::-webkit-inner-spin-button,
+.comfyui-scrubbable::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.comfyui-scrubbable {
+    appearance: textfield;
+    -moz-appearance: textfield; /* Firefox */
+    cursor: ew-resize; /* Indicate draggable */
+}
+
+/* Ensure sliders inputs also look clean */
+.comfyui-slider-input::-webkit-inner-spin-button,
+.comfyui-slider-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Toggle Switch UI */
+.comfyui-toggle-switch {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 28px;
+    cursor: pointer;
+    user-select: none;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--comfyui-border);
+    border-radius: 6px;
+    overflow: hidden;
+    padding: 2px;
+}
+
+.comfyui-toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.comfyui-toggle-slider {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    bottom: 2px;
+    width: 24px;
+    background-color: #666;
+    transition: 0.3s;
+    border-radius: 4px;
+    z-index: 1;
+}
+
+.comfyui-toggle-switch input:checked + .comfyui-toggle-slider {
+    background-color: #3b82f6;
+    transform: translateX(100%);
+    left: calc(100% - 26px);
+}
+
+.comfyui-toggle-label {
+    margin-left: 32px;
+    font-size: 11px;
+    color: var(--comfyui-text);
+    z-index: 2;
+    transition: 0.3s;
+}
+
+.comfyui-toggle-switch input:checked ~ .comfyui-toggle-label {
+    margin-left: 8px;
+    color: #93c5fd;
+}
+
+/* Slider UI */
+.comfyui-slider-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.comfyui-slider-range {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    outline: none;
+    padding: 0;
+    margin: 0;
+}
+
+.comfyui-slider-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #3b82f6;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.comfyui-slider-range::-webkit-slider-thumb:hover {
+    background: #60a5fa;
+    transform: scale(1.2);
+}
+
+.comfyui-slider-input {
+    width: 50px !important;
+    min-width: 50px !important;
+    flex: 0 0 50px !important;
+    text-align: center;
+    padding: 0 4px !important;
+    height: 24px !important;
+    min-height: 24px !important;
+    font-size: 11px !important;
+    /* Remove number arrows */
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+.comfyui-slider-input::-webkit-outer-spin-button,
+.comfyui-slider-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.comfyui-custom-mask-btn {
+    padding: 2px 6px;
+    font-size: 10px;
+    border-radius: 3px;
+    background: rgba(239, 68, 68, 0.16);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    color: #fca5a5;
+}
+
+.comfyui-custom-mask-btn:hover {
+    background: rgba(239, 68, 68, 0.24);
+    border-color: rgba(239, 68, 68, 0.45);
+    color: #fecaca;
+}
+
+.theme-neumorphism .comfyui-custom-mask-btn {
+    background: rgba(239, 68, 68, 0.08);
+    border-color: rgba(239, 68, 68, 0.2);
+    color: #b91c1c;
+}
+
+.comfyui-mask-editor-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 110050;
+    background: rgba(0, 0, 0, 0.72);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.comfyui-mask-editor-dialog {
+    width: min(1120px, 96vw);
+    max-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--comfyui-border);
+    border-radius: 10px;
+    background: linear-gradient(180deg, rgba(18, 18, 22, 0.97) 0%, rgba(12, 12, 15, 0.97) 100%);
+    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.55);
+    overflow: hidden;
+}
+
+.theme-neumorphism .comfyui-mask-editor-dialog {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(241, 245, 249, 0.96) 100%);
+    box-shadow: 0 20px 48px rgba(15, 23, 42, 0.2);
+}
+
+.comfyui-mask-editor-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--comfyui-border);
+}
+
+.comfyui-mask-editor-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--comfyui-text);
+}
+
+.comfyui-mask-editor-subtitle {
+    margin-top: 2px;
+    font-size: 11px;
+    color: var(--comfyui-text-muted);
+}
+
+.comfyui-mask-editor-close {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--comfyui-text-muted);
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+}
+
+.comfyui-mask-editor-close:hover {
+    color: var(--comfyui-text);
+    border-color: var(--comfyui-border);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.comfyui-mask-editor-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--comfyui-border);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.comfyui-mask-editor-tool,
+.comfyui-mask-editor-undo,
+.comfyui-mask-editor-clear {
+    height: 28px;
+    padding: 0 10px;
+    border-radius: 6px;
+    border: 1px solid var(--comfyui-border);
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--comfyui-text);
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.comfyui-mask-editor-tool.active {
+    background: rgba(59, 130, 246, 0.22);
+    border-color: rgba(59, 130, 246, 0.45);
+    color: #bfdbfe;
+}
+
+.theme-neumorphism .comfyui-mask-editor-tool.active {
+    color: #1d4ed8;
+}
+
+.comfyui-mask-editor-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--comfyui-text-muted);
+}
+
+.comfyui-mask-editor-inline-check input {
+    margin: 0;
+}
+
+.comfyui-mask-editor-brush {
+    width: 150px;
+}
+
+.comfyui-mask-editor-brush-val {
+    min-width: 22px;
+    text-align: right;
+    color: var(--comfyui-text);
+}
+
+.comfyui-mask-editor-feather {
+    width: 62px;
+    height: 26px;
+    border-radius: 6px;
+    border: 1px solid var(--comfyui-input-border);
+    background: var(--comfyui-input-bg);
+    color: var(--comfyui-text);
+    padding: 2px 6px;
+    box-sizing: border-box;
+}
+
+.comfyui-mask-editor-stage-wrap {
+    flex: 1;
+    overflow: auto;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.theme-neumorphism .comfyui-mask-editor-stage-wrap {
+    background: rgba(226, 232, 240, 0.6);
+}
+
+.comfyui-mask-editor-stage {
+    position: relative;
+    margin: 0 auto;
+    width: fit-content;
+    max-width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4);
+}
+
+.comfyui-mask-editor-base,
+.comfyui-mask-editor-mask {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+}
+
+.comfyui-mask-editor-base {
+    background: #000;
+}
+
+.comfyui-mask-editor-mask {
+    position: absolute;
+    left: 0;
+    top: 0;
+    cursor: crosshair;
+}
+
+.comfyui-mask-editor-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 14px;
+    border-top: 1px solid var(--comfyui-border);
+}
+
+.comfyui-mask-editor-tip {
+    font-size: 11px;
+    color: var(--comfyui-text-muted);
+}
+
+.comfyui-mask-editor-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+@media (max-width: 900px) {
+    .comfyui-mask-editor-controls {
+        gap: 6px;
+    }
+
+    .comfyui-mask-editor-brush {
+        width: 110px;
+    }
+
+    .comfyui-mask-editor-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .comfyui-mask-editor-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}

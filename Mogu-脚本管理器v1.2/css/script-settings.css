@@ -1,0 +1,529 @@
+/* [脚本设置卡片] + [预设设置卡片] - 现代化 UI 设计 */
+/* 包含暗色 (默认) 与 亮色 (.theme-neumorphism) 主题 */
+
+/* ==========================================================================
+   1. 基础容器与模态框结构
+   ========================================================================== */
+
+/* 卡片容器限制 */
+.script-settings-card,
+.preset-settings-card {
+    width: 420px;
+    max-width: 95vw;
+    margin: auto;
+    max-height: 85vh;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 模态框主体 */
+.script-settings-modal,
+.preset-settings-modal {
+    display: flex;
+    flex-direction: column;
+    padding: 0; /* 内部布局自管理 padding */
+    box-sizing: border-box;
+    border-radius: 12px;
+    overflow: hidden;
+    font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    transition: background-color 0.3s, box-shadow 0.3s, border-color 0.3s;
+    
+    /* 默认暗色主题基础 */
+    background: #1e1e20;
+    border: 1px solid #333;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    color: #e0e0e0;
+}
+
+/* 亮色主题覆盖 */
+.theme-neumorphism .script-settings-modal,
+.theme-neumorphism .preset-settings-modal {
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.02);
+    color: #333;
+}
+
+/* ==========================================================================
+   2. 标题栏 (Header)
+   ========================================================================== */
+.script-settings-modal .dialog-header,
+.preset-settings-modal .dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.theme-neumorphism .script-settings-modal .dialog-header,
+.theme-neumorphism .preset-settings-modal .dialog-header {
+    border-bottom: 1px solid #f0f0f0;
+    background: #fafafa;
+}
+
+.script-settings-modal .dialog-header span,
+.preset-settings-modal .dialog-header span {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* 关闭按钮 */
+.script-settings-modal .btn-close,
+.preset-settings-modal .btn-close {
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    color: #888;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.script-settings-modal .btn-close:hover,
+.preset-settings-modal .btn-close:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.theme-neumorphism .script-settings-modal .btn-close:hover,
+.theme-neumorphism .preset-settings-modal .btn-close:hover {
+    color: #333;
+    background: rgba(0, 0, 0, 0.05);
+}
+
+/* ==========================================================================
+   3. 内容区域 (Body)
+   ========================================================================== */
+.script-settings-modal .settings-body,
+.preset-settings-modal .settings-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* 滚动条美化 */
+.script-settings-modal .settings-body::-webkit-scrollbar,
+.preset-settings-modal .settings-body::-webkit-scrollbar {
+    width: 6px;
+}
+.script-settings-modal .settings-body::-webkit-scrollbar-thumb,
+.preset-settings-modal .settings-body::-webkit-scrollbar-thumb {
+    background: rgba(128, 128, 128, 0.3);
+    border-radius: 3px;
+}
+.script-settings-modal .settings-body::-webkit-scrollbar-track,
+.preset-settings-modal .settings-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* 表单组 */
+.script-settings-modal .dialog-group,
+.preset-settings-modal .dialog-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.script-settings-modal label,
+.preset-settings-modal label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #999;
+    margin-left: 2px;
+}
+
+.theme-neumorphism .script-settings-modal label,
+.theme-neumorphism .preset-settings-modal label {
+    color: #666;
+}
+
+/* 提示文本 */
+.script-settings-modal .dialog-hint,
+.preset-settings-modal .dialog-hint {
+    font-size: 12px;
+    color: #888;
+    margin-top: 6px;
+}
+
+.theme-neumorphism .script-settings-modal .dialog-hint,
+.theme-neumorphism .preset-settings-modal .dialog-hint {
+    color: #999;
+}
+
+/* ==========================================================================
+   4. 表单控件 (Inputs)
+   ========================================================================== */
+.script-settings-modal .form-input,
+.script-settings-modal input[type="text"],
+.script-settings-modal textarea,
+.script-settings-modal select,
+.preset-settings-modal .form-input,
+.preset-settings-modal input[type="text"],
+.preset-settings-modal textarea,
+.preset-settings-modal select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #252528;
+    color: #fff;
+    font-size: 13px;
+    font-family: inherit;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+}
+
+/* 亮色模式输入框 */
+.theme-neumorphism .script-settings-modal .form-input,
+.theme-neumorphism .script-settings-modal input[type="text"],
+.theme-neumorphism .script-settings-modal textarea,
+.theme-neumorphism .script-settings-modal select,
+.theme-neumorphism .preset-settings-modal .form-input,
+.theme-neumorphism .preset-settings-modal input[type="text"],
+.theme-neumorphism .preset-settings-modal textarea,
+.theme-neumorphism .preset-settings-modal select {
+    background: #fff;
+    border: 1px solid #ddd;
+    color: #333;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+/* Focus 状态 */
+.script-settings-modal .form-input:focus,
+.script-settings-modal input[type="text"]:focus,
+.script-settings-modal textarea:focus,
+.script-settings-modal select:focus,
+.preset-settings-modal .form-input:focus,
+.preset-settings-modal input[type="text"]:focus,
+.preset-settings-modal textarea:focus,
+.preset-settings-modal select:focus {
+    outline: none;
+    border-color: #4a90e2;
+    background: #2a2a2d;
+}
+
+.theme-neumorphism .script-settings-modal .form-input:focus,
+.theme-neumorphism .script-settings-modal input[type="text"]:focus,
+.theme-neumorphism .script-settings-modal textarea:focus,
+.theme-neumorphism .script-settings-modal select:focus,
+.theme-neumorphism .preset-settings-modal .form-input:focus,
+.theme-neumorphism .preset-settings-modal input[type="text"]:focus,
+.theme-neumorphism .preset-settings-modal textarea:focus,
+.theme-neumorphism .preset-settings-modal select:focus {
+    border-color: #0078d4;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(0, 120, 212, 0.1);
+}
+
+/* 文本域调整 */
+.script-settings-modal textarea,
+.preset-settings-modal textarea {
+    min-height: 80px;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+/* 带按钮的输入框组 */
+.script-settings-modal .input-with-btn,
+.preset-settings-modal .input-with-btn {
+    display: flex;
+    gap: 8px;
+}
+.script-settings-modal .input-with-btn .form-input,
+.preset-settings-modal .input-with-btn .form-input {
+    flex: 1;
+}
+
+/* ==========================================================================
+   5. 标签系统 (Tags)
+   ========================================================================== */
+.script-settings-modal .tags-panel,
+.preset-settings-modal .tags-panel {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    min-height: 44px;
+}
+
+.theme-neumorphism .script-settings-modal .tags-panel,
+.theme-neumorphism .preset-settings-modal .tags-panel {
+    background: #f8f9fa;
+    border: 1px solid #eee;
+}
+
+.script-settings-modal .tag-button,
+.preset-settings-modal .tag-button {
+    padding: 4px 12px;
+    border-radius: 100px; /* 胶囊形状 */
+    font-size: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid transparent;
+    color: #ccc;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.theme-neumorphism .script-settings-modal .tag-button,
+.theme-neumorphism .preset-settings-modal .tag-button {
+    background: #fff;
+    border: 1px solid #ddd;
+    color: #666;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.script-settings-modal .tag-button:hover,
+.preset-settings-modal .tag-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+.theme-neumorphism .script-settings-modal .tag-button:hover,
+.theme-neumorphism .preset-settings-modal .tag-button:hover {
+    background: #f0f0f0;
+    color: #333;
+    border-color: #ccc;
+}
+
+/* 激活状态标签 */
+.script-settings-modal .tag-button.active,
+.preset-settings-modal .tag-button.active,
+.theme-neumorphism .script-settings-modal .tag-button.active,
+.theme-neumorphism .preset-settings-modal .tag-button.active {
+    background: #4a90e2;
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 2px 4px rgba(74, 144, 226, 0.3);
+}
+
+.theme-neumorphism .script-settings-modal .tag-button.active,
+.theme-neumorphism .preset-settings-modal .tag-button.active {
+    background: #0078d4;
+}
+
+/* 添加新标签行 */
+.script-settings-modal .add-tag-row,
+.preset-settings-modal .add-tag-row {
+    margin-top: 8px;
+    display: flex;
+    gap: 8px;
+}
+
+/* ==========================================================================
+   6. 底部按钮 (Footer Buttons)
+   ========================================================================== */
+.script-settings-modal .dialog-buttons,
+.preset-settings-modal .dialog-buttons {
+    padding: 16px 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.02);
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.theme-neumorphism .script-settings-modal .dialog-buttons,
+.theme-neumorphism .preset-settings-modal .dialog-buttons {
+    border-top: 1px solid #f0f0f0;
+    background: #fafafa;
+}
+
+/* 通用按钮样式 */
+.script-settings-modal .btn,
+.preset-settings-modal .btn {
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.05);
+    color: #ddd;
+}
+
+.theme-neumorphism .script-settings-modal .btn,
+.theme-neumorphism .preset-settings-modal .btn {
+    background: #fff;
+    border: 1px solid #d1d1d1;
+    color: #333;
+}
+
+.script-settings-modal .btn:hover,
+.preset-settings-modal .btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+.theme-neumorphism .script-settings-modal .btn:hover,
+.theme-neumorphism .preset-settings-modal .btn:hover {
+    background: #f3f2f1;
+    border-color: #b1b1b1;
+}
+
+/* 主要按钮 (Save) */
+.script-settings-modal .btn-primary,
+.preset-settings-modal .btn-primary,
+#presetSaveBtn,
+#saveScriptSettingsBtn {
+    background: #4a90e2;
+    border: 1px solid transparent;
+    color: #fff;
+}
+
+.theme-neumorphism .script-settings-modal .btn-primary,
+.theme-neumorphism .preset-settings-modal .btn-primary,
+.theme-neumorphism #presetSaveBtn,
+.theme-neumorphism #saveScriptSettingsBtn {
+    background: #0078d4;
+}
+
+.script-settings-modal .btn-primary:hover,
+.preset-settings-modal .btn-primary:hover,
+#presetSaveBtn:hover,
+#saveScriptSettingsBtn:hover {
+    background: #357abd;
+    box-shadow: 0 2px 8px rgba(74, 144, 226, 0.4);
+}
+
+.theme-neumorphism .script-settings-modal .btn-primary:hover,
+.theme-neumorphism .preset-settings-modal .btn-primary:hover,
+.theme-neumorphism #presetSaveBtn:hover,
+.theme-neumorphism #saveScriptSettingsBtn:hover {
+    background: #106ebe;
+}
+
+/* 危险按钮 (Delete) */
+.script-settings-modal .btn-danger,
+.preset-settings-modal .btn-danger {
+    color: #ff5252;
+    border-color: rgba(255, 82, 82, 0.3);
+    background: rgba(255, 82, 82, 0.05);
+    margin-right: auto; /* Push other buttons to the right */
+}
+
+.theme-neumorphism .script-settings-modal .btn-danger,
+.theme-neumorphism .preset-settings-modal .btn-danger {
+    color: #d13438;
+    background: #fdf3f4;
+    border-color: #f5a9ab;
+}
+
+.script-settings-modal .btn-danger:hover,
+.preset-settings-modal .btn-danger:hover {
+    background: #ff5252;
+    color: white;
+    border-color: transparent;
+}
+
+.theme-neumorphism .script-settings-modal .btn-danger:hover,
+.theme-neumorphism .preset-settings-modal .btn-danger:hover {
+    background: #d13438;
+    color: white;
+}
+
+/* ==========================================================================
+   7. 图片预览区 (Image Preview)
+   ========================================================================== */
+.script-settings-modal .script-image-preview,
+.preset-settings-modal .script-image-preview {
+    margin-top: 4px;
+    border: 1px dashed rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 120px;
+}
+
+.theme-neumorphism .script-settings-modal .script-image-preview,
+.theme-neumorphism .preset-settings-modal .script-image-preview {
+    background: #f9f9f9;
+    border: 1px dashed #ccc;
+}
+
+.script-settings-modal .script-image-preview img,
+.preset-settings-modal .script-image-preview img {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.cover-dropzone {
+    padding: 0;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.cover-dropzone.is-dragover {
+    border-color: rgba(74, 144, 226, 0.9);
+    background: rgba(74, 144, 226, 0.12);
+}
+
+.theme-neumorphism .cover-dropzone.is-dragover {
+    border-color: rgba(0, 120, 212, 0.9);
+    background: rgba(0, 120, 212, 0.08);
+}
+
+.cover-dropzone img {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    object-fit: cover;
+    display: block;
+    border-radius: 6px;
+    box-shadow: none;
+}
+
+.cover-dropzone-hint {
+    width: 100%;
+    height: 100%;
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    text-align: center;
+    color: #a1a1aa;
+}
+
+.theme-neumorphism .cover-dropzone-hint {
+    color: #666;
+}
+
+/* ==========================================================================
+   8. 响应式适配
+   ========================================================================== */
+@media (max-width: 480px) {
+    .script-settings-card,
+    .preset-settings-card {
+        width: 100%;
+        max-width: 100%;
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+    }
+    
+    .script-settings-modal,
+    .preset-settings-modal {
+        height: 100%;
+        border-radius: 0;
+        border: none;
+    }
+}

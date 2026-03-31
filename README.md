@@ -1,9 +1,15 @@
 # MOGU 脚本管理器
 ###### 它的主要功能是提供一个可视化的界面来管理和运行After Effects脚本，让用户能够更方便地组织、搜索和执行各种AE脚本。
 ###### 可以在此直接下载也可以去这个网址下载：https://nocode.host/aj9p9x
-###### AI工具：Claude 4，豆包，Gemini，Deepseek
+###### AI工具：Claude，豆包，Gemini，Deepseek，GPT 5.4
 
 ## 更新记录
+### v1.2 (Major Update)
+###### 新增 AI 功能 (AI Subsystem)：支持 ModelScope (文生图/改图)、ComfyUI (节点工作流集成)、Volcengine (TTS/STT 语音文本转换) 及 Coze 工作流。
+###### 新增内置浏览器 (Built-in Browser)：支持在面板内直接打开网页、管理书签/历史记录
+###### 新增文本管理面板 (Text Manager)：支持扫描当前合成的文本层，进行普通/精确/正则查找与批量替换 (Bulk Edit)，以及批量更改字体和样式。
+###### 本地存储诊断系统优化 (Diagnostics)：提供多项健康检查，包括环境、路径、读写权限及依赖检测，支持导出诊断报告。
+###### 增强导入导出与持久化 (Persistence)：支持选择性导出配置（脚本/预设、AI 模型、网页书签等），优化 app.settings 与 localStorage 的多通道数据同步。
 ### v1.01
 ###### 设置里面增加了一个读取路径子文件夹的选项，如果不勾选就不会读取设置路径的子文件夹
 ###### 如果不勾选使用导出功能，导出的脚本文件夹里就是设置的路径的全部文件
@@ -91,3 +97,6 @@
 ###### 性能优化：高效的脚本扫描和加载机制
 ###### 稳定可靠：完善的错误处理和设置持久化
 ###### 扩展性强：模块化设计，易于添加新功能
+
+## 发展历史 (Project History)
+[![Star History Chart](https://api.star-history.com/svg?repos=mogudesu/Mogu-AE-Script-Manager&type=Date)](https://star-history.com/#mogudesu/Mogu-AE-Script-Manager&Date)

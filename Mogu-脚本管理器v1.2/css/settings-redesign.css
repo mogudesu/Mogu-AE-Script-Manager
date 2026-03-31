@@ -1,0 +1,917 @@
+/* ==========================================================================
+   Mogu Script Manager - Settings Redesign & Hover Tooltip
+   Themes: Arknights Endfield (Dark) & Microsoft Fluent (Light)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Common Modal Styles
+   -------------------------------------------------------------------------- */
+.settings-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Dimmed background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+/* When displayed (handled by JS toggling display:none/flex, but we add opacity transition support) */
+.settings-modal[style*="display: block"],
+.settings-modal[style*="display: flex"] {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.settings-content,
+.script-settings-card {
+    width: 500px;
+    max-width: 90%;
+    max-height: 85vh;
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: translateY(20px);
+}
+
+.settings-modal[style*="display: block"] .settings-content,
+.settings-modal[style*="display: flex"] .settings-content,
+.script-settings-modal[style*="display: block"] .script-settings-card,
+.script-settings-modal[style*="display: flex"] .script-settings-card {
+    transform: translateY(0);
+}
+
+.settings-header,
+.dialog-header {
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid transparent;
+}
+
+.settings-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.settings-body {
+    padding: 24px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.setting-item {
+    margin-bottom: 20px;
+}
+
+.setting-item label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.setting-description {
+    font-size: 12px;
+    margin-top: 6px;
+    line-height: 1.4;
+    opacity: 0.7;
+}
+
+/* Language Selector Styles */
+.language-selector {
+    width: 100%;
+}
+
+.settings-select {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 14px;
+    cursor: pointer;
+    appearance: none;
+    /* Remove default arrow */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8.825L1.175 4 2.238 2.938 6 6.7 9.763 2.938 10.825 4z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+}
+
+/* --------------------------------------------------------------------------
+   Theme: Arknights Endfield (Dark/Black)
+   Selector: body.theme-dark .settings-modal
+   -------------------------------------------------------------------------- */
+body.theme-dark .settings-content,
+body.theme-dark .script-settings-card {
+    background-color: #0a0a0a;
+    /* Pure Black / Very Dark Grey */
+    border: 1px solid #333;
+    color: #e0e0e0;
+}
+
+body.theme-dark .settings-header,
+body.theme-dark .dialog-header {
+    background-color: #111;
+    border-bottom: 1px solid #333;
+}
+
+body.theme-dark .settings-header h3,
+body.theme-dark .dialog-header span {
+    color: #fff;
+    letter-spacing: 1px;
+}
+
+body.theme-dark .btn-close {
+    color: #888;
+    background: transparent;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+body.theme-dark .btn-close:hover {
+    color: #fff;
+}
+
+/* Inputs & Form Elements - Dark */
+body.theme-dark input[type="text"],
+body.theme-dark input[type="password"],
+body.theme-dark input[type="number"],
+body.theme-dark select,
+body.theme-dark textarea {
+    background-color: #1a1a1a;
+    border: 1px solid #444;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-family: inherit;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+}
+
+body.theme-dark input[type="text"]:focus,
+body.theme-dark input[type="password"]:focus,
+body.theme-dark input[type="number"]:focus,
+body.theme-dark select:focus,
+body.theme-dark textarea:focus {
+    border-color: #FACC15;
+    /* Endfield Yellow Accent */
+    outline: none;
+}
+
+/* Buttons - Dark */
+body.theme-dark .btn-primary {
+    background-color: #e0e0e0;
+    color: #000;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+body.theme-dark .btn-primary:hover {
+    background-color: #fff;
+}
+
+body.theme-dark .btn-secondary {
+    background-color: transparent;
+    border: 1px solid #444;
+    color: #ccc;
+    padding: 7px 15px;
+    /* Adjust for border */
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+body.theme-dark .btn-secondary:hover {
+    border-color: #888;
+    color: #fff;
+}
+
+/* Checkboxes & Radios - Dark */
+body.theme-dark input[type="checkbox"],
+body.theme-dark input[type="radio"] {
+    accent-color: #FACC15;
+    /* Endfield Yellow */
+}
+
+/* Scrollbar - Dark */
+body.theme-dark .settings-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+body.theme-dark .settings-body::-webkit-scrollbar-track {
+    background: #0a0a0a;
+}
+
+body.theme-dark .settings-body::-webkit-scrollbar-thumb {
+    background-color: #333;
+    border-radius: 4px;
+}
+
+body.theme-dark .settings-body::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+}
+
+/* --------------------------------------------------------------------------
+   Theme: Microsoft Fluent (White/Light)
+   Selector: body.theme-neumorphism .settings-modal
+   -------------------------------------------------------------------------- */
+body.theme-neumorphism .settings-content,
+body.theme-neumorphism .script-settings-card {
+    background-color: #ffffff;
+    border: 1px solid #e5e5e5;
+    color: #333;
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.12);
+}
+
+body.theme-neumorphism .settings-header,
+body.theme-neumorphism .dialog-header {
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #eee;
+}
+
+body.theme-neumorphism .settings-header h3,
+body.theme-neumorphism .dialog-header span {
+    color: #111;
+    font-weight: 600;
+}
+
+body.theme-neumorphism .btn-close {
+    color: #666;
+    background: transparent;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    transition: background 0.2s;
+    border-radius: 4px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body.theme-neumorphism .btn-close:hover {
+    background-color: #eee;
+    color: #000;
+}
+
+/* Inputs & Form Elements - Light */
+body.theme-neumorphism input[type="text"],
+body.theme-neumorphism input[type="password"],
+body.theme-neumorphism input[type="number"],
+body.theme-neumorphism select,
+body.theme-neumorphism textarea {
+    background-color: #fff;
+    border: 1px solid #d1d1d1;
+    /* Standard border */
+    border-bottom: 2px solid #d1d1d1;
+    /* Thicker bottom for Fluent feel */
+    color: #333;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-family: inherit;
+    width: 100%;
+    box-sizing: border-box;
+    transition: all 0.2s;
+}
+
+body.theme-neumorphism input[type="text"]:focus,
+body.theme-neumorphism input[type="password"]:focus,
+body.theme-neumorphism input[type="number"]:focus,
+body.theme-neumorphism select:focus,
+body.theme-neumorphism textarea:focus {
+    border-color: #0078d4;
+    /* Microsoft Blue */
+    border-bottom-color: #0078d4;
+    background-color: #fff;
+    outline: none;
+}
+
+body.theme-neumorphism input[type="text"]:hover,
+body.theme-neumorphism input[type="password"]:hover,
+body.theme-neumorphism input[type="number"]:hover,
+body.theme-neumorphism select:hover,
+body.theme-neumorphism textarea:hover {
+    border-color: #a0a0a0;
+    border-bottom-color: #888;
+}
+
+/* Buttons - Light */
+body.theme-neumorphism .btn-primary {
+    background-color: #0078d4;
+    /* Microsoft Blue */
+    color: #fff;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+body.theme-neumorphism .btn-primary:hover {
+    background-color: #106ebe;
+}
+
+body.theme-neumorphism .btn-secondary {
+    background-color: #fff;
+    border: 1px solid #d1d1d1;
+    color: #333;
+    padding: 7px 19px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+body.theme-neumorphism .btn-secondary:hover {
+    background-color: #f3f3f3;
+    border-color: #c0c0c0;
+}
+
+/* Checkboxes & Radios - Light */
+body.theme-neumorphism input[type="checkbox"],
+body.theme-neumorphism input[type="radio"] {
+    accent-color: #0078d4;
+}
+
+/* Scrollbar - Light */
+body.theme-neumorphism .settings-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+body.theme-neumorphism .settings-body::-webkit-scrollbar-track {
+    background: #f0f0f0;
+}
+
+body.theme-neumorphism .settings-body::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 4px;
+}
+
+body.theme-neumorphism .settings-body::-webkit-scrollbar-thumb:hover {
+    background-color: #999;
+}
+
+
+/* --------------------------------------------------------------------------
+   Hover Tooltip for Script/Preset Cards
+   -------------------------------------------------------------------------- */
+#hover-tooltip {
+    position: fixed;
+    z-index: 9999;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    line-height: 1.5;
+    max-width: 250px;
+    pointer-events: none;
+    /* Let clicks pass through */
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    transform: translateY(5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    display: none;
+    /* Hidden by default */
+}
+
+#hover-tooltip.visible {
+    opacity: 1;
+    transform: translateY(0);
+    display: block;
+}
+
+/* Tooltip Theme - Dark */
+body.theme-dark #hover-tooltip {
+    background-color: #1a1a1a;
+    color: #eee;
+    border: 1px solid #444;
+}
+
+/* Tooltip Theme - Light */
+body.theme-neumorphism #hover-tooltip {
+    background-color: #ffffff;
+    color: #333;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Ensure Tooltip arrow/pointer (Optional, simplifying for now) */
+
+/* --------------------------------------------------------------------------
+   Profile Tab Styles
+   -------------------------------------------------------------------------- */
+.profile-body {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    /* Start from top */
+    padding-top: 40px;
+}
+
+.profile-card {
+    width: 100%;
+    max-width: 360px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    /* Glassmorphism base */
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 32px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-header {
+    margin-bottom: 32px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile-avatar-container {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 16px;
+    position: relative;
+}
+
+.profile-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid transparent;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.profile-avatar:hover {
+    transform: scale(1.05) rotate(2deg);
+}
+
+.profile-name {
+    margin: 0 0 8px 0;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.profile-desc {
+    margin: 0;
+    font-size: 13px;
+    opacity: 0.7;
+    max-width: 80%;
+    line-height: 1.5;
+}
+
+.profile-links {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.profile-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 20px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-btn .icon {
+    margin-right: 8px;
+    font-size: 16px;
+}
+
+.profile-btn:hover {
+    transform: translateY(-2px);
+}
+
+.profile-btn:active {
+    transform: translateY(0);
+}
+
+.profile-footer {
+    margin-top: 32px;
+    font-size: 11px;
+    opacity: 0.4;
+}
+
+/* Theme: Dark (Arknights Endfield) */
+body.theme-dark .profile-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+body.theme-dark .profile-avatar {
+    border-color: #FACC15;
+    /* Accent Yellow */
+    box-shadow: 0 0 20px rgba(250, 204, 21, 0.2);
+}
+
+body.theme-dark .profile-name {
+    color: #fff;
+}
+
+body.theme-dark .profile-desc {
+    color: #ccc;
+}
+
+body.theme-dark .profile-btn {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body.theme-dark .profile-btn:hover {
+    background: #FACC15;
+    color: #000;
+    border-color: #FACC15;
+    box-shadow: 0 4px 20px rgba(250, 204, 21, 0.3);
+}
+
+/* Theme: Light (Fluent/Neumorphism) */
+body.theme-neumorphism .profile-card {
+    background: linear-gradient(145deg, #ffffff, #f0f0f0);
+    box-shadow: 20px 20px 60px #d9d9d9,
+        -20px -20px 60px #ffffff;
+    border: 1px solid #fff;
+}
+
+body.theme-neumorphism .profile-avatar {
+    border-color: #fff;
+    box-shadow: 5px 5px 10px #d1d1d1, -5px -5px 10px #ffffff;
+}
+
+body.theme-neumorphism .profile-name {
+    color: #333;
+}
+
+body.theme-neumorphism .profile-desc {
+    color: #666;
+}
+
+body.theme-neumorphism .profile-btn {
+    background: #f0f0f0;
+    color: #333;
+    box-shadow: 5px 5px 10px #d9d9d9,
+        -5px -5px 10px #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+body.theme-neumorphism .profile-btn:hover {
+    color: #0078d4;
+    box-shadow: inset 5px 5px 10px #d9d9d9,
+        inset -5px -5px 10px #ffffff;
+}
+
+/* --------------------------------------------------------------------------
+   Segmented Control (Button-like Radio Group)
+   -------------------------------------------------------------------------- */
+.segmented-control {
+    display: inline-flex;
+    border-radius: 6px;
+    padding: 3px;
+    gap: 4px;
+}
+
+.segmented-control label {
+    cursor: pointer;
+    margin: 0;
+}
+
+.segmented-control input[type="radio"] {
+    display: none;
+}
+
+.segmented-control span {
+    display: inline-block;
+    padding: 6px 20px;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+/* Theme: Dark */
+body.theme-dark .segmented-control {
+    background: rgba(40, 40, 40, 0.8);
+    border: 1px solid #333;
+}
+
+body.theme-dark .segmented-control span {
+    color: #888;
+}
+
+body.theme-dark .segmented-control label:hover span {
+    color: #ccc;
+}
+
+body.theme-dark .segmented-control input[type="radio"]:checked+span {
+    background: #FACC15;
+    /* Endfield Yellow */
+    color: #000;
+    font-weight: 600;
+    box-shadow: 0 1px 4px rgba(250, 204, 21, 0.3);
+}
+
+/* Theme: Light */
+body.theme-neumorphism .segmented-control {
+    background: #e2e8f0;
+    border: 1px solid #cbd5e1;
+}
+
+body.theme-neumorphism .segmented-control span {
+    color: #475569;
+}
+
+body.theme-neumorphism .segmented-control label:hover span {
+    color: #1e293b;
+}
+
+body.theme-neumorphism .segmented-control input[type="radio"]:checked+span {
+    background: #ffffff;
+    color: #0f172a;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* ==========================================================================
+   Export Selection Modal
+   ========================================================================== */
+.export-select-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.export-select-card {
+    width: 440px;
+    max-width: 95vw;
+    max-height: 88vh;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(24px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.export-select-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 20px;
+    flex-shrink: 0;
+}
+
+.export-select-icon {
+    font-size: 22px;
+}
+
+.export-select-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    flex: 1;
+}
+
+.export-select-close {
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: all 0.15s;
+}
+
+.export-select-body {
+    padding: 0 20px 16px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.export-select-desc {
+    margin: 0 0 14px;
+    font-size: 13px;
+    opacity: 0.65;
+}
+
+.export-check-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.export-check-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border: 1px solid transparent;
+}
+
+.export-check-item input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.export-check-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    pointer-events: none;
+}
+
+.export-check-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.export-check-label {
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.export-check-desc {
+    font-size: 11px;
+    opacity: 0.6;
+    margin-top: 2px;
+    line-height: 1.3;
+}
+
+.export-select-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 14px 20px;
+    flex-shrink: 0;
+}
+
+/* ---------- Dark Theme ---------- */
+body.theme-dark .export-select-card {
+    background: #111;
+    border: 1px solid #333;
+    color: #e0e0e0;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+body.theme-dark .export-select-header {
+    border-bottom: 1px solid #2a2a2a;
+}
+
+body.theme-dark .export-select-title {
+    color: #fff;
+}
+
+body.theme-dark .export-select-close {
+    color: #888;
+}
+
+body.theme-dark .export-select-close:hover {
+    color: #fff;
+    background: #222;
+}
+
+body.theme-dark .export-check-item:hover {
+    background: rgba(250, 204, 21, 0.06);
+    border-color: rgba(250, 204, 21, 0.2);
+}
+
+body.theme-dark .export-check-item:has(input:checked) {
+    background: rgba(250, 204, 21, 0.08);
+    border-color: rgba(250, 204, 21, 0.25);
+}
+
+body.theme-dark .export-check-item input[type="checkbox"] {
+    accent-color: #FACC15;
+}
+
+body.theme-dark .export-select-footer {
+    border-top: 1px solid #2a2a2a;
+}
+
+body.theme-dark .export-select-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+body.theme-dark .export-select-body::-webkit-scrollbar-track {
+    background: #111;
+}
+
+body.theme-dark .export-select-body::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 3px;
+}
+
+/* ---------- Light Theme ---------- */
+body.theme-neumorphism .export-select-card {
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    color: #333;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+body.theme-neumorphism .export-select-header {
+    border-bottom: 1px solid #eee;
+}
+
+body.theme-neumorphism .export-select-title {
+    color: #111;
+}
+
+body.theme-neumorphism .export-select-close {
+    color: #666;
+}
+
+body.theme-neumorphism .export-select-close:hover {
+    color: #000;
+    background: #f0f0f0;
+}
+
+body.theme-neumorphism .export-check-item:hover {
+    background: #f5f7ff;
+    border-color: #c5d5f5;
+}
+
+body.theme-neumorphism .export-check-item:has(input:checked) {
+    background: #eff5ff;
+    border-color: #b0ccf5;
+}
+
+body.theme-neumorphism .export-check-item input[type="checkbox"] {
+    accent-color: #0078d4;
+}
+
+body.theme-neumorphism .export-select-footer {
+    border-top: 1px solid #eee;
+}

@@ -1,0 +1,249 @@
+/* [顶部控件]+[布局]+[01] 顶部搜索与标签区域 */
+.top-controls { display: flex; gap: 4px; align-items: flex-start; margin-bottom: 4px; width: 100%; background: rgba(20, 20, 23, 0.4); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 6px; padding: 4px; backdrop-filter: blur(10px); box-shadow: none; overflow: hidden; background-clip: padding-box; }
+
+.search-tags-group-compact { flex: 1 1 auto; display: flex; flex-direction: column; gap: 4px; margin-left: auto; overflow: hidden; background: transparent; border-radius: 6px; border: none; backdrop-filter: none; box-shadow: none; }
+.search-row { display: flex; gap: 6px; align-items: center; }
+.search-row input#searchInput { flex: 1; padding: 5px 8px; font-size: 11px; background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 4px; color: #e4e4e7; outline: none; transition: all 0.2s ease; letter-spacing: 0.3px; }
+.search-row input#searchInput:focus { background: rgba(0, 0, 0, 0.4); border-color: #0047AB; box-shadow: 0 0 0 1px rgba(0, 71, 171, 0.3); color: #ffffff; }
+.search-row input#searchInput::placeholder { color: rgba(161, 161, 170, 0.5); }
+.tags-row { display: flex; gap: 6px; align-items: center; position: relative; z-index: 1; }
+.tags-panel-compact { display: flex; flex-wrap: wrap; gap: 2px; flex: 1; max-height: 22px; overflow-y: auto; }
+
+/* [顶部控件]+[按钮]+[02] 设置按钮与主题切换按钮 */
+.settings-area { 
+    flex: 0 0 auto; 
+    min-width: 30px; 
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.btn-settings { width: 24px; height: 24px; font-size: 12px; padding: 0; display: flex; align-items: center; justify-content: center; background: transparent; border: 1px solid transparent; border-radius: 4px; color: #a1a1aa; cursor: pointer; transition: all 0.2s ease; backdrop-filter: none; box-shadow: none; -webkit-user-drag: none; user-select: none; pointer-events: auto; }
+.btn-settings:hover { background: rgba(255, 255, 255, 0.05); color: #e4e4e7; border-color: rgba(255, 255, 255, 0.1); }
+
+/* [顶部控件]+[主题]+[03] 主题联动 */
+.theme-dark .top-controls {
+    background: rgba(18, 18, 18, 0.95);
+    border: 1px solid #333;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+.theme-dark .search-row input#searchInput {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 2px;
+    color: #ccc;
+    font-family: 'JetBrains Mono', monospace;
+}
+.theme-dark .search-row input#searchInput:focus {
+    background: #222;
+    border-color: #ffcc00;
+    color: #fff;
+    box-shadow: none;
+}
+.theme-dark .btn-settings {
+    border-radius: 2px;
+    color: #888;
+}
+.theme-dark .btn-settings:hover {
+    background: #333;
+    color: #fff;
+}
+
+/* Microsoft Gradient Theme Top Controls */
+.theme-neumorphism .top-controls { 
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.6); 
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    backdrop-filter: blur(20px); 
+}
+.theme-neumorphism .search-row input#searchInput {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(0,0,0,0.05);
+    border-bottom-color: rgba(0,71,171,0.3); /* Subtle blue underline hint */
+    border-radius: 4px;
+    color: #323130;
+    box-shadow: none;
+}
+.theme-neumorphism .search-row input#searchInput:focus {
+    background: #ffffff;
+    border-color: #0078d4;
+    border-bottom-width: 2px; /* Fluent input focus style */
+    box-shadow: 0 2px 8px rgba(0, 120, 212, 0.1);
+}
+.theme-neumorphism .btn-settings {
+    background: rgba(255, 255, 255, 0.4);
+    color: #605e5c;
+    border-radius: 4px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+.theme-neumorphism .btn-settings:hover {
+    background: white;
+    color: #0078d4;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Theme 3: Cute / Xiaohongshu Style (Refactored) */
+.theme-cute .top-controls { 
+    background: #ffffff; 
+    border: none; 
+    border-radius: 0; 
+    box-shadow: 0 1px 0 #f0f0f0; 
+    backdrop-filter: none; 
+    padding: 8px 12px;
+}
+.theme-cute .search-row input#searchInput { 
+    background: #f5f5f5; 
+    border: 1px solid transparent; 
+    border-radius: 16px; 
+    color: #333; 
+    font-size: 13px;
+    padding: 6px 12px;
+}
+.theme-cute .search-row input#searchInput:focus { 
+    background: #ffffff; 
+    border-color: #ff2442; 
+    box-shadow: 0 0 0 2px rgba(255, 36, 66, 0.1); 
+}
+.theme-cute .search-row input#searchInput::placeholder {
+    color: #999;
+}
+.theme-cute .btn-settings { 
+    color: #333; 
+    background: transparent; 
+    border-radius: 50%; 
+    font-size: 16px;
+}
+.theme-cute .btn-settings:hover { 
+    background: #f5f5f5; 
+    color: #ff2442; 
+}
+.theme-cute .btn-small {
+    color: #666;
+    border-radius: 12px;
+    background: #f5f5f5;
+    font-weight: 500;
+}
+.theme-cute .btn-small:hover {
+    background: #ff2442;
+    color: #fff;
+}
+
+.theme-handdrawn .top-controls { background: #ffc300; border: 2px solid #000; border-radius: 12px; box-shadow: 4px 4px 0 rgba(0,0,0,0.2); transform: none; backdrop-filter: none; }
+.theme-handdrawn .search-row input#searchInput { background: #fff; border: 2px solid #000; border-radius: 8px; color: #000; font-weight: bold; }
+.theme-handdrawn .search-row input#searchInput:focus { box-shadow: 2px 2px 0 #000; transform: translate(-1px, -1px); }
+.theme-handdrawn .btn-settings { color: #000; border: 2px solid transparent; }
+.theme-handdrawn .btn-settings:hover { background: #000; color: #ffc300; border-radius: 8px; }
+
+.theme-glassmorphism-dark .top-controls { 
+    background: #ffffff !important; 
+    border: 3px solid #000000 !important; 
+    border-radius: 12px !important; 
+    box-shadow: 8px 8px 0px #000000 !important; 
+    backdrop-filter: none !important;
+    clip-path: none !important;
+}
+.theme-glassmorphism-dark .search-row input#searchInput { 
+    background: #ffffff !important; 
+    border: 3px solid #000000 !important; 
+    border-radius: 8px !important; 
+    color: #000000 !important; 
+    font-weight: bold !important;
+    box-shadow: 4px 4px 0px rgba(0,0,0,0.1) !important;
+}
+.theme-glassmorphism-dark .search-row input#searchInput:focus { 
+    border-color: #000000 !important; 
+    box-shadow: 2px 2px 0px #000000 !important; 
+    transform: translate(2px, 2px) !important;
+    background: #FFD700 !important;
+}
+.theme-glassmorphism-dark .btn-settings { 
+    color: #000000 !important; 
+    border: 2px solid transparent !important;
+    background: transparent !important;
+    border-radius: 8px !important;
+}
+.theme-glassmorphism-dark .btn-settings:hover { 
+    background: #00D2A3 !important; 
+    color: #000 !important; 
+    border: 2px solid #000 !important;
+    box-shadow: 2px 2px 0px #000 !important; 
+}
+
+/* [顶部控件]+[按钮]+[04] 通用小按钮主题适配 */
+.btn-small {
+    padding: 2px 8px;
+    font-size: 12px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: #a1a1aa;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+.btn-small:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+/* Theme 1: Endfield */
+.theme-dark .btn-small {
+    border-radius: 2px;
+    color: #aaa;
+}
+.theme-dark .btn-small:hover {
+    background: #333;
+    color: #F7D000;
+    border-color: #F7D000;
+}
+
+/* Theme 2: Microsoft */
+.theme-neumorphism .btn-small {
+    color: #605e5c;
+    border-radius: 4px;
+}
+.theme-neumorphism .btn-small:hover {
+    background: #f3f2f1;
+    color: #0078d4;
+}
+
+/* Theme 3: Cute */
+.theme-cute .btn-small {
+    color: #666;
+    border-radius: 12px;
+    background: #f5f5f5;
+    font-weight: 500;
+}
+.theme-cute .btn-small:hover {
+    background: #ff2442;
+    color: #fff;
+}
+
+/* Theme 4: Meituan */
+.theme-handdrawn .btn-small {
+    color: #333;
+    font-weight: bold;
+    border: 2px solid transparent;
+}
+.theme-handdrawn .btn-small:hover {
+    background: #FFC300;
+    color: #000;
+    border: 2px solid #000;
+    border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+}
+
+/* Theme 5: Pop/Comic */
+.theme-glassmorphism-dark .btn-small {
+    color: #000000 !important;
+    background: #ffffff !important;
+    border: 2px solid #000000 !important;
+    box-shadow: 2px 2px 0px #000000 !important;
+    border-radius: 6px !important;
+    font-weight: bold !important;
+}
+.theme-glassmorphism-dark .btn-small:hover {
+    background: #FF6B6B !important;
+    transform: translate(-1px, -1px) !important;
+    box-shadow: 3px 3px 0px #000000 !important;
+    color: #000000 !important;
+}

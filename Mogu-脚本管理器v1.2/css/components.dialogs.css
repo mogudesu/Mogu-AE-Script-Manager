@@ -1,0 +1,350 @@
+/* [对话框组件]+[基础结构]+[01] 遮罩与卡片 */
+.dialog-overlay,
+.dialog-modal-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100001; /* [修复] 提高层级，确保在所有元素之上 */
+}
+
+.dialog-card {
+    background: #18181b;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    min-width: 360px;
+    max-width: 90vw;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: dialogFadeIn 0.2s ease-out;
+}
+
+@keyframes dialogFadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* 微软主题适配 - 全局对话框 */
+.theme-neumorphism .dialog-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    color: #323130;
+    border-radius: 8px;
+}
+
+.theme-neumorphism .dialog-header {
+    background: rgba(255, 255, 255, 0.5);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.theme-neumorphism .dialog-header h3 {
+    color: #201f1e;
+    font-weight: 600;
+}
+
+.theme-neumorphism .dialog-footer {
+    background: rgba(243, 242, 241, 0.5);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Arknights Endfield Style (Dark Theme) */
+.theme-dark .dialog-card {
+    background: #18181b; /* Zinc-900 */
+    border: 1px solid #3f3f46;
+    border-left: 4px solid #F7D000; /* Yellow Accent */
+    border-radius: 2px; /* Sharp corners */
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+}
+
+.theme-dark .dialog-header {
+    background: linear-gradient(90deg, rgba(247, 208, 0, 0.1) 0%, transparent 100%);
+    border-bottom: 1px solid #3f3f46;
+}
+
+.theme-dark .dialog-header h3 {
+    color: #F7D000;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: "Segoe UI", sans-serif;
+}
+
+.theme-dark .dialog-footer {
+    background: rgba(0, 0, 0, 0.3);
+    border-top: 1px solid #3f3f46;
+}
+
+.theme-dark .dialog-card .form-input,
+.theme-dark .dialog-card textarea,
+.theme-dark .dialog-card select {
+    background: #09090b;
+    border: 1px solid #3f3f46;
+    color: #e4e4e7;
+    border-radius: 0; /* Sharp inputs */
+}
+
+.theme-dark .dialog-card .form-input:focus {
+    border-color: #F7D000;
+    box-shadow: 0 0 0 1px rgba(247, 208, 0, 0.2);
+}
+
+.theme-dark .dialog-card .btn {
+    border-radius: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 12px;
+}
+
+.theme-dark .dialog-card .btn-primary {
+    background: #F7D000;
+    color: #000;
+    font-weight: 700;
+}
+
+.theme-dark .dialog-card .btn-primary:hover {
+    background: #ffe600;
+    box-shadow: 0 0 10px rgba(247, 208, 0, 0.4);
+}
+
+/* [对话框组件]+[头部]+[02] 标题与关闭 */
+.dialog-card .dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.theme-neumorphism .dialog-card .dialog-header {
+    border-bottom-color: rgba(0, 0, 0, 0.06);
+}
+
+.dialog-card .dialog-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.theme-neumorphism .dialog-card .dialog-header h3 {
+    color: #323130;
+}
+
+.dialog-card .close-btn {
+    background: transparent;
+    border: none;
+    color: inherit;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 4px;
+    line-height: 1;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+.dialog-card .close-btn:hover {
+    opacity: 1;
+}
+
+/* [对话框组件]+[内容]+[03] 正文 */
+.dialog-card .dialog-body {
+    padding: 20px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.dialog-card .dialog-group {
+    margin-bottom: 16px;
+}
+
+.dialog-card .dialog-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #a1a1aa;
+    font-size: 12px;
+}
+
+.theme-neumorphism .dialog-card .dialog-group label {
+    color: #605e5c;
+    font-weight: 600;
+}
+
+.theme-dark .dialog-card .dialog-group label {
+    color: #a1a1aa;
+}
+
+.dialog-card .form-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    font-size: 14px;
+}
+
+.dialog-card textarea.form-input {
+    min-height: 80px;
+    resize: vertical;
+    font-family: inherit;
+}
+
+.dialog-card select.form-input {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+    padding-right: 30px;
+}
+
+.theme-neumorphism .dialog-card select.form-input {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23323130' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+}
+
+.dialog-card .tags-panel {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    min-height: 40px;
+    max-height: 120px;
+    overflow-y: auto;
+}
+
+.theme-neumorphism .dialog-card .tags-panel {
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.dialog-card .tag-button {
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ccc;
+    transition: all 0.2s;
+}
+
+.dialog-card .tag-button.active {
+    background: #0047AB;
+    border-color: #0047AB;
+    color: white;
+}
+
+.theme-neumorphism .dialog-card .tag-button {
+    background: #fff;
+    border-color: #d1d1d1;
+    color: #605e5c;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.theme-neumorphism .dialog-card .tag-button.active {
+    background: #0078d4;
+    border-color: #0078d4;
+    color: white;
+}
+
+.dialog-card .dialog-hint {
+    margin-top: 4px;
+    font-size: 12px;
+    color: #888;
+}
+
+.theme-neumorphism .dialog-card .form-input {
+    background: #fff;
+    border-color: rgba(0, 0, 0, 0.1);
+    color: #323130;
+}
+
+.theme-neumorphism .dialog-card .form-input:focus {
+    border-color: #0078d4;
+    box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.2);
+    outline: none;
+}
+
+.dialog-card .confirm-message {
+    font-size: 14px;
+    color: #e4e4e7;
+    line-height: 1.5;
+}
+
+.theme-neumorphism .dialog-card .confirm-message {
+    color: #605e5c;
+}
+
+/* [对话框组件]+[底部]+[04] 按钮 */
+.dialog-card .dialog-footer {
+    padding: 16px 20px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.theme-neumorphism .dialog-card .dialog-footer {
+    border-top-color: rgba(0, 0, 0, 0.06);
+    background: rgba(0, 0, 0, 0.02);
+}
+
+.dialog-card .btn {
+    padding: 6px 16px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: transparent;
+    color: #e4e4e7;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s;
+}
+
+.theme-neumorphism .dialog-card .btn {
+    border-color: rgba(0, 0, 0, 0.1);
+    color: #323130;
+    background: #fff;
+}
+
+.dialog-card .btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.theme-neumorphism .dialog-card .btn:hover {
+    background: #f3f2f1;
+}
+
+.dialog-card .btn-primary {
+    padding: 6px 16px;
+    border-radius: 4px;
+    border: none;
+    background: #0047AB;
+    color: white;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.theme-neumorphism .dialog-card .btn-primary {
+    background: #0078d4;
+    box-shadow: 0 2px 4px rgba(0, 120, 212, 0.2);
+}
+
+.dialog-card .btn-primary:hover {
+    filter: brightness(1.1);
+}
