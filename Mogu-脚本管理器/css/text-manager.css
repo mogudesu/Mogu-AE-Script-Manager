@@ -1,0 +1,1490 @@
+/* Text Manager Panel - Unifying with Main UI Style */
+.text-manager-panel {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 80%;
+    max-height: 680px;
+    /* Match main app background from styles.css */
+    background-color: #121212; 
+    background-image: linear-gradient(to bottom, #18181B, #121212);
+    color: #e4e4e7;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.6);
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transform: translateY(100%);
+    font-family: var(--ui-font-family, "Microsoft YaHei UI", "Microsoft YaHei", "Segoe UI", system-ui, sans-serif);
+    font-size: 13px;
+    backdrop-filter: blur(20px);
+}
+
+.text-manager-panel.visible {
+    transform: translateY(0);
+}
+
+/* Header - Match script-header */
+.text-manager-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+    height: 48px;
+    background-color: rgba(18, 18, 18, 0.6);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.text-manager-tabs {
+    display: flex;
+    gap: 8px;
+    height: 100%;
+    align-items: center;
+}
+
+/* Tab Style - Match category-item from components.sidebar.css */
+.tm-tab {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #a1a1aa;
+    padding: 6px 14px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    font-size: 12px;
+    font-weight: 500;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.tm-tab:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: #e4e4e7;
+    transform: translateY(-1px);
+}
+
+.tm-tab.active {
+    background: rgba(255, 191, 0, 0.15);
+    color: #ffbf00;
+    border: 1px solid rgba(255, 191, 0, 0.3);
+    font-weight: 600;
+    box-shadow: 0 0 10px rgba(255, 191, 0, 0.1);
+}
+
+/* Close Button */
+.btn-close {
+    background: transparent;
+    border: 1px solid transparent;
+    color: #a1a1aa;
+    font-size: 18px;
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.btn-close:hover {
+    color: #e4e4e7;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Content Area */
+.text-manager-content {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    /* Transparent to show panel gradient */
+    background-color: transparent;
+}
+
+.tm-tab-content {
+    display: none;
+    flex-direction: column;
+    height: 100%;
+    padding: 16px;
+    box-sizing: border-box;
+    gap: 12px;
+}
+
+.tm-tab-content.active {
+    display: flex;
+    animation: slideUpFade 0.3s ease-out;
+}
+
+@keyframes slideUpFade {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Controls Row */
+.tm-controls {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.tm-scope-compact {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+}
+
+.tm-scope-toggle-btn {
+    min-width: 86px;
+    height: 32px;
+    padding: 0 12px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.3);
+    color: #e4e4e7;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.tm-scope-toggle-btn:hover {
+    border-color: rgba(255, 191, 0, 0.45);
+    color: #fff;
+}
+
+.tm-scope-toggle-btn[data-scope="project"] {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.tm-sort-box, .tm-actions-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+.tm-sort-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    color: #a1a1aa;
+    cursor: pointer;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.tm-sort-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #e4e4e7;
+}
+
+/* Inputs - Match Main UI inputs */
+.tm-input, .tm-select {
+    background-color: rgba(30, 30, 35, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #e4e4e7;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    transition: all 0.2s;
+    height: 36px;
+    box-sizing: border-box;
+}
+
+/* Search Group Styling */
+.tm-search-box {
+    display: flex;
+    flex: 1;
+    align-items: center;
+}
+
+#tmSearchInput {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: none;
+    flex: 1;
+}
+
+#tmSearchBtn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-left: none;
+    height: 36px;
+    padding: 0 16px;
+    color: #a1a1aa;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+#tmSearchBtn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.tm-input:focus, .tm-select:focus {
+    border-color: #ffbf00;
+    background-color: rgba(30, 30, 35, 0.9);
+    outline: none;
+    box-shadow: 0 0 0 1px rgba(255, 191, 0, 0.2);
+}
+
+.tm-input { flex: 1; }
+.tm-select { min-width: 120px; }
+
+/* Buttons - Consistent with Sidebar Add Button & Main Buttons */
+.tm-actions-row {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-mini {
+    padding: 0 16px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #a1a1aa;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+}
+
+.btn-mini:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: #e4e4e7;
+    transform: translateY(-1px);
+}
+
+.btn-mini:active {
+    transform: translateY(1px);
+}
+
+/* Primary Action - Gold Accent */
+.btn-mini.primary {
+    background: rgba(255, 191, 0, 0.1);
+    border-color: rgba(255, 191, 0, 0.3);
+    color: #ffbf00;
+}
+
+.btn-mini.primary:hover {
+    background: rgba(255, 191, 0, 0.2);
+    border-color: #ffbf00;
+    box-shadow: 0 0 10px rgba(255, 191, 0, 0.1);
+}
+
+/* Warning Action - Red/Orange */
+.btn-mini.warning {
+    background: rgba(216, 59, 1, 0.1);
+    border-color: rgba(216, 59, 1, 0.3);
+    color: #ff8c42;
+}
+
+.btn-mini.warning:hover {
+    background: rgba(216, 59, 1, 0.2);
+    border-color: #ff8c42;
+    color: #fff;
+}
+
+.btn-mini.secondary {
+    background: rgba(255, 191, 0, 0.1); /* Reuse Gold style */
+    color: #ffbf00;
+    border: 1px solid rgba(255, 191, 0, 0.3);
+    width: 100%;
+}
+.btn-mini.secondary:hover {
+    background: rgba(255, 191, 0, 0.2);
+    border-color: #ffbf00;
+    box-shadow: 0 0 10px rgba(255, 191, 0, 0.1);
+}
+
+/* List Containers - Match Script Area */
+.tm-text-list-container {
+    flex: 1;
+    overflow-y: auto;
+    background-color: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.05); /* Very subtle border */
+    border-radius: 8px;
+    /* Optional: Inner shadow if needed, but clean look is better */
+}
+
+/* Text Items (Cards) */
+.tm-text-item {
+    padding: 8px;
+    margin: 0 4px 4px 4px;
+    border-radius: 6px;
+    background: rgba(30, 30, 35, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.tm-text-item.tm-dragging {
+    opacity: 0.5;
+    cursor: grabbing !important;
+}
+
+.tm-text-item.tm-drag-over {
+    border-color: #ffbf00;
+    box-shadow: 0 0 0 2px rgba(255, 191, 0, 0.3);
+    background: rgba(255, 191, 0, 0.1);
+}
+
+.tm-text-item:hover {
+    background: rgba(30, 30, 35, 0.8);
+    border-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+}
+
+.tm-text-item.active-dropdown {
+    z-index: 1000;
+    transform: none !important; /* Prevent transform from creating new stacking context */
+    background: rgba(30, 30, 35, 0.95);
+    border-color: rgba(255, 191, 0, 0.5);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.tm-text-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #a1a1aa;
+    font-size: 11px;
+    user-select: none;
+}
+
+.tm-info-right {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.tm-item-action-btn {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.04);
+    color: #a1a1aa;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    transition: all 0.2s ease;
+}
+
+.tm-item-action-btn:hover {
+    background: rgba(255, 191, 0, 0.14);
+    border-color: rgba(255, 191, 0, 0.45);
+    color: #ffbf00;
+}
+
+/* 当可以拖拽时，添加视觉提示 */
+.tm-text-item[draggable="false"] .tm-text-info,
+.tm-text-item:not([data-can-drag]) .tm-text-info {
+    cursor: default;
+}
+
+.tm-text-item .tm-text-info[draggable="true"] {
+    cursor: grab;
+}
+
+.tm-text-item .tm-text-info[draggable="true"]:active {
+    cursor: grabbing;
+}
+
+.tm-info-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow: hidden;
+    flex: 1;
+}
+
+.tm-comp-badge {
+    background: rgba(255, 255, 255, 0.1);
+    color: #a1a1aa;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    white-space: nowrap;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.tm-layer-name {
+    font-weight: 600;
+    color: #e4e4e7;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tm-text-input {
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #e4e4e7;
+    padding: 4px 8px;
+    box-sizing: border-box;
+    border-radius: 4px;
+    font-size: 11px;
+    transition: all 0.2s;
+}
+
+.tm-text-input:focus {
+    border-color: #ffbf00;
+    background-color: rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 0 1px rgba(255, 191, 0, 0.1);
+}
+
+.tm-style-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 6px;
+    align-items: flex-start;
+    /* overflow-x: auto; Removed to prevent dropdown clipping */
+    padding-bottom: 4px;
+}
+
+.tm-style-row::-webkit-scrollbar {
+    height: 4px; /* Thin scrollbar */
+}
+
+.tm-style-field {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+    max-width: 100%;
+}
+
+.tm-style-field-font {
+    flex: 1 1 180px;
+    min-width: 140px;
+}
+
+.tm-style-field-icon {
+    flex: 0 0 auto;
+}
+
+.tm-style-label {
+    min-width: 28px;
+    height: 18px;
+    padding: 0 6px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.05);
+    color: #a1a1aa;
+    font-size: 11px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    flex-shrink: 0;
+    cursor: help;
+    transition: all 0.2s;
+}
+
+.tm-style-label:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.tm-style-icon {
+    width: 18px;
+    height: 18px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.05);
+    color: #a1a1aa;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    cursor: help;
+    transition: all 0.2s;
+}
+
+.tm-style-icon-toggle {
+    cursor: pointer;
+}
+
+.tm-style-icon.is-off {
+    opacity: 0.35;
+    filter: grayscale(100%);
+    background: rgba(255, 255, 255, 0.02);
+    color: #6b7280;
+}
+
+.tm-style-icon:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.1);
+}
+
+.tm-color-input {
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(30, 30, 35, 0.6);
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.tm-color-input.is-disabled {
+    opacity: 0.45;
+    filter: grayscale(100%);
+    pointer-events: none;
+}
+
+.tm-checkbox {
+    width: 14px;
+    height: 14px;
+    accent-color: #ffbf00;
+}
+
+.tm-style-select {
+    min-width: 80px;
+    height: 20px;
+    padding: 1px 4px;
+    font-size: 11px;
+}
+
+.tm-value-control {
+    display: inline-flex;
+    align-items: center;
+    height: 20px;
+}
+
+.tm-value-control.is-disabled .tm-value-text {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: rgba(148, 163, 184, 0.12);
+    color: #94a3b8;
+}
+
+.tm-value-text {
+    min-width: 30px;
+    height: 18px;
+    padding: 0 4px;
+    border-radius: 3px;
+    background: rgba(59, 130, 246, 0.12);
+    color: #60a5fa;
+    font-size: 11px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: ew-resize;
+    user-select: none;
+}
+
+.tm-value-text.dragging {
+    background: rgba(59, 130, 246, 0.2);
+}
+
+.tm-value-input {
+    width: 44px;
+    height: 18px;
+    padding: 0 4px;
+    border-radius: 3px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(30, 30, 35, 0.6);
+    color: #e4e4e7;
+    font-size: 11px;
+    box-sizing: border-box;
+    display: none;
+}
+
+/* Replace Section (Bottom Card) */
+.tm-replace-section,
+.tm-replace-action {
+    padding: 16px;
+    background: rgba(30, 30, 35, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+    margin-top: auto; /* Push to bottom if flex container allows */
+}
+
+.tm-replace-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.tm-replace-title {
+    color: #a1a1aa;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+}
+
+.tm-replace-collapse-btn {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.03);
+    color: #a1a1aa;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.tm-replace-collapse-btn:hover {
+    background: rgba(255, 255, 255, 0.09);
+    color: #e4e4e7;
+}
+
+.tm-replace-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.tm-replace-action.collapsed {
+    gap: 0;
+    padding-bottom: 10px;
+}
+
+.tm-replace-action.collapsed .tm-replace-content {
+    display: none;
+}
+
+.tm-replace-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.arrow {
+    color: #666;
+    font-size: 16px;
+    flex-shrink: 0;
+    opacity: 0.6;
+}
+
+/* Ensure Dropdown and Target take equal space */
+.tm-replace-row .tm-select {
+    flex: 1;
+    width: 0; /* Flex fix */
+}
+
+.tm-replace-row .tm-input {
+    flex: 1;
+    width: 0;
+}
+
+.target-font-name {
+    flex: 1;
+    width: 0; /* Flex fix */
+    color: #e4e4e7;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 36px; /* Match select height */
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+}
+
+.tm-style-apply-settings {
+    position: fixed;
+    z-index: 1200;
+    min-width: 170px;
+    background: rgba(20, 20, 24, 0.96);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+
+.tm-style-apply-title {
+    color: #e4e4e7;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.tm-style-apply-option {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #c9c9d1;
+    font-size: 12px;
+    padding: 3px 0;
+    user-select: none;
+}
+
+.tm-style-apply-option input[type="checkbox"] {
+    accent-color: #ffbf00;
+}
+
+/* Scope Switch - Segmented Control Style */
+.tm-scope-switch {
+    display: flex;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 20px; /* Pill shape */
+    padding: 3px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    position: relative;
+}
+
+.tm-scope-switch label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 4px 16px;
+    border-radius: 16px;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    user-select: none;
+    font-size: 12px;
+    color: #a1a1aa;
+    font-weight: 500;
+}
+
+.tm-scope-switch label:hover {
+    color: #e4e4e7;
+}
+
+/* Hide actual radio */
+.tm-scope-switch input[type="radio"] {
+    display: none;
+}
+
+/* Active state for custom radio */
+.tm-scope-switch label.active {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    font-weight: 600;
+}
+
+/* Empty State */
+.tm-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #666;
+    gap: 16px;
+    font-size: 14px;
+}
+
+.tm-empty-state::before {
+    content: '📭'; /* Icon */
+    font-size: 32px;
+    opacity: 0.5;
+}
+
+/* Loading */
+.tm-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #888;
+    gap: 12px;
+}
+
+.spinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-top-color: #ffbf00;
+    border-radius: 50%;
+    animation: spin 0.8s cubic-bezier(0.5, 0.1, 0.5, 0.9) infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Scrollbar - Match styles.css */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: #3f3f46;
+    border-radius: 0;
+    border: 1px solid #27272a;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #52525b;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Custom Font Select Styles */
+.cfs-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+.cfs-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 8px;
+    height: 20px;
+    background: rgba(30, 30, 35, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 11px;
+    color: #e4e4e7;
+    user-select: none;
+}
+.cfs-trigger:hover {
+    border-color: rgba(255, 191, 0, 0.5);
+}
+.cfs-current-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-right: 4px;
+}
+.cfs-arrow {
+    font-size: 8px;
+    opacity: 0.6;
+}
+.cfs-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 200px; /* Wider than trigger */
+    max-height: 200px;
+    background: #1e1e23;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    margin-top: 4px;
+}
+.cfs-list {
+    overflow-y: auto;
+    flex: 1;
+}
+.cfs-group-label {
+    padding: 4px 8px;
+    font-size: 10px;
+    font-weight: 600;
+    color: #666;
+    background: rgba(0, 0, 0, 0.2);
+    text-transform: uppercase;
+}
+.cfs-item {
+    padding: 6px 8px;
+    font-size: 12px;
+    color: #ccc;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.cfs-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+}
+.cfs-item.selected {
+    background: rgba(255, 191, 0, 0.1);
+    color: #ffbf00;
+}
+.cfs-fav-btn {
+    opacity: 0.2;
+    transition: all 0.2s;
+}
+.cfs-fav-btn:hover {
+    opacity: 0.8;
+    color: #ffbf00;
+}
+.cfs-fav-btn.active {
+    opacity: 1;
+    color: #ffbf00;
+}
+
+
+/* Bulk Edit Overlay */
+.tm-bulk-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(18, 18, 18, 0.95);
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    box-sizing: border-box;
+    backdrop-filter: blur(10px);
+}
+
+.tm-bulk-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.tm-bulk-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #e4e4e7;
+}
+
+.tm-bulk-desc {
+    font-size: 12px;
+    color: #a1a1aa;
+    margin-bottom: 12px;
+}
+
+.tm-bulk-textarea {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: #e4e4e7;
+    padding: 12px;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    resize: none;
+    outline: none;
+}
+
+.tm-bulk-textarea:focus {
+    border-color: #ffbf00;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.tm-bulk-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 12px;
+}
+
+/* ==========================================================================
+   Light Mode / Neumorphism Theme Overrides
+   ========================================================================== */
+
+/* 使用 :where() 提升优先级，覆盖默认的 Dark 样式 */
+:where(body.light-mode, body.theme-neumorphism) .text-manager-panel {
+    /* 背景：浅蓝渐变或纯白，参考主界面 */
+    background: 
+        radial-gradient(circle at 0% 0%, rgba(37, 99, 235, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
+        linear-gradient(135deg, #f0f9ff 0%, #eef2ff 100%);
+    color: #334155; /* Slate 700 - 深灰蓝 */
+    border-top: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 -10px 40px rgba(37, 99, 235, 0.15); /* 蓝色系阴影 */
+}
+
+/* Header */
+:where(body.light-mode, body.theme-neumorphism) .text-manager-header {
+    background-color: rgba(255, 255, 255, 0.7);
+    border-bottom: 1px solid rgba(37, 99, 235, 0.1);
+}
+
+/* Tabs */
+:where(body.light-mode, body.theme-neumorphism) .tm-tab {
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(37, 99, 235, 0.1);
+    color: #64748b; /* Slate 500 */
+}
+
+:where(body.light-mode, body.theme-neumorphism) .tm-tab:hover {
+    background: #ffffff;
+    border-color: #2563eb;
+    color: #2563eb;
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.1);
+}
+
+:where(body.light-mode, body.theme-neumorphism) .tm-tab.active {
+    /* 激活态：深蓝渐变，白色文字 */
+    background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+    color: #ffffff;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 120, 212, 0.25);
+}
+
+/* Controls & Search */
+:where(body.light-mode, body.theme-neumorphism) .tm-controls {
+    background: rgba(255, 255, 255, 0.6);
+    border-color: rgba(37, 99, 235, 0.1);
+}
+
+:where(body.light-mode, body.theme-neumorphism) .tm-sort-btn {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #64748b;
+}
+
+:where(body.light-mode, body.theme-neumorphism) #tmSearchBtn {
+    background: rgba(37, 99, 235, 0.05);
+    border-color: #cbd5e1;
+    color: #64748b;
+}
+
+:where(body.light-mode, body.theme-neumorphism) #tmSearchBtn:hover {
+    background: #2563eb;
+    color: #ffffff;
+    border-color: #2563eb;
+}
+
+/* Close Button */
+:where(body.light-mode, body.theme-neumorphism) .btn-close {
+    color: #64748b;
+}
+
+:where(body.light-mode, body.theme-neumorphism) .btn-close:hover {
+    color: #ef4444; /* Red for close */
+    background-color: rgba(239, 68, 68, 0.1);
+}
+
+/* List Items (Text Cards) */
+:where(body.light-mode, body.theme-neumorphism) .tm-text-item {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+:where(body.light-mode, body.theme-neumorphism) .tm-text-item:hover {
+    background: #ffffff;
+    border-color: rgba(37, 99, 235, 0.3);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+}
+
+/* Custom Font Select - Light Mode Overrides */
+:where(body.light-mode, body.theme-neumorphism) .cfs-trigger {
+    background: rgba(255, 255, 255, 0.6);
+    border-color: rgba(37, 99, 235, 0.2);
+    color: #334155;
+}
+
+:where(body.light-mode, body.theme-neumorphism) .cfs-trigger:hover {
+    background: #ffffff;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.1);
+}
+
+:where(body.light-mode, body.theme-neumorphism) .cfs-dropdown {
+    background: #ffffff;
+    border: 1px solid rgba(37, 99, 235, 0.15);
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.2);
+}
+
+:where(body.light-mode, body.theme-neumorphism) .cfs-group-label {
+    background: rgba(241, 245, 249, 0.8); /* Slate 100 */
+    color: #64748b;
+    border-bottom: 1px solid rgba(37, 99, 235, 0.05);
+}
+
+:where(body.light-mode, body.theme-neumorphism) .cfs-item {
+    color: #334155;
+}
+
+:where(body.light-mode, body.theme-neumorphism) .cfs-item:hover {
+    background: rgba(239, 246, 255, 0.8); /* Blue 50 */
+    color: #2563eb;
+}
+
+:where(body.light-mode, body.theme-neumorphism) .cfs-item.selected {
+    background: rgba(37, 99, 235, 0.1);
+    color: #2563eb;
+    font-weight: 600;
+}
+
+:where(body.light-mode, body.theme-neumorphism) .cfs-fav-btn {
+    color: #cbd5e1;
+}
+
+:where(body.light-mode, body.theme-neumorphism) .cfs-fav-btn:hover,
+:where(body.light-mode, body.theme-neumorphism) .cfs-fav-btn.active {
+    color: #f59e0b;
+}
+
+/* Scrollbar for font list in light mode */
+:where(body.light-mode, body.theme-neumorphism) .cfs-list::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border: 2px solid #fff;
+}
+:where(body.light-mode, body.theme-neumorphism) .cfs-list::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* ==========================================================================
+   Text Mode (Bulk Edit) Overlay - Light Mode
+   ========================================================================== */
+:where(body.light-mode, body.theme-neumorphism) .tm-bulk-overlay {
+    background: rgba(255, 255, 255, 0.95);
+    color: #334155;
+}
+
+:where(body.light-mode, body.theme-neumorphism) .tm-bulk-title {
+    color: #1e293b; /* Slate 800 */
+}
+
+:where(body.light-mode, body.theme-neumorphism) .tm-bulk-desc {
+    color: #64748b; /* Slate 500 */
+}
+
+/* Close button inside bulk overlay */
+:where(body.light-mode, body.theme-neumorphism) .tm-bulk-header .btn-close {
+    color: #64748b;
+}
+
+:where(body.light-mode, body.theme-neumorphism) .tm-bulk-header .btn-close:hover {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+}
+
+/* Ensure textarea has correct border/bg in overlay */
+:where(body.light-mode, body.theme-neumorphism) .tm-bulk-textarea {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #334155;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+:where(body.light-mode, body.theme-neumorphism) .tm-bulk-textarea:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+/* ==========================================================================
+   Additional Light Mode / Neumorphism Fixes (Full Coverage)
+   ========================================================================== */
+
+/* Active Dropdown State - Make it white/light */
+:where(body.light-mode, body.theme-neumorphism) .tm-text-item.active-dropdown {
+    background: #ffffff;
+    border-color: #2563eb;
+    box-shadow: 0 8px 30px rgba(37, 99, 235, 0.25);
+    z-index: 1000;
+}
+
+/* Inputs & Selects */
+:where(body.light-mode, body.theme-neumorphism) .tm-input,
+:where(body.light-mode, body.theme-neumorphism) .tm-select,
+:where(body.light-mode, body.theme-neumorphism) .tm-text-input {
+    background-color: rgba(255, 255, 255, 0.6);
+    border: 1px solid #cbd5e1; /* Slate 300 */
+    color: #334155; /* Slate 700 */
+}
+
+:where(body.light-mode, body.theme-neumorphism) .tm-input:focus,
+:where(body.light-mode, body.theme-neumorphism) .tm-select:focus,
+:where(body.light-mode, body.theme-neumorphism) .tm-text-input:focus {
+    background-color: #ffffff;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+/* Color Input */
+:where(body.light-mode, body.theme-neumorphism) .tm-color-input {
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+}
+
+/* Style Icons */
+:where(body.light-mode, body.theme-neumorphism) .tm-style-icon {
+    background: rgba(255, 255, 255, 0.5);
+    color: #64748b;
+    border: 1px solid transparent; /* Align size */
+}
+
+:where(body.light-mode, body.theme-neumorphism) .tm-style-icon:hover {
+    background: #ffffff;
+    color: #2563eb;
+    border-color: rgba(37, 99, 235, 0.2);
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.1);
+}
+
+:where(body.light-mode, body.theme-neumorphism) .tm-style-label {
+    background: rgba(255, 255, 255, 0.5);
+    color: #64748b;
+    border: 1px solid transparent;
+}
+
+:where(body.light-mode, body.theme-neumorphism) .tm-style-label:hover {
+    background: #ffffff;
+    color: #2563eb;
+    border-color: rgba(37, 99, 235, 0.2);
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.1);
+}
+
+/* Value Controls */
+:where(body.light-mode, body.theme-neumorphism) .tm-value-text {
+    background: rgba(37, 99, 235, 0.1);
+    color: #2563eb;
+}
+
+:where(body.light-mode, body.theme-neumorphism) .tm-value-text.dragging {
+    background: rgba(37, 99, 235, 0.2);
+}
+
+:where(body.light-mode, body.theme-neumorphism) .tm-value-input {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #334155;
+}
+
+/* Replace Section (Bottom) */
+:where(body.light-mode, body.theme-neumorphism) .tm-replace-section,
+:where(body.light-mode, body.theme-neumorphism) .tm-replace-action {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid #e2e8f0; /* Slate 200 */
+    box-shadow: 0 -4px 20px rgba(37, 99, 235, 0.1);
+}
+
+:where(body.light-mode, body.theme-neumorphism) .target-font-name {
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid #cbd5e1;
+    color: #334155;
+}
+
+:where(body.light-mode, body.theme-neumorphism) .arrow {
+    color: #94a3b8; /* Slate 400 */
+}
+
+/* Buttons */
+:where(body.light-mode, body.theme-neumorphism) .btn-mini {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #64748b;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+:where(body.light-mode, body.theme-neumorphism) .btn-mini:hover {
+    border-color: #94a3b8;
+    color: #334155;
+    background: #f8fafc;
+}
+
+/* Primary Button (Blue for Neumorphism consistency) */
+:where(body.light-mode, body.theme-neumorphism) .btn-mini.primary {
+    background: rgba(37, 99, 235, 0.1);
+    border-color: rgba(37, 99, 235, 0.3);
+    color: #2563eb;
+}
+
+:where(body.light-mode, body.theme-neumorphism) .btn-mini.primary:hover {
+    background: rgba(37, 99, 235, 0.2);
+    border-color: #2563eb;
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.2);
+}
+
+/* Warning Button */
+:where(body.light-mode, body.theme-neumorphism) .btn-mini.warning {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #dc2626; /* Red 600 */
+}
+
+:where(body.light-mode, body.theme-neumorphism) .btn-mini.warning:hover {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: #dc2626;
+    color: #b91c1c;
+}
+
+/* Secondary Button */
+:where(body.light-mode, body.theme-neumorphism) .btn-mini.secondary {
+    background: #ffffff;
+    border-color: #2563eb;
+    color: #2563eb;
+}
+
+:where(body.light-mode, body.theme-neumorphism) .btn-mini.secondary:hover {
+    background: #eff6ff;
+}
+
+/* Scope Switch */
+:where(body.light-mode, body.theme-neumorphism) .tm-scope-switch {
+    background: rgba(241, 245, 249, 0.8); /* Slate 100 */
+    border: 1px solid #e2e8f0;
+}
+
+:where(body.light-mode, body.theme-neumorphism) .tm-scope-toggle-btn {
+    background: rgba(241, 245, 249, 0.8);
+    border: 1px solid #e2e8f0;
+    color: #334155;
+}
+
+:where(body.light-mode, body.theme-neumorphism) .tm-scope-toggle-btn:hover {
+    border-color: rgba(37, 99, 235, 0.35);
+    color: #1d4ed8;
+}
+
+:where(body.light-mode, body.theme-neumorphism) .tm-scope-switch label {
+    color: #64748b;
+}
+
+:where(body.light-mode, body.theme-neumorphism) .tm-scope-switch label:hover {
+    color: #334155;
+}
+
+:where(body.light-mode, body.theme-neumorphism) .tm-scope-switch label.active {
+    background: #ffffff;
+    color: #2563eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+:where(body.light-mode, body.theme-neumorphism) .tm-replace-title {
+    color: #64748b;
+}
+
+:where(body.light-mode, body.theme-neumorphism) .tm-replace-collapse-btn {
+    background: rgba(255, 255, 255, 0.75);
+    border: 1px solid #d8e2ee;
+    color: #64748b;
+}
+
+:where(body.light-mode, body.theme-neumorphism) .tm-replace-collapse-btn:hover {
+    background: #ffffff;
+    color: #2563eb;
+    border-color: rgba(37, 99, 235, 0.35);
+}
+
+:where(body.light-mode, body.theme-neumorphism) .tm-item-action-btn {
+    background: rgba(255, 255, 255, 0.75);
+    border: 1px solid #d8e2ee;
+    color: #64748b;
+}
+
+:where(body.light-mode, body.theme-neumorphism) .tm-item-action-btn:hover {
+    color: #2563eb;
+    border-color: rgba(37, 99, 235, 0.35);
+    background: #ffffff;
+}
+
+:where(body.light-mode, body.theme-neumorphism) .tm-style-apply-settings {
+    background: rgba(255, 255, 255, 0.98);
+    border: 1px solid #d8e2ee;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.18);
+}
+
+:where(body.light-mode, body.theme-neumorphism) .tm-style-apply-title {
+    color: #334155;
+}
+
+:where(body.light-mode, body.theme-neumorphism) .tm-style-apply-option {
+    color: #475569;
+}
+
+/* Bulk Textarea */
+:where(body.light-mode, body.theme-neumorphism) .tm-bulk-textarea {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #334155;
+}
+
+:where(body.light-mode, body.theme-neumorphism) .tm-bulk-textarea:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+/* Empty State & Loading */
+:where(body.light-mode, body.theme-neumorphism) .tm-empty-state,
+:where(body.light-mode, body.theme-neumorphism) .tm-loading {
+    color: #94a3b8;
+}
+
+:where(body.light-mode, body.theme-neumorphism) .tm-empty-state::before {
+    opacity: 0.8;
+    filter: grayscale(100%) opacity(0.5);
+}
+
+/* Checkbox Accent */
+:where(body.light-mode, body.theme-neumorphism) .tm-checkbox {
+    accent-color: #2563eb;
+}
+
+/* Layer Name */
+:where(body.light-mode, body.theme-neumorphism) .tm-layer-name {
+    color: #1e293b; /* Slate 800 */
+}
+
+:where(body.light-mode, body.theme-neumorphism) .tm-comp-badge {
+    background: rgba(241, 245, 249, 0.8);
+    border: 1px solid #e2e8f0;
+    color: #64748b;
+}
+
+/* Global Scrollbar Override for Light Mode */
+:where(body.light-mode, body.theme-neumorphism) ::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+:where(body.light-mode, body.theme-neumorphism) ::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+.tm-empty-hint {
+    margin-top: 8px;
+    padding: 8px 10px;
+    border: 1px solid rgba(255, 191, 0, 0.3);
+    background: rgba(255, 191, 0, 0.08);
+    color: #b6bccf;
+    border-radius: 8px;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+:where(body.light-mode, body.theme-neumorphism) .tm-empty-hint {
+    border-color: rgba(37, 99, 235, 0.25);
+    background: rgba(37, 99, 235, 0.08);
+    color: #475569;
+}
